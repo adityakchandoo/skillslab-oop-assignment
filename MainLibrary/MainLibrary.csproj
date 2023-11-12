@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>79fb1630-a7ca-40ca-a212-8fa21648d19b</ProjectGuid>
+    <ProjectGuid>{79FB1630-A7CA-40CA-A212-8FA21648D19B}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>MainLibrary</RootNamespace>
@@ -31,24 +31,37 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="System"/>
-    
-    <Reference Include="System.Core"/>
-    <Reference Include="System.Xml.Linq"/>
-    <Reference Include="System.Data.DataSetExtensions"/>
-    
-    
-    <Reference Include="Microsoft.CSharp"/>
-    
-    <Reference Include="System.Data"/>
-    
-    <Reference Include="System.Net.Http"/>
-    
-    <Reference Include="System.Xml"/>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
+    <Compile Include="DAL\Interfaces\ITrainingDAL.cs" />
+    <Compile Include="DAL\Interfaces\IUserDAL.cs" />
+    <Compile Include="DAL\TrainingDAL.cs" />
+    <Compile Include="DAL\UserDAL.cs" />
+    <Compile Include="DTO\UserLoginFormDTO.cs" />
+    <Compile Include="Entities\Application.cs" />
+    <Compile Include="Entities\Training.cs" />
+    <Compile Include="Entities\Types\StatusType.cs" />
+    <Compile Include="Entities\Types\UserType.cs" />
+    <Compile Include="Entities\User.cs" />
+    <Compile Include="Entities\UserTraining.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\ApplicationService.cs" />
+    <Compile Include="Services\Interfaces\IApplicationService.cs" />
+    <Compile Include="Services\Interfaces\INotificationService.cs" />
+    <Compile Include="Services\Interfaces\ITrainingService.cs" />
+    <Compile Include="Services\Interfaces\IUserService.cs" />
+    <Compile Include="Services\NotificationService.cs" />
+    <Compile Include="Services\TrainingService.cs" />
+    <Compile Include="Services\UserService.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
- </Project>
+</Project>

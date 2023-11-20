@@ -1,12 +1,12 @@
-﻿using ConsoleAppLab.DAL.Interfaces;
-using MainLibrary.Entities;
+﻿using MainLibrary.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using MainLibrary.DAL.Interfaces;
 
-namespace ConsoleAppLab.DAL
+namespace MainLibrary.DAL
 {
     internal class UserDAL : IUserDAL
     {
@@ -21,6 +21,11 @@ namespace ConsoleAppLab.DAL
         }
 
         public IEnumerable<User> GetAllUsers()
+        {
+            throw new NotImplementedException();
+        }
+
+        public User GetByUsername(string username)
         {
             throw new NotImplementedException();
         }

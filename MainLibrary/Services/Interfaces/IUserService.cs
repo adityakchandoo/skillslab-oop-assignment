@@ -13,7 +13,9 @@ namespace MainLibrary.Services.Interfaces
         void Login(UserLoginFormDTO user);
         void Logout();
         void ForgetPass();
+        void ResetPass();
         void Register(User user);
+        void ConfirmAccount(User user);
         IEnumerable<User> ExportSelectedEmployees();
     }
 }

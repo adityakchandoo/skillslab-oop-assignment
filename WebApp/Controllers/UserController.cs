@@ -1,5 +1,7 @@
 ﻿using MainLibrary.DAL;
+using MainLibrary.DAL.Interfaces;
 using MainLibrary.DTO;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +12,13 @@ namespace WebApp.Controllers
 {
     public class UserController : Controller
     {
+
+        UserDAL _userDAL;
+        public UserController(UserDAL userDAL)
+        {
+            _userDAL = userDAL;
+        }
+
         public ActionResult Login(UserLoginFormDTO user)
         {
 
@@ -25,6 +34,13 @@ namespace WebApp.Controllers
             }
 
             return View();
+        }
+        public ActionResult Res()
+        {
+
+            string output = JsonConvert.SerializeObject(_userDAL.GetAllUsers());
+
+            return Content(output);
         }
     }
 }

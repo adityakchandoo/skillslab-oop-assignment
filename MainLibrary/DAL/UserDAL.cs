@@ -5,11 +5,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MainLibrary.DAL.Interfaces;
+using MainLibrary.Entities.Types;
+using System.Data.SqlClient;
 
 namespace MainLibrary.DAL
 {
-    internal class UserDAL : IUserDAL
+    public class UserDAL : IUserDAL
     {
+        DbContext _dbContext;
+        public UserDAL(DbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
+
         public void CreateUser(User user)
         {
             throw new NotImplementedException();
@@ -22,7 +30,39 @@ namespace MainLibrary.DAL
 
         public IEnumerable<User> GetAllUsers()
         {
-            throw new NotImplementedException();
+            List<User> results = new List<User>();
+
+
+            using (SqlCommand command = new SqlCommand("SELECT * FROM [dbo].[AppUser];", _dbContext.GetConn()))
+            {
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        // Map the data from the SqlDataReader to your model
+                        User model = new User
+                        {
+                            Id = (int)reader["Id"],
+                            FirstName = (string)reader["FirstName"],
+                            LastName = (string)reader["LastName"],
+                            Username = (string)reader["Username"],
+                            Password = (string)reader["Password"],
+                            Email = (string)reader["Email"],
+                            DOB = DateTime.Parse(reader["DOB"].ToString()),
+                            NIC = (string)reader["NIC"],
+                            MobileNumber = (string)reader["MobileNumber"],
+                            Status = (StatusType)(int)reader["Status"],
+                            UserType = (UserType)(int)reader["UserType"],
+                        };
+
+                        results.Add(model);
+                    }
+                }
+            }
+
+
+            return results;
+
         }
 
         public User GetByUsername(string username)

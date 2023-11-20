@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MainLibrary.DAL.Interfaces
 {
-    internal interface ITrainingDAL
+    public interface ITrainingDAL
     {
         IEnumerable<User> GetTrainingsByUser(int user_id);
         User GetTraining(int user_id);

@@ -9,21 +9,6 @@ namespace MainLibrary.Entities
 {
     public class User
     {
-        public User(int id, string firstName, string lastName, string username, string password, string email, DateTime dOB, string nIC, string mobileNumber, StatusType status, UserType userType)
-        {
-            Id = id;
-            FirstName = firstName;
-            LastName = lastName;
-            Username = username;
-            Password = password;
-            Email = email;
-            DOB = dOB;
-            NIC = nIC;
-            MobileNumber = mobileNumber;
-            Status = status;
-            UserType = userType;
-        }
-
         public int Id { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }

@@ -8,14 +8,6 @@ namespace MainLibrary.Entities
 {
     public class Training
     {
-        public Training(int id, string name, string description, int treshhold, DateTime deadline)
-        {
-            Id = id;
-            Name = name;
-            Description = description;
-            Treshhold = treshhold;
-            Deadline = deadline;
-        }
 
         public int Id { get; set; }
         public string Name { get; set; }

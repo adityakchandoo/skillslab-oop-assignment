@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MainLibrary.Entities
 {
-    internal class UserTraining
+    public class UserTraining
     {
         public User User { get; set; }
         public Training Training { get; set; }

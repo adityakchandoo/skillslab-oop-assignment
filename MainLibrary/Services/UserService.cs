@@ -30,6 +30,8 @@ namespace MainLibrary.DAL
 
         public void Login(UserLoginFormDTO user)
         {
+
+            /*
             var userDAL = new UserDAL();
 
             var targetUser = userDAL.GetByUsername(user.user);
@@ -43,6 +45,8 @@ namespace MainLibrary.DAL
             {
                 throw new Exception();
             }
+
+            */
         }
 
         public void Logout()
@@ -52,11 +56,13 @@ namespace MainLibrary.DAL
 
         public void Register(User user)
         {
+            /*
             var userDAL = new UserDAL();
             var NotificationService = new NotificationService();
 
             userDAL.CreateUser(user);
             NotificationService.SendNotification(user);
+            */
         }
 
         public void ConfirmAccount(User user)

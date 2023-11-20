@@ -3,13 +3,19 @@ using MainLibrary.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MainLibrary.DAL
 {
-    internal class TrainingDAL : ITrainingDAL
+    public class TrainingDAL : ITrainingDAL
     {
+        DbContext _dbContext;
+        public TrainingDAL(DbContext dbContext)
+        {
+            _dbContext = dbContext;
+        }
         public void CreateTraining(User user)
         {
             throw new NotImplementedException();

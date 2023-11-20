@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace MainLibrary.DAL.Interfaces
 {
-    internal interface IUserDAL
+    public interface IUserDAL
     {
         IEnumerable<User> GetAllUsers();
         User GetUser(int user_id);

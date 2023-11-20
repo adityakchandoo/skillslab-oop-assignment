@@ -41,7 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Class1.cs" />
+    <Compile Include="DbContext.cs" />
     <Compile Include="DAL\Interfaces\ITrainingDAL.cs" />
     <Compile Include="DAL\Interfaces\IUserDAL.cs" />
     <Compile Include="DAL\TrainingDAL.cs" />

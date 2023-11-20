@@ -1,9 +1,9 @@
-using MainLibrary;
-using MainLibrary.DAL;
-using MainLibrary.DAL.Interfaces;
 using System;
 using System.Configuration;
 
+using MainLibrary;
+using MainLibrary.Repo;
+using MainLibrary.Repo.Interfaces;
 
 using Unity;
 using Unity.AspNet.Mvc;
@@ -53,8 +53,8 @@ namespace WebApp
                     new InjectionConstructor(ConfigurationManager.ConnectionStrings["default"].ConnectionString)
                 );
 
-            container.RegisterType<IUserDAL, UserDAL>(new PerRequestLifetimeManager());
-            container.RegisterType<ITrainingDAL, TrainingDAL>(new PerRequestLifetimeManager());
+            container.RegisterType<IUserRepo, UserRepo>(new PerRequestLifetimeManager());
+            container.RegisterType<ITrainingRepo, TrainingRepo>(new PerRequestLifetimeManager());
 
         }
     }

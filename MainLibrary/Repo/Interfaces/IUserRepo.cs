@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MainLibrary.DAL.Interfaces
+namespace MainLibrary.Repo.Interfaces
 {
-    public interface IUserDAL
+    public interface IUserRepo
     {
         IEnumerable<User> GetAllUsers();
         User GetUser(int user_id);

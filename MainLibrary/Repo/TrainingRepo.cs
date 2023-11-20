@@ -1,18 +1,18 @@
-﻿using MainLibrary.DAL.Interfaces;
-using MainLibrary.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.Remoting.Contexts;
 using System.Text;
 using System.Threading.Tasks;
+using MainLibrary.Repo.Interfaces;
+using MainLibrary.Entities;
 
-namespace MainLibrary.DAL
+namespace MainLibrary.Repo
 {
-    public class TrainingDAL : ITrainingDAL
+    public class TrainingRepo : ITrainingRepo
     {
         DbContext _dbContext;
-        public TrainingDAL(DbContext dbContext)
+        public TrainingRepo(DbContext dbContext)
         {
             _dbContext = dbContext;
         }

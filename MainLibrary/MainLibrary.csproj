@@ -42,10 +42,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbContext.cs" />
-    <Compile Include="DAL\Interfaces\ITrainingDAL.cs" />
-    <Compile Include="DAL\Interfaces\IUserDAL.cs" />
-    <Compile Include="DAL\TrainingDAL.cs" />
-    <Compile Include="DAL\UserDAL.cs" />
+    <Compile Include="Repo\Interfaces\ITrainingRepo.cs" />
+    <Compile Include="Repo\Interfaces\IUserRepo.cs" />
+    <Compile Include="Repo\TrainingRepo.cs" />
+    <Compile Include="Repo\UserRepo.cs" />
     <Compile Include="DTO\UserLoginFormDTO.cs" />
     <Compile Include="Entities\Application.cs" />
     <Compile Include="Entities\Training.cs" />

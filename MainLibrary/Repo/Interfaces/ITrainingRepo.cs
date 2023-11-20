@@ -5,9 +5,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MainLibrary.DAL.Interfaces
+namespace MainLibrary.Repo.Interfaces
 {
-    public interface ITrainingDAL
+    public interface ITrainingRepo
     {
         IEnumerable<User> GetTrainingsByUser(int user_id);
         User GetTraining(int user_id);

@@ -4,16 +4,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MainLibrary.DAL.Interfaces;
-using MainLibrary.Entities.Types;
 using System.Data.SqlClient;
+using MainLibrary.Repo.Interfaces;
+using MainLibrary.Entities.Types;
 
-namespace MainLibrary.DAL
+namespace MainLibrary.Repo
 {
-    public class UserDAL : IUserDAL
+    public class UserRepo : IUserRepo
     {
         DbContext _dbContext;
-        public UserDAL(DbContext dbContext)
+        public UserRepo(DbContext dbContext)
         {
             _dbContext = dbContext;
         }

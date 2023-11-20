@@ -13,8 +13,8 @@ namespace WebApp.Controllers
     public class UserController : Controller
     {
 
-        UserDAL _userDAL;
-        public UserController(UserDAL userDAL)
+        UserRepo _userDAL;
+        public UserController(UserRepo userDAL)
         {
             _userDAL = userDAL;
         }

@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading.Tasks;
 using MainLibrary.Repo.Interfaces;
 using MainLibrary.Entities;
+using MainLibrary.Entities.Types;
+using System.Data.SqlClient;
 
 namespace MainLibrary.Repo
 {
@@ -16,28 +18,171 @@ namespace MainLibrary.Repo
         {
             _dbContext = dbContext;
         }
-        public void CreateTraining(User user)
+
+        public void CreateTraining(Training training)
         {
+
+            string insertQuery = "INSERT INTO [dbo].[Training] (Name,Description,Treshhold,Deadline,ManagerId,PreferedDepartmentId) VALUES " +
+                "(Name,Description,Treshhold,Deadline,ManagerId,PreferedDepartmentId)";
+
+            SqlCommand cmd = new SqlCommand(insertQuery, _dbContext.GetConn());
+
+            cmd.Parameters.AddWithValue("@Name", training.Name);
+            cmd.Parameters.AddWithValue("@Description", training.Description);
+            cmd.Parameters.AddWithValue("@Treshhold", training.Treshhold);
+            cmd.Parameters.AddWithValue("@Deadline", training.Deadline);
+            cmd.Parameters.AddWithValue("@ManagerId", training.ManagerId);
+            cmd.Parameters.AddWithValue("@PreferedDepartmentId", training.PreferedDepartmentId);
+
+
+            cmd.ExecuteNonQuery();
+
             throw new NotImplementedException();
         }
 
-        public void DeleteTraining(int user_id)
+        public void DeleteTraining(int id)
         {
+            string delQuery = "DELETE FROM [dbo].[Training] WHERE TrainingId = @id";
+
+            SqlCommand cmd = new SqlCommand(delQuery, _dbContext.GetConn());
+            cmd.Parameters.AddWithValue("@id", id);
+
+            cmd.ExecuteNonQuery();
+        }
+
+        public IEnumerable<Training> GetAllTraining()
+        {
+            List<Training> results = new List<Training>();
+
+            using (SqlCommand command = new SqlCommand("SELECT * FROM [dbo].[Training];", _dbContext.GetConn()))
+            {
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        // Map the data from the SqlDataReader to your model
+                        Training model = new Training
+                        {
+                            TrainingId = (int)reader["TrainingId"],
+                            Name = (string)reader["FirstName"],
+                            Description = (string)reader["Description"],
+                            Treshhold = (int)reader["Treshhold"],
+                            Deadline = DateTime.Parse(reader["Deadline"].ToString()),
+                            PreferedDepartmentId = (int)reader["PreferedDepartmentId"],
+                        };
+
+                        results.Add(model);
+                    }
+                }
+            }
+            return results;
+        }
+        public Training GetTraining(int id)
+        {
+            Training user = new Training();
+
+            using (SqlCommand command = new SqlCommand("SELECT * FROM [dbo].[AppUser] WHERE TrainingId = @TrainingId;", _dbContext.GetConn()))
+            {
+                command.Parameters.AddWithValue("@TrainingId", id);
+
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        user.TrainingId = (int)reader["TrainingId"];
+                        user.Name = (string)reader["Name"];
+                        user.Description = (string)reader["Description"];
+                        user.Treshhold = (int)reader["PassTreshholdword"];
+                        user.Deadline = DateTime.Parse(reader["Deadline"].ToString());
+                        user.ManagerId = (int)reader["ManagerId"];
+                        user.PreferedDepartmentId = (int)reader["PreferedDepartmentId"];
+
+                        return user;
+                    }
+                }
+            }
+
+
+            return null;
+
             throw new NotImplementedException();
         }
 
-        public User GetTraining(int user_id)
+        public IEnumerable<Training> GetTrainingManagedByUser(string UserId)
         {
-            throw new NotImplementedException();
+            List<Training> results = new List<Training>();
+
+            using (SqlCommand command = new SqlCommand("SELECT * FROM [dbo].[Training] WHERE ManagerId = @ManagerId;", _dbContext.GetConn()))
+            {
+                command.Parameters.AddWithValue("@UserId", UserId);
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        // Map the data from the SqlDataReader to your model
+                        Training model = new Training
+                        {
+                            TrainingId = (int)reader["TrainingId"],
+                            Name = (string)reader["FirstName"],
+                            Description = (string)reader["Description"],
+                            Treshhold = (int)reader["Treshhold"],
+                            Deadline = DateTime.Parse(reader["Deadline"].ToString()),
+                            PreferedDepartmentId = (int)reader["PreferedDepartmentId"],
+                        };
+
+                        results.Add(model);
+                    }
+                }
+            }
+            return results;
         }
 
-        public IEnumerable<User> GetTrainingsByUser(int user_id)
+        public IEnumerable<Training> GetTrainingEnrolledByUser(string UserId)
         {
-            throw new NotImplementedException();
+            List<Training> results = new List<Training>();
+
+            using (SqlCommand command = new SqlCommand("SELECT [dbo].[Training].* FROM [dbo].[Training] INNER JOIN [dbo].[UserTrainingEnrollment] ON " +
+                                                       "[dbo].[Training].[TrainingId] = [dbo].[UserTrainingEnrollment].[TrainingId] WHERE " +
+                                                       "[dbo].[UserTrainingEnrollment].[UserId] = @UserId;", _dbContext.GetConn()))
+            {
+                command.Parameters.AddWithValue("@UserId", UserId);
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        // Map the data from the SqlDataReader to your model
+                        Training model = new Training
+                        {
+                            TrainingId = (int)reader["TrainingId"],
+                            Name = (string)reader["FirstName"],
+                            Description = (string)reader["Description"],
+                            Treshhold = (int)reader["Treshhold"],
+                            Deadline = DateTime.Parse(reader["Deadline"].ToString()),
+                            PreferedDepartmentId = (int)reader["PreferedDepartmentId"],
+                        };
+
+                        results.Add(model);
+                    }
+                }
+            }
+            return results;
         }
 
-        public void UpdateTraining(User user)
+        public void UpdateTraining(Training training)
         {
+            string updateQuery = "UPDATE [dbo].[Training] SET Name = @Name, Description = @Description, Treshhold = @Treshhold, Deadline = @Deadline, ManagerId = @ManagerId, " +
+                "PreferedDepartmentId = @PreferedDepartmentId WHERE YourPrimaryKeyColumn = @YourPrimaryKeyValue;";
+
+            SqlCommand cmd = new SqlCommand(updateQuery, _dbContext.GetConn());
+
+            cmd.Parameters.AddWithValue("@Name", training.Name);
+            cmd.Parameters.AddWithValue("@Description", training.Description);
+            cmd.Parameters.AddWithValue("@Treshhold", training.Treshhold);
+            cmd.Parameters.AddWithValue("@Deadline", training.Deadline);
+            cmd.Parameters.AddWithValue("@ManagerId", training.ManagerId);
+            cmd.Parameters.AddWithValue("@PreferedDepartmentId", training.PreferedDepartmentId);
+
+            cmd.ExecuteNonQuery();
             throw new NotImplementedException();
         }
     }

@@ -21,11 +21,12 @@ namespace MainLibrary.Repo
 
         public void CreateUser(User user)
         {
-            string insertQuery = "INSERT INTO [dbo].[AppUser] (FirstName,LastName,Password,Email,DOB,NIC,MobileNumber,Status,UserType) VALUES " +
-                "(@FirstName,@LastName,@Username,@Email,@DOB,@NIC,@MobileNumber,@Status,@UserType)";
+            string insertQuery = "INSERT INTO [dbo].[AppUser] (UserId,FirstName,LastName,Password,Email,DOB,NIC,MobileNumber,CreatedOn,Status,Role) VALUES " +
+                "(@UserId,@FirstName,@LastName,@Password,@Email,@DOB,@NIC,@MobileNumber,@CreatedOn,@Status,@Role);";
 
             SqlCommand cmd = new SqlCommand(insertQuery, _dbContext.GetConn());
 
+            cmd.Parameters.AddWithValue("@UserId", user.UserId);
             cmd.Parameters.AddWithValue("@FirstName", user.FirstName);
             cmd.Parameters.AddWithValue("@LastName", user.LastName);
             cmd.Parameters.AddWithValue("@Password", user.Password);
@@ -33,19 +34,20 @@ namespace MainLibrary.Repo
             cmd.Parameters.AddWithValue("@DOB", user.DOB);
             cmd.Parameters.AddWithValue("@NIC", user.NIC);
             cmd.Parameters.AddWithValue("@MobileNumber", user.MobileNumber);
+            cmd.Parameters.AddWithValue("@CreatedOn", user.CreatedOn);
             cmd.Parameters.AddWithValue("@Status", user.Status);
-            cmd.Parameters.AddWithValue("@UserType", user.UserType);
+            cmd.Parameters.AddWithValue("@Role", user.Role);
 
             cmd.ExecuteNonQuery();
 
         }
 
-        public void DeleteUser(int UserId)
+        public void DeleteUser(string UserId)
         {
             string delQuery = "DELETE FROM [dbo].[AppUser] WHERE Id = @id";
 
             SqlCommand cmd = new SqlCommand(delQuery, _dbContext.GetConn());
-            cmd.Parameters.AddWithValue("@id", user_id);
+            cmd.Parameters.AddWithValue("@id", UserId);
 
             cmd.ExecuteNonQuery();
         }
@@ -63,7 +65,7 @@ namespace MainLibrary.Repo
                         // Map the data from the SqlDataReader to your model
                         User model = new User
                         {
-                            Id = (string)reader["UserId"],
+                            UserId = (string)reader["UserId"],
                             FirstName = (string)reader["FirstName"],
                             LastName = (string)reader["LastName"],
                             Password = (string)reader["Password"],
@@ -71,8 +73,9 @@ namespace MainLibrary.Repo
                             DOB = DateTime.Parse(reader["DOB"].ToString()),
                             NIC = (string)reader["NIC"],
                             MobileNumber = (string)reader["MobileNumber"],
-                            Status = (StatusType)(int)reader["Status"],
-                            UserType = (UserType)(int)reader["UserType"],
+                            CreatedOn = DateTime.Parse(reader["CreatedOn"].ToString()),
+                            Status = (UserStatusType)(int)reader["Status"],
+                            Role = (UserRoleType)(int)reader["Rolw"],
                         };
 
                         results.Add(model);
@@ -83,14 +86,14 @@ namespace MainLibrary.Repo
         }
 
 
-        public User GetUser(int UserId)
+        public User GetUser(string UserId)
         {
 
             User user = new User();
 
             using (SqlCommand command = new SqlCommand("SELECT * FROM [dbo].[AppUser] WHERE UserId = @UserId;", _dbContext.GetConn()))
             {
-                command.Parameters.AddWithValue("@UserId", user_id);
+                command.Parameters.AddWithValue("@UserId", UserId);
 
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -104,8 +107,9 @@ namespace MainLibrary.Repo
                         user.DOB = DateTime.Parse(reader["DOB"].ToString());
                         user.NIC = (string)reader["NIC"];
                         user.MobileNumber = (string)reader["MobileNumber"];
-                        user.Status = (StatusType)(int)reader["Status"];
-                        user.UserType = (UserType)(int)reader["UserType"];
+                        user.CreatedOn = DateTime.Parse(reader["CreatedOn"].ToString());
+                        user.Status = (UserStatusType)(int)reader["Status"];
+                        user.Role = (UserRoleType)(int)reader["Role"];
 
                         return user;
                     }
@@ -118,7 +122,7 @@ namespace MainLibrary.Repo
         public void UpdateUser(User user)
         {
 
-            string updateQuery = "UPDATE [dbo].[AppUser] SET FirstName = @FirstName, LastName = @LastName, Password = @Password, Email = @Email, DOB = @DOB, NIC = @NIC, MobileNumber = @MobileNumber, Status = @Status, UserType = @UserType WHERE UserId = @UserId";
+            string updateQuery = "UPDATE [dbo].[AppUser] SET FirstName = @FirstName, LastName = @LastName, Password = @Password, Email = @Email, DOB = @DOB, NIC = @NIC, MobileNumber = @MobileNumber, Status = @Status, Role = @Role WHERE UserId = @UserId";
 
             SqlCommand cmd = new SqlCommand(updateQuery, _dbContext.GetConn());
 
@@ -129,8 +133,9 @@ namespace MainLibrary.Repo
             cmd.Parameters.AddWithValue("@DOB", user.DOB);
             cmd.Parameters.AddWithValue("@NIC", user.NIC);
             cmd.Parameters.AddWithValue("@MobileNumber", user.MobileNumber);
+            cmd.Parameters.AddWithValue("@CreatedOn", user.CreatedOn);
             cmd.Parameters.AddWithValue("@Status", user.Status);
-            cmd.Parameters.AddWithValue("@UserType", user.UserType);
+            cmd.Parameters.AddWithValue("@Role", user.Role);
 
             cmd.ExecuteNonQuery();
 

@@ -1,13 +1,13 @@
-﻿using MainLibrary.Entities.Types;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
-namespace MainLibrary.Entities
+namespace MainLibrary.DTO
 {
-    public class User
+    public class RegisterFormDTO
     {
         public string UserId { get; set; }
         public string FirstName { get; set; }
@@ -17,11 +17,5 @@ namespace MainLibrary.Entities
         public DateTime DOB { get; set; }
         public string NIC { get; set; }
         public string MobileNumber { get; set; }
-        public DateTime CreatedOn { get; set; } = DateTime.Now;
-        public UserStatusType Status { get; set; }
-        public UserRoleType Role { get; set; }
-    }    
-
+    }
 }
-
-

@@ -1,5 +1,5 @@
-﻿using MainLibrary.DAL;
-using MainLibrary.DAL.Interfaces;
+﻿using MainLibrary.Service;
+using MainLibrary.Service.Interfaces;
 using MainLibrary.DTO;
 using Newtonsoft.Json;
 using System;
@@ -7,40 +7,91 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MainLibrary.Entities;
 
 namespace WebApp.Controllers
 {
     public class UserController : Controller
     {
 
-        UserRepo _userDAL;
-        public UserController(UserRepo userDAL)
+        IUserService _userService;
+        public UserController(UserService userService)
         {
-            _userDAL = userDAL;
+            _userService = userService;
         }
 
-        public ActionResult Login(UserLoginFormDTO user)
+
+        [HttpGet]
+        public ActionResult Login()
         {
-
-            var userService = new UserService();
-
-            try
-            {
-                userService.Login(user);
-            }
-            catch
-            {
-                TempData["login_status"] = "Failed";
-            }
-
             return View();
         }
-        public ActionResult Res()
+
+        [HttpPost]
+        public ActionResult LoginPost(UserLoginFormDTO login)
         {
+            if(ModelState.IsValid)
+            {
+                try
+                {
+                    User targetUser = _userService.Login(login);
+                    this.Session["UserId"] = targetUser.UserId;
 
-            string output = JsonConvert.SerializeObject(_userDAL.GetAllUsers());
+                    if (targetUser.Role == UserRoleType.Admin)
+                    {
+                        this.Session["Role"] = "Admin";
+                        return Redirect("/Admin");
+                    }
+                    else if(targetUser.Role == UserRoleType.Manager)
+                    {
+                        this.Session["Role"] = "Manager";
+                        return Redirect("/Manager");
+                    }
+                    else if (targetUser.Role == UserRoleType.Employee)
+                    {
+                        this.Session["Role"] = "Employee";
+                        return Redirect("/Employee");
+                    }
 
-            return Content(output);
+                } 
+                catch (Exception ex)
+                {
+                    TempData["Error"] = ex.Message;
+                }
+                
+            }
+
+            return RedirectToAction("Login");
         }
+
+        [HttpGet]
+        public ActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public ActionResult RegisterPost(RegisterFormDTO reg)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    _userService.Register(reg);
+                }
+                catch (Exception ex)
+                {
+                    TempData["Error"] = ex.Message;
+                }
+            }
+
+            return RedirectToAction("RegisterSuccess");
+        }
+
+        public ActionResult RegisterSuccess()
+        {
+            return View();
+        }
+
     }
 }

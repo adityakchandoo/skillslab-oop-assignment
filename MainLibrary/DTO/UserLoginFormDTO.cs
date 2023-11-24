@@ -8,6 +8,7 @@ namespace MainLibrary.DTO
 {
     public class UserLoginFormDTO
     {
+
         public string user { get; set; }
         public string pass { get; set; }
     }

@@ -6,16 +6,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MainLibrary.Services.Interfaces
+namespace MainLibrary.Service.Interfaces
 {
-    internal interface IUserService
+    public interface IUserService
     {
-        void Login(UserLoginFormDTO user);
+        User Login(UserLoginFormDTO user);
         void Logout();
         void ForgetPass();
         void ResetPass();
-        void Register(User user);
-        void ConfirmAccount(User user);
+        void Register(RegisterFormDTO reg);
+        void ConfirmAccount(string UserId);
         IEnumerable<User> ExportSelectedEmployees();
     }
 }

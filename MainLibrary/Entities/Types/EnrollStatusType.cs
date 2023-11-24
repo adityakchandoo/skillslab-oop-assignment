@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MainLibrary.Entities
+namespace MainLibrary.Entities.Types
 {
-    public enum UserType { Admin, Manager, Employee }
+    public enum EnrollStatusType { Pending, Approved, Rejected }
 }

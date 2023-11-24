@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MainLibrary.Entities.Types
+namespace MainLibrary.Entities
 {
-    public enum StatusType { New, Approved, Rejected }
+    public enum UserRoleType { Admin, Manager, Employee }
 }

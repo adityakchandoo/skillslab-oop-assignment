@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MainLibrary.Services.Interfaces
+namespace MainLibrary.Service.Interfaces
 {
     public interface ITrainingService
     {

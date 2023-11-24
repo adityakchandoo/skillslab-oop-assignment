@@ -1,18 +1,27 @@
 ﻿using MainLibrary.DTO;
 using MainLibrary.Entities;
-using MainLibrary.Services.Interfaces;
+using MainLibrary.Entities.Types;
+using MainLibrary.Repo;
+using MainLibrary.Repo.Interfaces;
+using MainLibrary.Service.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using MainLibrary.DAL;
-using MainLibrary.Services;
 
-namespace MainLibrary.DAL
+
+namespace MainLibrary.Service
 {
     public class UserService : IUserService
     {
+        IUserRepo _userRepo;
+        public UserService(UserRepo userRepo)
+        {
+            _userRepo = userRepo;
+        }
+
+
         public IEnumerable<User> ExportSelectedEmployees()
         {
             throw new NotImplementedException();
@@ -28,13 +37,9 @@ namespace MainLibrary.DAL
             throw new NotImplementedException();
         }
 
-        public void Login(UserLoginFormDTO user)
+        public User Login(UserLoginFormDTO user)
         {
-
-            /*
-            var userDAL = new UserDAL();
-
-            var targetUser = userDAL.GetByUsername(user.user);
+            var targetUser = _userRepo.GetUser(user.user);          
 
             if (targetUser != null)
             {
@@ -46,7 +51,8 @@ namespace MainLibrary.DAL
                 throw new Exception();
             }
 
-            */
+            return targetUser;
+
         }
 
         public void Logout()
@@ -54,18 +60,28 @@ namespace MainLibrary.DAL
             throw new NotImplementedException();
         }
 
-        public void Register(User user)
+        public void Register(RegisterFormDTO reg)
         {
-            /*
-            var userDAL = new UserDAL();
-            var NotificationService = new NotificationService();
 
-            userDAL.CreateUser(user);
-            NotificationService.SendNotification(user);
-            */
+            User db_user = new User();
+            db_user.UserId = reg.UserId;
+            db_user.FirstName = reg.FirstName;
+            db_user.LastName = reg.LastName;
+            db_user.Email = reg.Email;
+            db_user.Password = reg.Password;
+            db_user.Email = reg.Email;
+            db_user.DOB = reg.DOB;
+            db_user.NIC = reg.NIC;
+            db_user.MobileNumber = reg.MobileNumber;
+            db_user.Status = UserStatusType.Registered;
+            db_user.Role = UserRoleType.Employee;
+
+            _userRepo.CreateUser(db_user);
+
         }
 
-        public void ConfirmAccount(User user)
+
+        public void ConfirmAccount(string UserId)
         {
             throw new NotImplementedException();
         }

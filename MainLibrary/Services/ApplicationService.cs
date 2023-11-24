@@ -1,12 +1,12 @@
 ﻿using MainLibrary.Entities;
-using MainLibrary.Services.Interfaces;
+using MainLibrary.Service.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MainLibrary.Services
+namespace MainLibrary.Service
 {
     public class ApplicationService : IApplicationService
     {

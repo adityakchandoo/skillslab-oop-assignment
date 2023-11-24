@@ -10,9 +10,9 @@ namespace MainLibrary.Repo.Interfaces
     public interface IUserRepo
     {
         IEnumerable<User> GetAllUsers();
-        User GetUser(int UserId);
+        User GetUser(string UserId);
         void CreateUser(User user);
         void UpdateUser(User user);
-        void DeleteUser(int UserId);
+        void DeleteUser(string UserId);
     }
 }

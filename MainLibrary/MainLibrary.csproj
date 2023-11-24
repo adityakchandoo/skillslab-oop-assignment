@@ -33,6 +33,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -42,6 +43,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DbContext.cs" />
+    <Compile Include="DTO\RegEnrollFormDTO.cs" />
+    <Compile Include="DTO\RegisterFormDTO.cs" />
+    <Compile Include="Entities\Types\UserStatusType.cs" />
     <Compile Include="Repo\Interfaces\ITrainingRepo.cs" />
     <Compile Include="Repo\Interfaces\IUserRepo.cs" />
     <Compile Include="Repo\TrainingRepo.cs" />
@@ -49,8 +53,8 @@
     <Compile Include="DTO\UserLoginFormDTO.cs" />
     <Compile Include="Entities\Application.cs" />
     <Compile Include="Entities\Training.cs" />
-    <Compile Include="Entities\Types\StatusType.cs" />
-    <Compile Include="Entities\Types\UserType.cs" />
+    <Compile Include="Entities\Types\EnrollStatusType.cs" />
+    <Compile Include="Entities\Types\UserRoleType.cs" />
     <Compile Include="Entities\User.cs" />
     <Compile Include="Entities\UserTraining.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

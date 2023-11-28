@@ -11,7 +11,12 @@ namespace WebApp.Controllers.Admin
         // GET: Home
         public ActionResult Index()
         {
-            return Content("xxxxxxxxxx");
+            ViewBag.PageTag = "train-manage";
+
+
+
+
+            return View("~/Views/Admin/Dash.cshtml");
         }
     }
 }

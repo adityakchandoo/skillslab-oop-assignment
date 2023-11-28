@@ -15,7 +15,7 @@ namespace WebApp.Controllers
     {
 
         IUserService _userService;
-        public UserController(UserService userService)
+        public UserController(IUserService userService)
         {
             _userService = userService;
         }
@@ -34,7 +34,7 @@ namespace WebApp.Controllers
             {
                 try
                 {
-                    User targetUser = _userService.Login(login);
+                    User targetUser = _userService.CheckLogin(login);
                     this.Session["UserId"] = targetUser.UserId;
 
                     if (targetUser.Role == UserRoleType.Admin)

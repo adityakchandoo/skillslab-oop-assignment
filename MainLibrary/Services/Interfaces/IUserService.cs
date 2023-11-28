@@ -10,8 +10,7 @@ namespace MainLibrary.Service.Interfaces
 {
     public interface IUserService
     {
-        User Login(UserLoginFormDTO user);
-        void Logout();
+        User CheckLogin(UserLoginFormDTO user);
         void ForgetPass();
         void ResetPass();
         void Register(RegisterFormDTO reg);

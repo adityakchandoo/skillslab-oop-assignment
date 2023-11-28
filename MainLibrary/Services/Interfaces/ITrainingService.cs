@@ -9,7 +9,7 @@ namespace MainLibrary.Service.Interfaces
 {
     public interface ITrainingService
     {
-        IEnumerable<Training> GetAllTraining();
+        IEnumerable<TrainingDetails> GetAllTraining();
         Training GetTraining(int id);
         void AddTraining(Training training);
         void EditTraining(Training training);

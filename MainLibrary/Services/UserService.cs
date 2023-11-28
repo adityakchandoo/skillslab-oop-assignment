@@ -6,6 +6,7 @@ using MainLibrary.Repo.Interfaces;
 using MainLibrary.Service.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -37,7 +38,7 @@ namespace MainLibrary.Service
             throw new NotImplementedException();
         }
 
-        public User Login(UserLoginFormDTO user)
+        public User CheckLogin(UserLoginFormDTO user)
         {
             var targetUser = _userRepo.GetUser(user.user);          
 
@@ -53,11 +54,6 @@ namespace MainLibrary.Service
 
             return targetUser;
 
-        }
-
-        public void Logout()
-        {
-            throw new NotImplementedException();
         }
 
         public void Register(RegisterFormDTO reg)

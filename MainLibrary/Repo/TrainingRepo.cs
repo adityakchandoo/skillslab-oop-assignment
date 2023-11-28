@@ -8,6 +8,7 @@ using MainLibrary.Repo.Interfaces;
 using MainLibrary.Entities;
 using MainLibrary.Entities.Types;
 using System.Data.SqlClient;
+using System.Reflection;
 
 namespace MainLibrary.Repo
 {
@@ -50,25 +51,31 @@ namespace MainLibrary.Repo
             cmd.ExecuteNonQuery();
         }
 
-        public IEnumerable<Training> GetAllTraining()
+        public IEnumerable<TrainingDetails> GetAllTraining()
         {
-            List<Training> results = new List<Training>();
+            List<TrainingDetails> results = new List<TrainingDetails>();
 
-            using (SqlCommand command = new SqlCommand("SELECT * FROM [dbo].[Training];", _dbContext.GetConn()))
+            using (SqlCommand command = new SqlCommand(
+                "SELECT [Training].*, AppUser.FirstName, AppUser.LastName, Department.Name AS Dname FROM [dbo].[Training] " +
+                "INNER JOIN AppUser ON Training.ManagerId = AppUser.UserId " +
+                "LEFT JOIN Department ON Training.PreferedDepartmentId = Department.DepartmentId;", _dbContext.GetConn()))
             {
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
                     while (reader.Read())
                     {
                         // Map the data from the SqlDataReader to your model
-                        Training model = new Training
+                        TrainingDetails model = new TrainingDetails
                         {
                             TrainingId = (int)reader["TrainingId"],
-                            Name = (string)reader["FirstName"],
+                            Name = (string)reader["Name"],
                             Description = (string)reader["Description"],
                             Treshhold = (int)reader["Treshhold"],
                             Deadline = DateTime.Parse(reader["Deadline"].ToString()),
-                            PreferedDepartmentId = (int)reader["PreferedDepartmentId"],
+                            ManagerId = (string)reader["ManagerId"],
+                            //PreferedDepartmentId = (int)reader["PreferedDepartmentId"],
+                            //DepartmentName = (string)reader["Dname"] ?? "",
+                            ManagerName = (string)reader["FirstName"] + (string)reader["LastName"],
                         };
 
                         results.Add(model);
@@ -94,7 +101,7 @@ namespace MainLibrary.Repo
                         user.Description = (string)reader["Description"];
                         user.Treshhold = (int)reader["PassTreshholdword"];
                         user.Deadline = DateTime.Parse(reader["Deadline"].ToString());
-                        user.ManagerId = (int)reader["ManagerId"];
+                        user.ManagerId = (string)reader["ManagerId"];
                         user.PreferedDepartmentId = (int)reader["PreferedDepartmentId"];
 
                         return user;

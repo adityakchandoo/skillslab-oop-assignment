@@ -141,6 +141,7 @@
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Controllers\Admin\DashController.cs" />
+    <Compile Include="Controllers\Admin\TrainingController.cs" />
     <Compile Include="Controllers\Employee\DashController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Manager\DashController.cs" />
@@ -204,10 +205,17 @@
     <Content Include="Views\User\Register.cshtml" />
     <Content Include="Views\User\Login.cshtml" />
     <Content Include="Views\User\RegisterSuccess.cshtml" />
+    <Content Include="Views\Shared\_AdminLayout.cshtml" />
+    <Content Include="Views\Admin\TrainingManage.cshtml" />
+    <Content Include="Views\Admin\Dash.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Content\adminlte\css\" />
+    <Folder Include="Content\adminlte\js\" />
     <Folder Include="Models\" />
+    <Folder Include="Views\Dash\" />
+    <Folder Include="Views\Training\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

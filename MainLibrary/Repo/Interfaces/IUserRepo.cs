@@ -16,3 +16,5 @@ namespace MainLibrary.Repo.Interfaces
         void DeleteUser(string UserId);
     }
 }
+// Copyright
+// Aditya 1999 c

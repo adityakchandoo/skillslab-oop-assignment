@@ -1,10 +1,11 @@
 using System;
 using System.Configuration;
-
+using System.Data;
 using MainLibrary;
 using MainLibrary.Repo;
 using MainLibrary.Repo.Interfaces;
-
+using MainLibrary.Service;
+using MainLibrary.Service.Interfaces;
 using Unity;
 using Unity.AspNet.Mvc;
 using Unity.Injection;
@@ -53,8 +54,15 @@ namespace WebApp
                     new InjectionConstructor(ConfigurationManager.ConnectionStrings["default"].ConnectionString)
                 );
 
+
+            // Register Data Access Layer
             container.RegisterType<IUserRepo, UserRepo>(new PerRequestLifetimeManager());
             container.RegisterType<ITrainingRepo, TrainingRepo>(new PerRequestLifetimeManager());
+
+
+            // Register Service Layer
+            container.RegisterType<IUserService, UserService>(new PerRequestLifetimeManager());
+            container.RegisterType<ITrainingService, TrainingService>(new PerRequestLifetimeManager());
 
         }
     }

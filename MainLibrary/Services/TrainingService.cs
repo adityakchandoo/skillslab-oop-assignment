@@ -1,4 +1,5 @@
 ﻿using MainLibrary.Entities;
+using MainLibrary.Repo.Interfaces;
 using MainLibrary.Service.Interfaces;
 using System;
 using System.Collections.Generic;
@@ -6,10 +7,16 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MainLibrary.Servic
+namespace MainLibrary.Service
 {
     public class TrainingService : ITrainingService
     {
+        ITrainingRepo _trainingRepo;
+        public TrainingService(ITrainingRepo trainingRepo)
+        {
+            _trainingRepo = trainingRepo;
+        }
+
         public void AddTraining(Training training)
         {
             throw new NotImplementedException();
@@ -25,9 +32,9 @@ namespace MainLibrary.Servic
             throw new NotImplementedException();
         }
 
-        public IEnumerable<Training> GetAllTraining()
+        public IEnumerable<TrainingDetails> GetAllTraining()
         {
-            throw new NotImplementedException();
+            return _trainingRepo.GetAllTraining();
         }
 
         public Training GetTraining(int id)

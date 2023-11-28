@@ -9,7 +9,7 @@ namespace MainLibrary.Repo.Interfaces
 {
     public interface ITrainingRepo
     {
-        IEnumerable<Training> GetAllTraining();
+        IEnumerable<TrainingDetails> GetAllTraining();
         IEnumerable<Training> GetTrainingManagedByUser(string UserId);
         IEnumerable<Training> GetTrainingEnrolledByUser(string UserId);
         Training GetTraining(int id);

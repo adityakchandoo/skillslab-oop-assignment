@@ -45,6 +45,7 @@
     <Compile Include="DbContext.cs" />
     <Compile Include="DTO\RegEnrollFormDTO.cs" />
     <Compile Include="DTO\RegisterFormDTO.cs" />
+    <Compile Include="Entities\TrainingDetails.cs" />
     <Compile Include="Entities\Types\UserStatusType.cs" />
     <Compile Include="Repo\Interfaces\ITrainingRepo.cs" />
     <Compile Include="Repo\Interfaces\IUserRepo.cs" />

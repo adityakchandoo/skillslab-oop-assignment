@@ -1,84 +1,75 @@
 ﻿using MainLibrary.Entities;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Data.SqlClient;
 using MainLibrary.Repo.Interfaces;
-using MainLibrary.Entities.Types;
-
+using System.Data;
+using MainLibrary.Helper;
 
 namespace MainLibrary.Repo
 {
     public class UserRepo : IUserRepo
     {
-        DbContext _dbContext;
-        public UserRepo(DbContext dbContext)
+        IDbConnection _conn;
+        public UserRepo(IDbContext dbContext)
         {
-            _dbContext = dbContext;
+            _conn = dbContext.GetConn();
         }
 
         public void CreateUser(User user)
         {
-            string insertQuery = "INSERT INTO [dbo].[AppUser] (UserId,FirstName,LastName,Password,Email,DOB,NIC,MobileNumber,CreatedOn,Status,Role) VALUES " +
-                "(@UserId,@FirstName,@LastName,@Password,@Email,@DOB,@NIC,@MobileNumber,@CreatedOn,@Status,@Role);";
+            string sql = "INSERT INTO [dbo].[AppUser] (UserId,FirstName,LastName,Password,Email,DOB,NIC,MobileNumber,CreatedOn,Status,Role) VALUES " +
+                         "(@UserId,@FirstName,@LastName,@Password,@Email,@DOB,@NIC,@MobileNumber,@CreatedOn,@Status,@Role);";
 
-            SqlCommand cmd = new SqlCommand(insertQuery, _dbContext.GetConn());
+            using (IDbCommand cmd = _conn.CreateCommand())
+            {
+                cmd.CommandText = sql;
 
-            cmd.Parameters.AddWithValue("@UserId", user.UserId);
-            cmd.Parameters.AddWithValue("@FirstName", user.FirstName);
-            cmd.Parameters.AddWithValue("@LastName", user.LastName);
-            cmd.Parameters.AddWithValue("@Password", user.Password);
-            cmd.Parameters.AddWithValue("@Email", user.Email);
-            cmd.Parameters.AddWithValue("@DOB", user.DOB);
-            cmd.Parameters.AddWithValue("@NIC", user.NIC);
-            cmd.Parameters.AddWithValue("@MobileNumber", user.MobileNumber);
-            cmd.Parameters.AddWithValue("@CreatedOn", user.CreatedOn);
-            cmd.Parameters.AddWithValue("@Status", user.Status);
-            cmd.Parameters.AddWithValue("@Role", user.Role);
+                MyExtensions.AddParameterWithValue(cmd, "@UserId", user.UserId);
+                MyExtensions.AddParameterWithValue(cmd, "@FirstName", user.FirstName);
+                MyExtensions.AddParameterWithValue(cmd, "@LastName", user.LastName);
+                MyExtensions.AddParameterWithValue(cmd, "@Password", user.Password);
+                MyExtensions.AddParameterWithValue(cmd, "@Email", user.Email);
+                MyExtensions.AddParameterWithValue(cmd, "@DOB", user.DOB);
+                MyExtensions.AddParameterWithValue(cmd, "@NIC", user.NIC);
+                MyExtensions.AddParameterWithValue(cmd, "@MobileNumber", user.MobileNumber);
+                MyExtensions.AddParameterWithValue(cmd, "@CreatedOn", user.CreatedOn);
+                MyExtensions.AddParameterWithValue(cmd, "@Status", user.Status);
+                MyExtensions.AddParameterWithValue(cmd, "@Role", user.Role);
 
-            cmd.ExecuteNonQuery();
-
+                cmd.ExecuteNonQuery();
+            }
         }
 
         public void DeleteUser(string UserId)
         {
-            string delQuery = "DELETE FROM [dbo].[AppUser] WHERE Id = @id";
+            string sql = "DELETE FROM [dbo].[AppUser] WHERE Id = @id";
 
-            SqlCommand cmd = new SqlCommand(delQuery, _dbContext.GetConn());
-            cmd.Parameters.AddWithValue("@id", UserId);
+            using (IDbCommand cmd = _conn.CreateCommand())
+            {
+                cmd.CommandText = sql;
 
-            cmd.ExecuteNonQuery();
+                MyExtensions.AddParameterWithValue(cmd, "@id", UserId);
+
+                cmd.ExecuteNonQuery();
+            }
+
         }
 
         public IEnumerable<User> GetAllUsers()
         {
+            string sql = "SELECT * FROM [dbo].[AppUser];";
+
             List<User> results = new List<User>();
 
-            using (SqlCommand command = new SqlCommand("SELECT * FROM [dbo].[AppUser];", _dbContext.GetConn()))
+            using (IDbCommand cmd = _conn.CreateCommand())
             {
-                using (SqlDataReader reader = command.ExecuteReader())
+                cmd.CommandText = sql;
+
+                using (IDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        // Map the data from the SqlDataReader to your model
-                        User model = new User
-                        {
-                            UserId = (string)reader["UserId"],
-                            FirstName = (string)reader["FirstName"],
-                            LastName = (string)reader["LastName"],
-                            Password = (string)reader["Password"],
-                            Email = (string)reader["Email"],
-                            DOB = DateTime.Parse(reader["DOB"].ToString()),
-                            NIC = (string)reader["NIC"],
-                            MobileNumber = (string)reader["MobileNumber"],
-                            CreatedOn = DateTime.Parse(reader["CreatedOn"].ToString()),
-                            Status = (UserStatusType)(int)reader["Status"],
-                            Role = (UserRoleType)(int)reader["Rolw"],
-                        };
-
-                        results.Add(model);
+                        results.Add(MyExtensions.ConvertToObject<User>(reader));
                     }
                 }
             }
@@ -88,56 +79,44 @@ namespace MainLibrary.Repo
 
         public User GetUser(string UserId)
         {
+            string sql = "SELECT * FROM [dbo].[AppUser] WHERE UserId = @UserId;";
 
-            User user = new User();
-
-            using (SqlCommand command = new SqlCommand("SELECT * FROM [dbo].[AppUser] WHERE UserId = @UserId;", _dbContext.GetConn()))
+            using (IDbCommand cmd = _conn.CreateCommand())
             {
-                command.Parameters.AddWithValue("@UserId", UserId);
+                cmd.CommandText = sql;
 
-                using (SqlDataReader reader = command.ExecuteReader())
+                using (IDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
                     {
-                        user.UserId = (string)reader["UserId"];
-                        user.FirstName = (string)reader["FirstName"];
-                        user.LastName = (string)reader["LastName"];
-                        user.Password = (string)reader["Password"];
-                        user.Email = (string)reader["Email"];
-                        user.DOB = DateTime.Parse(reader["DOB"].ToString());
-                        user.NIC = (string)reader["NIC"];
-                        user.MobileNumber = (string)reader["MobileNumber"];
-                        user.CreatedOn = DateTime.Parse(reader["CreatedOn"].ToString());
-                        user.Status = (UserStatusType)(int)reader["Status"];
-                        user.Role = (UserRoleType)(int)reader["Role"];
-
-                        return user;
+                        return MyExtensions.ConvertToObject<User>(reader);
                     }
                 }
             }
-
-            return null;
+            throw new Exception();
         }
 
         public void UpdateUser(User user)
         {
+            string sql = "UPDATE [dbo].[AppUser] SET FirstName = @FirstName, LastName = @LastName, Password = @Password, Email = @Email, DOB = @DOB, NIC = @NIC, MobileNumber = @MobileNumber, Status = @Status, Role = @Role WHERE UserId = @UserId;";
 
-            string updateQuery = "UPDATE [dbo].[AppUser] SET FirstName = @FirstName, LastName = @LastName, Password = @Password, Email = @Email, DOB = @DOB, NIC = @NIC, MobileNumber = @MobileNumber, Status = @Status, Role = @Role WHERE UserId = @UserId";
+            using (IDbCommand cmd = _conn.CreateCommand())
+            {
+                cmd.CommandText = sql;
 
-            SqlCommand cmd = new SqlCommand(updateQuery, _dbContext.GetConn());
+                MyExtensions.AddParameterWithValue(cmd, "@FirstName", user.FirstName);
+                MyExtensions.AddParameterWithValue(cmd, "@LastName", user.LastName);
+                MyExtensions.AddParameterWithValue(cmd, "@Password", user.Password);
+                MyExtensions.AddParameterWithValue(cmd, "@Email", user.Email);
+                MyExtensions.AddParameterWithValue(cmd, "@DOB", user.DOB);
+                MyExtensions.AddParameterWithValue(cmd, "@NIC", user.NIC);
+                MyExtensions.AddParameterWithValue(cmd, "@MobileNumber", user.MobileNumber);
+                MyExtensions.AddParameterWithValue(cmd, "@CreatedOn", user.CreatedOn);
+                MyExtensions.AddParameterWithValue(cmd, "@Status", user.Status);
+                MyExtensions.AddParameterWithValue(cmd, "@Role", user.Role);
 
-            cmd.Parameters.AddWithValue("@FirstName", user.FirstName);
-            cmd.Parameters.AddWithValue("@LastName", user.LastName);
-            cmd.Parameters.AddWithValue("@Password", user.Password);
-            cmd.Parameters.AddWithValue("@Email", user.Email);
-            cmd.Parameters.AddWithValue("@DOB", user.DOB);
-            cmd.Parameters.AddWithValue("@NIC", user.NIC);
-            cmd.Parameters.AddWithValue("@MobileNumber", user.MobileNumber);
-            cmd.Parameters.AddWithValue("@CreatedOn", user.CreatedOn);
-            cmd.Parameters.AddWithValue("@Status", user.Status);
-            cmd.Parameters.AddWithValue("@Role", user.Role);
-
-            cmd.ExecuteNonQuery();
+                cmd.ExecuteNonQuery();
+            }
 
         }
     }

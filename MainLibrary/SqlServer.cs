@@ -7,12 +7,12 @@ using System.Threading.Tasks;
 
 namespace MainLibrary
 {
-    public class DbContext : IDisposable
+    public class SqlServer : IDbContext ,IDisposable
     {
 
         private SqlConnection connection;
 
-        public DbContext(string connectionString)
+        public SqlServer(string connectionString)
         {
             connection = new SqlConnection(connectionString);
             connection.Open();

@@ -49,7 +49,7 @@ namespace WebApp
             // container.LoadConfiguration();
 
             // TODO: Register your type's mappings here.
-            container.RegisterType<DbContext>(
+            container.RegisterType<IDbContext, SqlServer>(
                     new PerRequestLifetimeManager(),
                     new InjectionConstructor(ConfigurationManager.ConnectionStrings["default"].ConnectionString)
                 );

@@ -1,15 +1,12 @@
 ﻿using MainLibrary.DTO;
 using MainLibrary.Entities;
 using MainLibrary.Entities.Types;
+using MainLibrary.Helpers;
 using MainLibrary.Repo;
 using MainLibrary.Repo.Interfaces;
 using MainLibrary.Service.Interfaces;
 using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 
 namespace MainLibrary.Service
@@ -17,7 +14,7 @@ namespace MainLibrary.Service
     public class UserService : IUserService
     {
         IUserRepo _userRepo;
-        public UserService(UserRepo userRepo)
+        public UserService(IUserRepo userRepo)
         {
             _userRepo = userRepo;
         }
@@ -38,22 +35,17 @@ namespace MainLibrary.Service
             throw new NotImplementedException();
         }
 
-        public User CheckLogin(UserLoginFormDTO user)
+        public bool CheckLogin(UserLoginFormDTO form, out User user)
         {
-            var targetUser = _userRepo.GetUser(user.user);          
+            user = _userRepo.GetUser(form.user);
 
-            if (targetUser != null)
+            if (user == null) { return false; }
+
+            if (PasswordHasher.VerifyPassword(form.pass, user.Password))
             {
-                throw new Exception();
+                return true;
             }
-
-            if (targetUser.Password != user.pass)
-            {
-                throw new Exception();
-            }
-
-            return targetUser;
-
+            return false;
         }
 
         public void Register(RegisterFormDTO reg)
@@ -64,12 +56,12 @@ namespace MainLibrary.Service
             db_user.FirstName = reg.FirstName;
             db_user.LastName = reg.LastName;
             db_user.Email = reg.Email;
-            db_user.Password = reg.Password;
+            db_user.Password = PasswordHasher.HashPassword(reg.Pass1);
             db_user.Email = reg.Email;
             db_user.DOB = reg.DOB;
             db_user.NIC = reg.NIC;
             db_user.MobileNumber = reg.MobileNumber;
-            db_user.Status = UserStatusType.Registered;
+            db_user.Status = UserStatusType.Unverified;
             db_user.Role = UserRoleType.Employee;
 
             _userRepo.CreateUser(db_user);

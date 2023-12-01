@@ -14,7 +14,7 @@ create table AppUser (
 	UserId					nvarchar(40)	     not null,
 	FirstName				nvarchar(40)         not null,
 	LastName				nvarchar(40)         not null,
-	Password				nvarchar(40)         not null,
+	Password				nvarchar(64)         not null,
 	Email					nvarchar(40)         not null,
 	DOB						datetime             not null,
 	NIC						nvarchar(20)         not null,

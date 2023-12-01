@@ -6,12 +6,15 @@ using System.Web.Mvc;
 
 namespace WebApp.Controllers.Manager
 {
-    public class DashController : Controller
+    [RoutePrefix("Manager")]
+    public class ManagerController : Controller
     {
+        [Route("")]
         // GET: Home
         public ActionResult Index()
         {
-            return Content("xxxxxxxxxx");
+            return Content("Manager Home");
+
         }
     }
 }

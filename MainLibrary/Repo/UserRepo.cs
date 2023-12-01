@@ -3,7 +3,7 @@ using System;
 using System.Collections.Generic;
 using MainLibrary.Repo.Interfaces;
 using System.Data;
-using MainLibrary.Helper;
+using MainLibrary.Helpers;
 
 namespace MainLibrary.Repo
 {
@@ -79,11 +79,12 @@ namespace MainLibrary.Repo
 
         public User GetUser(string UserId)
         {
-            string sql = "SELECT * FROM [dbo].[AppUser] WHERE UserId = @UserId;";
+            string sql = "SELECT * FROM [dbo].[AppUser] WHERE [dbo].[AppUser].[UserId] = 'mcb';";
 
             using (IDbCommand cmd = _conn.CreateCommand())
             {
                 cmd.CommandText = sql;
+                MyExtensions.AddParameterWithValue(cmd, "@id", UserId);
 
                 using (IDataReader reader = cmd.ExecuteReader())
                 {
@@ -93,7 +94,7 @@ namespace MainLibrary.Repo
                     }
                 }
             }
-            throw new Exception();
+            return null;
         }
 
         public void UpdateUser(User user)

@@ -140,12 +140,14 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\UnityMvcActivator.cs" />
-    <Compile Include="Controllers\Admin\DashController.cs" />
+    <Compile Include="Controllers\Admin\AdminController.cs" />
     <Compile Include="Controllers\Admin\TrainingController.cs" />
-    <Compile Include="Controllers\Employee\DashController.cs" />
+    <Compile Include="Controllers\Employee\EmployeeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
-    <Compile Include="Controllers\Manager\DashController.cs" />
+    <Compile Include="Controllers\Manager\ManagerController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Helpers\EmployeeSession.cs" />
+    <Compile Include="Helpers\ErrorHelper.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
@@ -204,7 +206,7 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\User\Register.cshtml" />
     <Content Include="Views\User\Login.cshtml" />
-    <Content Include="Views\User\RegisterSuccess.cshtml" />
+    <Content Include="Views\Shared\SiteInfo.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
     <Content Include="Views\Admin\TrainingManage.cshtml" />
     <Content Include="Views\Admin\Dash.cshtml" />

@@ -8,6 +8,7 @@ using MainLibrary.Service.Interfaces;
 
 namespace WebApp.Controllers.Admin
 {
+    [RoutePrefix("Admin/Training")]
     public class TrainingController : Controller
     {
         ITrainingService _trainingService;
@@ -19,6 +20,7 @@ namespace WebApp.Controllers.Admin
 
 
         // GET: Training
+        [Route("Manage")]
         public ActionResult Manage()
         {
             ViewBag.PageTag = "train-manage";

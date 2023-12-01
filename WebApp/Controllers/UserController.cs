@@ -8,6 +8,10 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using MainLibrary.Entities;
+using System.Reflection;
+using MainLibrary.Repo.Interfaces;
+using System.Data.SqlClient;
+using MainLibrary.Services;
 
 namespace WebApp.Controllers
 {
@@ -15,39 +19,51 @@ namespace WebApp.Controllers
     {
 
         IUserService _userService;
-        public UserController(IUserService userService)
+        IUserRepo _userrepo;
+        public UserController(IUserService userService, IUserRepo userRepo)
         {
             _userService = userService;
+            _userrepo = userRepo;
         }
 
 
         [HttpGet]
         public ActionResult Login()
         {
+            //            return Content(_userrepo.GetUser("mcb").Email);
+
             return View();
         }
 
         [HttpPost]
-        public ActionResult LoginPost(UserLoginFormDTO login)
+        public ActionResult LoginPost(UserLoginFormDTO form)
         {
             if(ModelState.IsValid)
             {
                 try
                 {
-                    User targetUser = _userService.CheckLogin(login);
-                    this.Session["UserId"] = targetUser.UserId;
+                    User user;
+                    bool loginOK = _userService.CheckLogin(form, out user);
 
-                    if (targetUser.Role == UserRoleType.Admin)
+                    if(!loginOK)
+                    {
+                        TempData["Error"] = "Login/Password Error";
+                        return View("Login");
+                    }
+
+                    this.Session["UserId"] = user.UserId;
+
+                    if (user.Role == UserRoleType.Admin)
                     {
                         this.Session["Role"] = "Admin";
                         return Redirect("/Admin");
                     }
-                    else if(targetUser.Role == UserRoleType.Manager)
+                    else if(user.Role == UserRoleType.Manager)
                     {
                         this.Session["Role"] = "Manager";
                         return Redirect("/Manager");
                     }
-                    else if (targetUser.Role == UserRoleType.Employee)
+                    else if (user.Role == UserRoleType.Employee)
                     {
                         this.Session["Role"] = "Employee";
                         return Redirect("/Employee");
@@ -57,6 +73,7 @@ namespace WebApp.Controllers
                 catch (Exception ex)
                 {
                     TempData["Error"] = ex.Message;
+                    return View("SiteInfo");
                 }
                 
             }
@@ -64,33 +81,40 @@ namespace WebApp.Controllers
             return RedirectToAction("Login");
         }
 
-        [HttpGet]
         public ActionResult Register()
         {
             return View();
         }
 
         [HttpPost]
-        public ActionResult RegisterPost(RegisterFormDTO reg)
+        public ActionResult RegisterPost(RegisterFormDTO form)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    _userService.Register(reg);
+                    _userService.Register(form);
+                    TempData["Success"] = "User Successfully Registered";
+                    return View("SiteInfo");
                 }
+                
                 catch (Exception ex)
                 {
                     TempData["Error"] = ex.Message;
+                    return View("SiteInfo");
                 }
             }
-
-            return RedirectToAction("RegisterSuccess");
+            return View("Register", form);
         }
 
-        public ActionResult RegisterSuccess()
+        public ActionResult Test()
         {
-            return View();
+            var testService = new TestService();
+
+
+            testService.DoSomething();
+
+            return Content("");
         }
 
     }

@@ -4,14 +4,16 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 
-namespace WebApp.Controllers.Employee
+namespace WebApp.Controllers.Admin
 {
-    public class DashController : Controller
+    [RoutePrefix("Admin")]
+    public class AdminController : Controller
     {
+        [Route("")]
         // GET: Home
         public ActionResult Index()
         {
-            return Content("xxxxxxxxxx");
+            return Content("Admin Home");
         }
     }
 }

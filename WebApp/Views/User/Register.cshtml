@@ -1,52 +1,90 @@
-﻿
+﻿@using WebApp.Helpers;
+@model MainLibrary.DTO.RegisterFormDTO
+
 @{
     ViewBag.Title = "Register";
 }
 
-    <h2>Employee Registration</h2>
-    <div class="form-container">
-        <form style="width: 50%;" method="post" action="RegisterPost">
-            <div class="mb-3">
-                <label for="userId" class="form-label">User ID</label>
-                <input type="text" class="form-control" id="userId" name="userId" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="firstName" class="form-label">First Name</label>
-                <input type="text" class="form-control" id="firstName" name="firstName" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="lastName" class="form-label">Last Name</label>
-                <input type="text" class="form-control" id="lastName" name="lastName" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="password" class="form-label">Password</label>
-                <input type="password" class="form-control" id="password" name="password" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="email" class="form-label">Email</label>
-                <input type="email" class="form-control" id="email" name="email" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="dob" class="form-label">Date of Birth</label>
-                <input type="date" class="form-control" id="dob" name="dob" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="nic" class="form-label">NIC</label>
-                <input type="text" class="form-control" id="nic" name="nic" required>
-            </div>
-
-            <div class="mb-3">
-                <label for="mobileNumber" class="form-label">Mobile Number</label>
-                <input type="tel" class="form-control" id="mobileNumber" name="mobileNumber" required>
-            </div>
-
-            <button type="submit" class="btn btn-primary">Submit</button>
-        </form>
+<h2 class="mb-3">Employee Registration</h2>
+@if (TempData["Error"] != null)
+{
+    <!-- Error Message -->
+    <div class="alert alert-danger" role="alert">
+        @TempData["Error"]
+    </div>
+}
+<form class="row g-3" novalidate method="post" action="RegisterPost">
+    <div class="col-md-6">
+        <label for="FirstName" class="form-label">First Name</label>
+        <input type="text" class="form-control @Html.ReturnOnError(m => m.FirstName, "is-invalid")" id="FirstName" name="FirstName" value="@Html.ValueFor(v => v.FirstName)">
+        <div class="invalid-feedback is-invalid">
+            @Html.ValidationMessageFor(m => m.FirstName)
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label for="LastName" class="form-label">Last Name</label>
+        <input type="text" class="form-control @Html.ReturnOnError(m => m.LastName, "is-invalid")" id="LastName" name="LastName" value="@Html.ValueFor(v => v.FirstName)">
+        <div class="invalid-feedback is-invalid">
+            @Html.ValidationMessageFor(m => m.LastName)
+        </div>
     </div>
 
+    <div class="col-md-6">
+        <label for="NIC" class="form-label">National Identity Card</label>
+        <input type="text" class="form-control @Html.ReturnOnError(m => m.NIC, "is-invalid")" id="NIC" name="NIC" value="@Html.ValueFor(v => v.NIC)" onkeyup="this.value = this.value.toUpperCase();">
+        <div class="invalid-feedback is-invalid">
+            @Html.ValidationMessageFor(m => m.NIC)
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label for="MobileNumber" class="form-label">Mobile Phone</label>
+        <input type="text" class="form-control @Html.ReturnOnError(m => m.MobileNumber, "is-invalid")" id="MobileNumber" name="MobileNumber" value="@Html.ValueFor(v => v.MobileNumber)">
+        <div class="invalid-feedback is-invalid">
+            @Html.ValidationMessageFor(m => m.MobileNumber)
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <label for="UserId" class="form-label">Username</label>
+        <input type="text" class="form-control @Html.ReturnOnError(m => m.UserId, "is-invalid")" id="UserId" name="UserId" value="@Html.ValueFor(v => v.UserId)">
+        <div class="invalid-feedback is-invalid">
+            @Html.ValidationMessageFor(m => m.UserId)
+        </div>
+    </div>
+    <div class="col-md-4">
+        <label for="Email" class="form-label">Email</label>
+        <input type="email" class="form-control @Html.ReturnOnError(m => m.Email, "is-invalid")" id="Email" name="Email" value="@Html.ValueFor(v => v.Email)">
+        <div class="invalid-feedback is-invalid">
+            @Html.ValidationMessageFor(m => m.Email)
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <label for="Email" class="form-label">Date of Birth</label>
+        <input type="date" class="form-control @Html.ReturnOnError(m => m.DOB, "is-invalid")" id="DOB" name="DOB" value="@Html.ValueFor(v => v.DOB)">
+        <div class="invalid-feedback is-invalid">
+            @Html.ValidationMessageFor(m => m.DOB)
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <label for="Pass1" class="form-label">Password</label>
+        <input type="password" class="form-control @Html.ReturnOnError(m => m.Pass1, "is-invalid")" id="Pass1" name="Pass1">
+        <div class="invalid-feedback is-invalid">
+            @Html.ValidationMessageFor(m => m.Pass1)
+        </div>
+    </div>
+    <div class="col-md-6">
+        <label for="Pass2" class="form-label">Confirm Pass2</label>
+        <input type="password" class="form-control @Html.ReturnOnError(m => m.Pass2, "is-invalid")" id="Pass2" name="Pass2">
+        <div class="invalid-feedback is-invalid">
+            @Html.ValidationMessageFor(m => m.Pass2)
+        </div>
+    </div>
+
+
+
+    <div class="col-12 mt-3">
+        <button type="submit" class="btn btn-primary">Register</button>
+    </div>
+</form>

@@ -14,7 +14,10 @@
                 <form method="post" action="LoginPost">
                     @if (TempData["Error"] != null)
                     {
-                        <div class="callout danger">@TempData["Error"]</div>
+                        <!-- Error Message -->
+                        <div class="alert alert-danger" role="alert">
+                            @TempData["Error"]
+                        </div>
                     }
                     <div class="mb-3">
                         <label for="username" class="form-label">Username</label>

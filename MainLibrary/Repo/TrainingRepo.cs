@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using MainLibrary.Repo.Interfaces;
 using MainLibrary.Entities;
 using System.Data;
-using MainLibrary.Helper;
+using MainLibrary.Helpers;
 
 namespace MainLibrary.Repo
 {

@@ -32,6 +32,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
@@ -42,12 +43,15 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\PasswordHasher.cs" />
+    <Compile Include="Repo\TestRepo.cs" />
+    <Compile Include="Services\TestService.cs" />
     <Compile Include="SqlServer.cs" />
     <Compile Include="DTO\RegEnrollFormDTO.cs" />
     <Compile Include="DTO\RegisterFormDTO.cs" />
     <Compile Include="Entities\TrainingDetails.cs" />
     <Compile Include="Entities\Types\UserStatusType.cs" />
-    <Compile Include="Helper\MyExtensions.cs" />
+    <Compile Include="Helpers\MyExtensions.cs" />
     <Compile Include="IDbContext.cs" />
     <Compile Include="Repo\Interfaces\ITrainingRepo.cs" />
     <Compile Include="Repo\Interfaces\IUserRepo.cs" />

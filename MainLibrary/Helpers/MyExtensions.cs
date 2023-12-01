@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MainLibrary.Helper
+namespace MainLibrary.Helpers
 {
     static class MyExtensions
     {

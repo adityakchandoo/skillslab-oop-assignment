@@ -10,10 +10,11 @@ namespace MainLibrary.Service.Interfaces
 {
     public interface IUserService
     {
-        bool CheckLogin(UserLoginFormDTO form, out User user);
+        AuthenticateResponse AuthenticateUser(UserLoginFormDTO form);
         void ForgetPass();
         void ResetPass();
         void Register(RegisterFormDTO reg);
+        bool IsUserIdExists(string UserId);
         void ConfirmAccount(string UserId);
         IEnumerable<User> ExportSelectedEmployees();
     }

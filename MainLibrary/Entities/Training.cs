@@ -8,12 +8,12 @@ namespace MainLibrary.Entities
 {
     public class Training
     {
-        public Int32 TrainingId { get; set; }
+        public int TrainingId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public Int32 Treshhold { get; set; }
+        public int Treshhold { get; set; }
         public DateTime Deadline { get; set; }
         public string ManagerId { get; set; }
-        public Int32? PreferedDepartmentId { get; set; }
+        public int? PreferedDepartmentId { get; set; }
     }
 }

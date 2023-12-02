@@ -13,9 +13,9 @@ namespace MainLibrary.DTO
     {
         [Required(ErrorMessage = "Enter UserId")]
         public string UserId { get; set; }
-        [Required(ErrorMessage = "Enter FirstName name")]
+        [Required(ErrorMessage = "Enter FirstName")]
         public string FirstName { get; set; }
-        [Required(ErrorMessage = "Enter LastName name")]
+        [Required(ErrorMessage = "Enter LastName")]
         public string LastName { get; set; }
         [Required(ErrorMessage = "Enter Date Of Birth")]
         public DateTime DOB { get; set; }

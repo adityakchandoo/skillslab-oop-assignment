@@ -10,8 +10,8 @@ namespace MainLibrary.Repo.Interfaces
     public interface ITrainingRepo
     {
         IEnumerable<TrainingDetails> GetAllTraining();
-        IEnumerable<Training> GetTrainingManagedByUser(string UserId);
-        IEnumerable<Training> GetTrainingEnrolledByUser(string UserId);
+        IEnumerable<TrainingDetails> GetTrainingManagedByUser(string UserId);
+        IEnumerable<TrainingDetails> GetTrainingEnrolledByUser(string UserId);
         Training GetTraining(int id);
         void CreateTraining(Training training);
         void UpdateTraining(Training training);

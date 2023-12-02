@@ -6,80 +6,46 @@
 }
 
 <h2 class="mb-3">Employee Registration</h2>
-@if (TempData["Error"] != null)
-{
-    <!-- Error Message -->
-    <div class="alert alert-danger" role="alert">
-        @TempData["Error"]
-    </div>
-}
-<form class="row g-3" novalidate method="post" action="RegisterPost">
+<form id="myForm" class="row g-3" novalidate method="post">
     <div class="col-md-6">
         <label for="FirstName" class="form-label">First Name</label>
-        <input type="text" class="form-control @Html.ReturnOnError(m => m.FirstName, "is-invalid")" id="FirstName" name="FirstName" value="@Html.ValueFor(v => v.FirstName)">
-        <div class="invalid-feedback is-invalid">
-            @Html.ValidationMessageFor(m => m.FirstName)
-        </div>
+        <input type="text" class="form-control" id="FirstName" name="FirstName">
     </div>
     <div class="col-md-6">
         <label for="LastName" class="form-label">Last Name</label>
-        <input type="text" class="form-control @Html.ReturnOnError(m => m.LastName, "is-invalid")" id="LastName" name="LastName" value="@Html.ValueFor(v => v.FirstName)">
-        <div class="invalid-feedback is-invalid">
-            @Html.ValidationMessageFor(m => m.LastName)
-        </div>
+        <input type="text" class="form-control" id="LastName" name="LastName">
     </div>
 
     <div class="col-md-6">
         <label for="NIC" class="form-label">National Identity Card</label>
-        <input type="text" class="form-control @Html.ReturnOnError(m => m.NIC, "is-invalid")" id="NIC" name="NIC" value="@Html.ValueFor(v => v.NIC)" onkeyup="this.value = this.value.toUpperCase();">
-        <div class="invalid-feedback is-invalid">
-            @Html.ValidationMessageFor(m => m.NIC)
-        </div>
+        <input type="text" class="form-control" id="NIC" name="NIC" onkeyup="this.value = this.value.toUpperCase();">
     </div>
     <div class="col-md-6">
         <label for="MobileNumber" class="form-label">Mobile Phone</label>
-        <input type="text" class="form-control @Html.ReturnOnError(m => m.MobileNumber, "is-invalid")" id="MobileNumber" name="MobileNumber" value="@Html.ValueFor(v => v.MobileNumber)">
-        <div class="invalid-feedback is-invalid">
-            @Html.ValidationMessageFor(m => m.MobileNumber)
-        </div>
+        <input type="text" class="form-control" id="MobileNumber" name="MobileNumber">
     </div>
 
     <div class="col-md-4">
         <label for="UserId" class="form-label">Username</label>
-        <input type="text" class="form-control @Html.ReturnOnError(m => m.UserId, "is-invalid")" id="UserId" name="UserId" value="@Html.ValueFor(v => v.UserId)">
-        <div class="invalid-feedback is-invalid">
-            @Html.ValidationMessageFor(m => m.UserId)
-        </div>
+        <input type="text" class="form-control" id="UserId" name="UserId">
     </div>
     <div class="col-md-4">
         <label for="Email" class="form-label">Email</label>
-        <input type="email" class="form-control @Html.ReturnOnError(m => m.Email, "is-invalid")" id="Email" name="Email" value="@Html.ValueFor(v => v.Email)">
-        <div class="invalid-feedback is-invalid">
-            @Html.ValidationMessageFor(m => m.Email)
-        </div>
+        <input type="email" class="form-control" id="Email" name="Email">
     </div>
 
     <div class="col-md-4">
         <label for="Email" class="form-label">Date of Birth</label>
-        <input type="date" class="form-control @Html.ReturnOnError(m => m.DOB, "is-invalid")" id="DOB" name="DOB" value="@Html.ValueFor(v => v.DOB)">
-        <div class="invalid-feedback is-invalid">
-            @Html.ValidationMessageFor(m => m.DOB)
-        </div>
+        <input type="date" class="form-control" id="DOB" name="DOB">
     </div>
 
     <div class="col-md-6">
         <label for="Pass1" class="form-label">Password</label>
-        <input type="password" class="form-control @Html.ReturnOnError(m => m.Pass1, "is-invalid")" id="Pass1" name="Pass1">
-        <div class="invalid-feedback is-invalid">
-            @Html.ValidationMessageFor(m => m.Pass1)
-        </div>
+        <input type="password" class="form-control" id="Pass1" name="Pass1">
     </div>
     <div class="col-md-6">
         <label for="Pass2" class="form-label">Confirm Pass2</label>
-        <input type="password" class="form-control @Html.ReturnOnError(m => m.Pass2, "is-invalid")" id="Pass2" name="Pass2">
-        <div class="invalid-feedback is-invalid">
-            @Html.ValidationMessageFor(m => m.Pass2)
-        </div>
+        <input type="password" class="form-control" id="Pass2" name="Pass2">
     </div>
 
 
@@ -88,3 +54,81 @@
         <button type="submit" class="btn btn-primary">Register</button>
     </div>
 </form>
+
+@section Scripts {
+    <script type="text/javascript">
+        $("#myForm").validate({
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            errorPlacement: function (error, element) {
+                error.insertAfter(element);
+                element.next().addClass("invalid-feedback")
+            },
+            errorElement: 'div',
+
+            rules: {
+                FirstName: { required: true },
+                LastName: { required: true },
+                UserId: {
+                    required: true,
+                    remote: {
+                        url: "/User/UserIdCheck",
+                        type: "post"
+                    }
+                },
+                DOB: { required: true },
+                Email: { required: true },
+                NIC: {
+                    required: true,
+                    pattern: "^.{1}[0-9]{6}.{7}$",
+
+                
+                },
+                MobileNumber: { required: true },
+                Pass1: {
+                    required: true,
+                    minlength: 5
+                },
+                Pass2: {
+                    required: true,
+                    minlength: 5,
+                    equalTo: "#Pass1"
+                }
+            },
+            messages: {
+                UserId: {
+                    remote: "Username already in use!"
+                }
+            },
+            submitHandler: postForm
+        });
+
+
+        function postForm() {
+            let form_data = $("#myForm").serialize();
+            $.ajax({
+                url: "/user/RegisterPost",
+                type: "POST",
+                data: form_data
+            }).done(function (response) {
+                console.log(response);
+
+                Swal.fire({
+                    title: "You are successfully registered!",
+                    showDenyButton: true,
+                    showCancelButton: true,
+                    confirmButtonText: "Login",
+                    icon: "success"
+                }).then((result) => {
+                    /* Read more about isConfirmed, isDenied below */
+                    if (result.isConfirmed) {
+                        window.location.href = "/User/Login";
+                    }
+                });
+
+            }).fail(function () {
+                alert("Please Contact Admin");
+            });
+        }
+    </script>
+}

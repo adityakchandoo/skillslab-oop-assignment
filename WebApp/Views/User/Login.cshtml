@@ -11,7 +11,7 @@
                 <h3 class="text-center">Login</h3>
             </div>
             <div class="card-body">
-                <form method="post" action="LoginPost">
+                <form method="post" id="my_form">
                     @if (TempData["Error"] != null)
                     {
                         <!-- Error Message -->
@@ -21,11 +21,11 @@
                     }
                     <div class="mb-3">
                         <label for="username" class="form-label">Username</label>
-                        <input type="text" class="form-control" id="user" name="user" required>
+                        <input type="text" class="form-control" id="user" name="Username" required>
                     </div>
                     <div class="mb-3">
                         <label for="password" class="form-label">Password</label>
-                        <input type="password" class="form-control" id="pass" name="pass" required>
+                        <input type="password" class="form-control" id="pass" name="Password" required>
                     </div>
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary">Login</button>
@@ -35,3 +35,39 @@
         </div>
     </div>
 </div>
+@section Scripts {
+    <script type="text/javascript">
+        $("#my_form").submit(function (event) {
+            event.preventDefault();
+            let form_data = $(this).serialize();	
+            $.ajax({
+                url: "/user/authenticate",
+                type: "POST",
+                data: form_data
+            }).done(function (response) {
+                console.log(response);
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Login Successful!',
+                    showConfirmButton: false,
+                    timer: 2000 // 2000 milliseconds = 2 seconds
+                }).then(() => {
+                    // Redirect to another page after the alert
+                    window.location.href = response.redirectPath;
+                });
+
+            }).fail(function () {
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Invalid login or password!',
+                });
+
+                $("#my_form").trigger("reset");
+
+            });;
+        });
+    </script>
+}

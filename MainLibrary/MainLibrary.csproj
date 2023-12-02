@@ -43,9 +43,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DTO\LoginResponse.cs" />
+    <Compile Include="Helpers\BadAuthentication.cs" />
     <Compile Include="Helpers\PasswordHasher.cs" />
-    <Compile Include="Repo\TestRepo.cs" />
-    <Compile Include="Services\TestService.cs" />
     <Compile Include="SqlServer.cs" />
     <Compile Include="DTO\RegEnrollFormDTO.cs" />
     <Compile Include="DTO\RegisterFormDTO.cs" />

@@ -1,84 +1,60 @@
-﻿using MainLibrary.Service;
-using MainLibrary.Service.Interfaces;
+﻿using MainLibrary.Service.Interfaces;
 using MainLibrary.DTO;
-using Newtonsoft.Json;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
-using MainLibrary.Entities;
-using System.Reflection;
 using MainLibrary.Repo.Interfaces;
-using System.Data.SqlClient;
-using MainLibrary.Services;
+using MainLibrary.Entities;
+using WebApp.Helpers;
 
 namespace WebApp.Controllers
 {
     public class UserController : Controller
     {
 
-        IUserService _userService;
-        IUserRepo _userrepo;
-        public UserController(IUserService userService, IUserRepo userRepo)
+        private readonly IUserService _userService;
+        public UserController(IUserService userService)
         {
             _userService = userService;
-            _userrepo = userRepo;
         }
 
 
         [HttpGet]
         public ActionResult Login()
         {
-            //            return Content(_userrepo.GetUser("mcb").Email);
-
             return View();
         }
 
         [HttpPost]
-        public ActionResult LoginPost(UserLoginFormDTO form)
+        public ActionResult Authenticate(UserLoginFormDTO form)
         {
-            if(ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    User user;
-                    bool loginOK = _userService.CheckLogin(form, out user);
-
-                    if(!loginOK)
-                    {
-                        TempData["Error"] = "Login/Password Error";
-                        return View("Login");
-                    }
-
-                    this.Session["UserId"] = user.UserId;
-
-                    if (user.Role == UserRoleType.Admin)
-                    {
-                        this.Session["Role"] = "Admin";
-                        return Redirect("/Admin");
-                    }
-                    else if(user.Role == UserRoleType.Manager)
-                    {
-                        this.Session["Role"] = "Manager";
-                        return Redirect("/Manager");
-                    }
-                    else if (user.Role == UserRoleType.Employee)
-                    {
-                        this.Session["Role"] = "Employee";
-                        return Redirect("/Employee");
-                    }
-
-                } 
-                catch (Exception ex)
-                {
-                    TempData["Error"] = ex.Message;
-                    return View("SiteInfo");
-                }
-                
+                Response.StatusCode = 400;
+                return Json(ModelState);
             }
 
-            return RedirectToAction("Login");
+            try
+            {
+                AuthenticateResponse authResponse = _userService.AuthenticateUser(form);
+
+                if (!authResponse.IsLoginSuccessful)
+                {
+                    Response.StatusCode = 400;
+                    return Json(new { Error = "Invalid User/Pass" });
+                }
+
+                this.Session["UserId"] = authResponse.user.UserId;
+                this.Session["Role"] = (int)authResponse.user.Role;
+
+                return Json(new { status = "ok", redirectPath = authResponse.RedirectPath });
+
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 400;
+                return Json(new { Error = ex.Message });
+            }
+
         }
 
         public ActionResult Register()
@@ -89,32 +65,30 @@ namespace WebApp.Controllers
         [HttpPost]
         public ActionResult RegisterPost(RegisterFormDTO form)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                try
-                {
-                    _userService.Register(form);
-                    TempData["Success"] = "User Successfully Registered";
-                    return View("SiteInfo");
-                }
-                
-                catch (Exception ex)
-                {
-                    TempData["Error"] = ex.Message;
-                    return View("SiteInfo");
-                }
+                Response.StatusCode = 400;
+                return Json(ModelState);
             }
-            return View("Register", form);
+
+            try
+            {
+                _userService.Register(form);
+                return Json(new { status = "ok" });
+            }
+
+            catch (Exception ex)
+            {
+                Response.StatusCode = 400;
+                return Json(new { Error = ex.Message });
+            }
+            
         }
 
-        public ActionResult Test()
+        [HttpPost]
+        public ActionResult UserIdCheck(string UserId)
         {
-            var testService = new TestService();
-
-
-            testService.DoSomething();
-
-            return Content("");
+            return Content(_userService.IsUserIdExists(UserId).ToString().ToLower());
         }
 
     }

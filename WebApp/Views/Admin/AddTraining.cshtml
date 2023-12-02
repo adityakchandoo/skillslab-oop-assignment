@@ -1,0 +1,61 @@
+﻿
+@{
+    ViewBag.Title = "TrainingAdd";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="card card-default">
+    <div class="card-header">
+        <h3 class="card-title">Training Entity Form</h3>
+        <div class="card-tools">
+            <!-- buttons or other elements can be added here if needed -->
+        </div>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <form>
+            <div class="form-group">
+                <label for="trainingId">Training ID</label>
+                <input type="number" class="form-control" id="trainingId" placeholder="Enter Training ID">
+            </div>
+
+            <div class="form-group">
+                <label for="name">Name</label>
+                <input type="text" class="form-control" id="name" placeholder="Enter Name">
+            </div>
+
+            <div class="form-group">
+                <label for="description">Description</label>
+                <textarea class="form-control" id="description" placeholder="Enter Description"></textarea>
+            </div>
+
+            <div class="form-group">
+                <label for="threshold">Threshold</label>
+                <input type="number" class="form-control" id="threshold" placeholder="Enter Threshold">
+            </div>
+
+            <div class="form-group">
+                <label for="deadline">Deadline</label>
+                <input type="date" class="form-control" id="deadline">
+            </div>
+
+            <div class="form-group">
+                <label for="managerId">Manager ID</label>
+                <input type="text" class="form-control" id="managerId" placeholder="Enter Manager ID">
+            </div>
+
+            <div class="form-group">
+                <label for="preferedDepartmentId">Prefered Department ID</label>
+                <input type="number" class="form-control" id="preferedDepartmentId" placeholder="Enter Prefered Department ID">
+            </div>
+
+            <!-- Add any additional buttons or controls here -->
+        </form>
+    </div>
+    <!-- /.card-body -->
+    <div class="card-footer">
+        <!-- Footer or additional information can be added here -->
+    </div>
+</div>
+
+

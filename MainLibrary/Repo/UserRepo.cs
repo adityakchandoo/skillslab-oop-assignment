@@ -79,12 +79,12 @@ namespace MainLibrary.Repo
 
         public User GetUser(string UserId)
         {
-            string sql = "SELECT * FROM [dbo].[AppUser] WHERE [dbo].[AppUser].[UserId] = 'mcb';";
+            string sql = "SELECT * FROM [dbo].[AppUser] WHERE UserId = @UserId;";
 
             using (IDbCommand cmd = _conn.CreateCommand())
             {
                 cmd.CommandText = sql;
-                MyExtensions.AddParameterWithValue(cmd, "@id", UserId);
+                MyExtensions.AddParameterWithValue(cmd, "@UserId", UserId);
 
                 using (IDataReader reader = cmd.ExecuteReader())
                 {

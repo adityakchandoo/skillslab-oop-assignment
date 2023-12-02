@@ -17,8 +17,8 @@ namespace MainLibrary.Repo
 
         public void CreateTraining(Training training)
         {
-            string sql = "INSERT INTO [dbo].[Training] (Name,Description,Treshhold,Deadline,ManagerId,PreferedDepartmentId) VALUES " +
-                "(Name,Description,Treshhold,Deadline,ManagerId,PreferedDepartmentId)";
+            string sql = @"INSERT INTO [dbo].[Training] (Name,Description,Treshhold,Deadline,ManagerId,PreferedDepartmentId) VALUES 
+                          (Name,Description,Treshhold,Deadline,ManagerId,PreferedDepartmentId)";
 
             using (IDbCommand cmd = _conn.CreateCommand())
             {
@@ -69,9 +69,10 @@ namespace MainLibrary.Repo
 
         public IEnumerable<TrainingDetails> GetAllTraining()
         {
-            string sql = "SELECT [Training].*, AppUser.FirstName, AppUser.LastName, Department.Name AS Dname FROM [dbo].[Training] " +
-                         "INNER JOIN AppUser ON Training.ManagerId = AppUser.UserId " +
-                         "LEFT JOIN Department ON Training.PreferedDepartmentId = Department.DepartmentId;";
+            string sql = @"SELECT [Training].*, CONCAT(AppUser.FirstName,' ', AppUser.LastName) AS ManagerName, Department.Name AS DepartmentName FROM [dbo].[Training] 
+                         INNER JOIN AppUser ON Training.ManagerId = AppUser.UserId 
+                         LEFT JOIN Department ON Training.PreferedDepartmentId = Department.DepartmentId;";
+
 
             List<TrainingDetails> results = new List<TrainingDetails>();
 
@@ -90,7 +91,7 @@ namespace MainLibrary.Repo
             return results;
         }
 
-        public IEnumerable<Training> GetTrainingEnrolledByUser(string UserId)
+        public IEnumerable<TrainingDetails> GetTrainingEnrolledByUser(string UserId)
         {
             string sql = "SELECT [dbo].[Training].* FROM [dbo].[Training] INNER JOIN [dbo].[UserTrainingEnrollment] ON " +
                          "[dbo].[Training].[TrainingId] = [dbo].[UserTrainingEnrollment].[TrainingId] " +
@@ -115,11 +116,11 @@ namespace MainLibrary.Repo
             return results;
         }
 
-        public IEnumerable<Training> GetTrainingManagedByUser(string UserId)
+        public IEnumerable<TrainingDetails> GetTrainingManagedByUser(string UserId)
         {
             string sql = "SELECT * FROM [dbo].[Training] WHERE ManagerId = @ManagerId;";
 
-            List<Training> results = new List<Training>();
+            List<TrainingDetails> results = new List<TrainingDetails>();
 
             using (IDbCommand cmd = _conn.CreateCommand())
             {
@@ -129,7 +130,7 @@ namespace MainLibrary.Repo
                 {
                     while (reader.Read())
                     {
-                        results.Add(MyExtensions.ConvertToObject<Training>(reader));
+                        results.Add(MyExtensions.ConvertToObject<TrainingDetails>(reader));
                     }
                 }
             }

@@ -8,7 +8,7 @@ namespace MainLibrary.Entities
 {
     public class TrainingDetails : Training
     {
-        public string ManagerName;
-        public string DepartmentName;        
+        public string ManagerName { get; set; }
+        public string DepartmentName { get; set; }
     }
 }

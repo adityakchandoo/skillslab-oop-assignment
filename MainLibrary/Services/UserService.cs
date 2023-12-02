@@ -35,19 +35,25 @@ namespace MainLibrary.Service
             throw new NotImplementedException();
         }
 
-        public bool CheckLogin(UserLoginFormDTO form, out User user)
+        public AuthenticateResponse AuthenticateUser(UserLoginFormDTO form)
         {
-            user = _userRepo.GetUser(form.user);
+            AuthenticateResponse authenticateResponse = new AuthenticateResponse();
+            User user = _userRepo.GetUser(form.Username);
 
-            if (user == null) { return false; }
-
-            if (PasswordHasher.VerifyPassword(form.pass, user.Password))
+            if (PasswordHasher.VerifyPassword(form.Password, user.Password))
             {
-                return true;
+                authenticateResponse.IsLoginSuccessful = true;
+                authenticateResponse.RedirectPath = "/"+user.Role.ToString();
+                authenticateResponse.user = user;
             }
-            return false;
-        }
+            else
+            {
+                authenticateResponse.IsLoginSuccessful = false;
+            }
 
+            return authenticateResponse;
+
+        }
         public void Register(RegisterFormDTO reg)
         {
 
@@ -68,6 +74,14 @@ namespace MainLibrary.Service
 
         }
 
+        public bool IsUserIdExists(string UserId)
+        {
+            User user = _userRepo.GetUser(UserId);
+
+            // User Should not exits in database
+            if(user == null) { return true; } else { return false; }
+
+        }
 
         public void ConfirmAccount(string UserId)
         {

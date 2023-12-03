@@ -60,18 +60,21 @@ namespace WebApp
             // Register Data Access Layer
             container.RegisterType<IUserRepo, UserRepo>(new PerRequestLifetimeManager());
             container.RegisterType<ITrainingRepo, TrainingRepo>(new PerRequestLifetimeManager());
-            container.RegisterType<IUserRepo, UserRepo>(new PerRequestLifetimeManager());
             container.RegisterType<IDepartmentRepo, DepartmentRepo>(new PerRequestLifetimeManager());
             container.RegisterType<IPrerequisiteRepo, PrerequisiteRepo>(new PerRequestLifetimeManager());
             container.RegisterType<ITrainingPrerequisiteRepo, TrainingPrerequisiteRepo>(new PerRequestLifetimeManager());
+            container.RegisterType<IUserTrainingEnrollmentRepo, UserTrainingEnrollmentRepo>(new PerRequestLifetimeManager());
 
 
             // Register Service Layer
             container.RegisterType<IUserService, UserService>(new PerRequestLifetimeManager());
             container.RegisterType<ITrainingService, TrainingService>(new PerRequestLifetimeManager());
-            container.RegisterType<IUserService, UserService>(new PerRequestLifetimeManager());
             container.RegisterType<IDepartmentService, DepartmentService>(new PerRequestLifetimeManager());
             container.RegisterType<IPrerequisiteService, PrerequisiteService>(new PerRequestLifetimeManager());
+            container.RegisterType<IUserTrainingEnrollmentService, UserTrainingEnrollmentService>(new PerRequestLifetimeManager());
+            
+            
+            container.RegisterType<INotificationService, NotificationService>(new PerRequestLifetimeManager());
 
         }
     }

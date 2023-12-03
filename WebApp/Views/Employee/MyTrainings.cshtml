@@ -1,0 +1,61 @@
+﻿
+@{
+    ViewBag.Title = "MyTrainings";
+    Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+}
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>@ViewBag.Title</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">General Form</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+
+                @foreach (var Training in ViewBag.Trainings)
+                {
+                    <div class="col-md-3">
+                        <div class="card card-outline card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">@Training.Name</h3>
+
+                                <!-- /.card-tools -->
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body" style="display: block;">
+                                @Training.Description
+                            </div>
+                            <!-- /.card-body -->
+                            <div class="card-footer" style="display: block;">
+                                <a href="/Employee/Training/@Training.TrainingId" role="button" class="btn btn-primary float-right">View</a>
+                            </div>
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.col -->
+                }
+
+
+                </div>
+
+        </div>
+    </section>
+</div>
+
+@section Scripts {}

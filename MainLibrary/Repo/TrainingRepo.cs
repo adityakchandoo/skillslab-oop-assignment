@@ -52,7 +52,7 @@ namespace MainLibrary.Repo
         }
         public Training GetTraining(int TrainingId)
         {
-            string sql = "SELECT * FROM [dbo].[AppUser] WHERE TrainingId = @TrainingId;";
+            string sql = "SELECT * FROM [dbo].[Training] WHERE TrainingId = @TrainingId;";
 
             using (IDbCommand cmd = _conn.CreateCommand())
             {
@@ -95,9 +95,9 @@ namespace MainLibrary.Repo
 
         public IEnumerable<TrainingDetails> GetTrainingEnrolledByUser(string UserId)
         {
-            string sql = "SELECT [dbo].[Training].* FROM [dbo].[Training] INNER JOIN [dbo].[UserTrainingEnrollment] ON " +
-                         "[dbo].[Training].[TrainingId] = [dbo].[UserTrainingEnrollment].[TrainingId] " +
-                         "WHERE [dbo].[UserTrainingEnrollment].[UserId] = @UserId;";
+            string sql = @"SELECT [dbo].[Training].* FROM [dbo].[Training] INNER JOIN [dbo].[UserTrainingEnrollment] ON 
+                         [dbo].[Training].[TrainingId] = [dbo].[UserTrainingEnrollment].[TrainingId] 
+                         WHERE [dbo].[UserTrainingEnrollment].[UserId] = @UserId;";
 
 
             List<TrainingDetails> results = new List<TrainingDetails>();
@@ -105,7 +105,7 @@ namespace MainLibrary.Repo
             using (IDbCommand cmd = _conn.CreateCommand())
             {
                 cmd.CommandText = sql;
-
+                MyExtensions.AddParameterWithValue(cmd, "@UserId", UserId);
                 using (IDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
@@ -127,7 +127,7 @@ namespace MainLibrary.Repo
             using (IDbCommand cmd = _conn.CreateCommand())
             {
                 cmd.CommandText = sql;
-
+                MyExtensions.AddParameterWithValue(cmd, "@ManagerId", UserId);
                 using (IDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())

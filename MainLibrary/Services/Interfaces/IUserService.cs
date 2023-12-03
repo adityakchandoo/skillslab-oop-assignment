@@ -18,5 +18,6 @@ namespace MainLibrary.Services.Interfaces
         bool IsUserIdExists(string UserId);
         void ConfirmAccount(string UserId);
         IEnumerable<User> ExportSelectedEmployees();
+        User GetUser(string UserId);
     }
 }

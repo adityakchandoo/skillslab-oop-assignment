@@ -1,4 +1,5 @@
-﻿using MainLibrary.Entities;
+﻿using MainLibrary.DTO;
+using MainLibrary.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,8 +8,8 @@ using System.Threading.Tasks;
 
 namespace MainLibrary.Services.Interfaces
 {
-    internal interface INotificationService
+    public interface INotificationService
     {
-        void SendNotification(User user);
+        void Send(NotificationDTO notification);
     }
 }

@@ -75,7 +75,7 @@ create table UserTrainingEnrollment (
 	UserId						nvarchar(40)         not null,
 	TrainingId					int       		     not null,
 	ApplyDate					datetime     	     not null,
-	EnrolledDate				datetime     	     not null,
+	EnrolledDate				datetime     	     null,
 	Status						tinyint     	     not null,
     constraint PK_UserTrainingEnrollment_UserTrainingEnrollmentId primary key (UserTrainingEnrollmentId),
 	constraint FK_UserTrainingEnrollment_UserId_AppUser_UserId foreign key (UserId)

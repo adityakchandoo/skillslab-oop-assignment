@@ -40,7 +40,7 @@ namespace MainLibrary.Service
             AuthenticateResponse authenticateResponse = new AuthenticateResponse();
             User user = _userRepo.GetUser(form.Username);
 
-            if (PasswordHasher.VerifyPassword(form.Password, user.Password))
+            if (PasswordHasher.VerifySHA256Hash(form.Password, user.Password))
             {
                 authenticateResponse.IsLoginSuccessful = true;
                 authenticateResponse.RedirectPath = "/"+user.Role.ToString();
@@ -62,7 +62,7 @@ namespace MainLibrary.Service
             db_user.FirstName = reg.FirstName;
             db_user.LastName = reg.LastName;
             db_user.Email = reg.Email;
-            db_user.Password = PasswordHasher.HashPassword(reg.Pass1);
+            db_user.Password = PasswordHasher.GenerateSHA256Hash(reg.Pass1);
             db_user.Email = reg.Email;
             db_user.DOB = reg.DOB;
             db_user.NIC = reg.NIC;
@@ -91,6 +91,11 @@ namespace MainLibrary.Service
         public IEnumerable<User> GetAllUsersByType(UserRoleType userRoleType)
         {
             return _userRepo.GetAllUsersByType(userRoleType);
+        }
+
+        public User GetUser(string UserId)
+        {
+            return _userRepo.GetUser(UserId);
         }
     }
 }

@@ -145,6 +145,7 @@
     <Compile Include="Controllers\Admin\PrerequisiteController.cs" />
     <Compile Include="Controllers\Admin\TrainingController.cs" />
     <Compile Include="Controllers\Employee\EmployeeController.cs" />
+    <Compile Include="Controllers\Employee\TrainingController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Manager\ManagerController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -210,22 +211,23 @@
     <Content Include="Views\Home\Index.cshtml" />
     <Content Include="Views\User\Register.cshtml" />
     <Content Include="Views\User\Login.cshtml" />
-    <Content Include="Views\Shared\SiteInfo.cshtml" />
+    <Content Include="Views\Shared\GlobalErrorDisplayPage.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
     <Content Include="Views\Admin\ViewTrainings.cshtml" />
     <Content Include="Views\Admin\Dash.cshtml" />
     <Content Include="Views\Admin\AddTraining.cshtml" />
     <Content Include="Views\Admin\Departments.cshtml" />
     <Content Include="Views\Admin\Prerequisites.cshtml" />
+    <Content Include="Views\Employee\MyTrainings.cshtml" />
+    <Content Include="Views\Shared\_EmployeeLayout.cshtml" />
+    <Content Include="Views\Admin\Blank.cshtml" />
+    <Content Include="Views\Employee\SearchTrainings.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\adminlte\css\" />
     <Folder Include="Content\adminlte\js\" />
     <Folder Include="Models\" />
-    <Folder Include="Views\Dash\" />
-    <Folder Include="Views\Prerequisite\" />
-    <Folder Include="Views\Training\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

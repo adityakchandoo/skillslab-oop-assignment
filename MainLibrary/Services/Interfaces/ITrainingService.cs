@@ -12,6 +12,8 @@ namespace MainLibrary.Services.Interfaces
     {
         IEnumerable<TrainingDetails> GetAllTraining();
         Training GetTraining(int id);
+        IEnumerable<TrainingDetails> GetTrainingEnrolledByUser(string UserId);
+        IEnumerable<TrainingDetails> GetTrainingManagedByUser(string UserId);
         void AddTraining(Training training);
         void AddTrainingAndTrainingPrerequisite(TrainingDTO training);
         void EditTraining(Training training);

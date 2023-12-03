@@ -72,5 +72,15 @@ namespace MainLibrary.Service
         {
             return _trainingRepo.GetTraining(id);
         }
+
+        public IEnumerable<TrainingDetails> GetTrainingEnrolledByUser(string UserId)
+        {
+            return _trainingRepo.GetTrainingEnrolledByUser(UserId);
+        }
+
+        public IEnumerable<TrainingDetails> GetTrainingManagedByUser(string UserId)
+        {
+            return _trainingRepo.GetTrainingManagedByUser(UserId);
+        }
     }
 }

@@ -80,7 +80,7 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="/Admin/Training/Manage" class="nav-link @(@ViewBag.PageTag == "train-manage" ? "active":"")">
+                                    <a href="/Admin/ViewTrainings" class="nav-link @(@ViewBag.PageTag == "train-manage" ? "active":"")">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Manage</p>
                                     </a>
@@ -103,13 +103,13 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link active">
+                                    <a href="/Admin/Prerequisites" class="nav-link active">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Prequisites</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="/Admin/Departments" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Department</p>
                                     </a>
@@ -178,6 +178,11 @@
     <script src="@Url.Content("~/content/adminlte/bootstrap/js/bootstrap.bundle.min.js")"></script>
     <!-- AdminLTE App -->
     <script src="@Url.Content("~/content/adminlte//dist/js/adminlte.min.js")"></script>
+    @Scripts.Render("~/Scripts/sweetalert2.all.js")
+    @Scripts.Render("~/Scripts/jquery.validate.js")
+    @Scripts.Render("https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.js")
+
+    @RenderSection("scripts", required: false)
 
 </body>
 </html>

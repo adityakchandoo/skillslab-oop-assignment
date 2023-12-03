@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace MainLibrary.Service.Interfaces
+namespace MainLibrary.Services.Interfaces
 {
     internal interface INotificationService
     {

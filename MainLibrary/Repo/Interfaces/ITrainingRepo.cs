@@ -13,7 +13,7 @@ namespace MainLibrary.Repo.Interfaces
         IEnumerable<TrainingDetails> GetTrainingManagedByUser(string UserId);
         IEnumerable<TrainingDetails> GetTrainingEnrolledByUser(string UserId);
         Training GetTraining(int id);
-        void CreateTraining(Training training);
+        int CreateTraining(Training training);
         void UpdateTraining(Training training);
         void DeleteTraining(int id);
     }

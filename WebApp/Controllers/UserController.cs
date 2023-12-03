@@ -1,10 +1,9 @@
-﻿using MainLibrary.Service.Interfaces;
-using MainLibrary.DTO;
+﻿using MainLibrary.DTO;
 using System;
 using System.Web.Mvc;
-using MainLibrary.Repo.Interfaces;
 using MainLibrary.Entities;
 using WebApp.Helpers;
+using MainLibrary.Services.Interfaces;
 
 namespace WebApp.Controllers
 {

@@ -4,7 +4,7 @@ using MainLibrary.Entities.Types;
 using MainLibrary.Helpers;
 using MainLibrary.Repo;
 using MainLibrary.Repo.Interfaces;
-using MainLibrary.Service.Interfaces;
+using MainLibrary.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 
@@ -13,7 +13,7 @@ namespace MainLibrary.Service
 {
     public class UserService : IUserService
     {
-        IUserRepo _userRepo;
+        private readonly IUserRepo _userRepo;
         public UserService(IUserRepo userRepo)
         {
             _userRepo = userRepo;
@@ -86,6 +86,11 @@ namespace MainLibrary.Service
         public void ConfirmAccount(string UserId)
         {
             throw new NotImplementedException();
+        }
+
+        public IEnumerable<User> GetAllUsersByType(UserRoleType userRoleType)
+        {
+            return _userRepo.GetAllUsersByType(userRoleType);
         }
     }
 }

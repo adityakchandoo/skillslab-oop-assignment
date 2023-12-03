@@ -10,11 +10,10 @@ namespace MainLibrary.Repo.Interfaces
     public interface IUserRepo
     {
         IEnumerable<User> GetAllUsers();
+        IEnumerable<User> GetAllUsersByType(UserRoleType userRoleType);
         User GetUser(string UserId);
         void CreateUser(User user);
         void UpdateUser(User user);
         void DeleteUser(string UserId);
     }
 }
-// Copyright
-// Aditya 1999 c

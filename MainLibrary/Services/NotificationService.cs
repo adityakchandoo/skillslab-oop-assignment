@@ -1,5 +1,5 @@
 ﻿using MainLibrary.Entities;
-using MainLibrary.Service.Interfaces;
+using MainLibrary.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;

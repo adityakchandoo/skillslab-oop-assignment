@@ -3,20 +3,29 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using MainLibrary.DTO;
 using MainLibrary.Entities;
-using MainLibrary.Service;
-using MainLibrary.Service.Interfaces;
+using MainLibrary.Services;
+using MainLibrary.Services.Interfaces;
+using WebApp.Helpers;
 
 namespace WebApp.Controllers.Admin
 {
     [RoutePrefix("Admin")]
+    //[AdminSession]
     public class TrainingController : Controller
     {
-        ITrainingService _trainingService;
+        private readonly ITrainingService _trainingService;
+        private readonly IDepartmentService _departmentService;
+        private readonly IUserService _userService;
+        private readonly IPrerequisiteService _prerequisitService;
 
-        public TrainingController(ITrainingService trainingService)
+        public TrainingController(ITrainingService trainingService, IDepartmentService departmentService, IUserService userService, IPrerequisiteService prerequisitService)
         {
             _trainingService = trainingService;
+            _departmentService = departmentService;
+            _userService = userService;
+            _prerequisitService = prerequisitService;
         }
 
 
@@ -28,19 +37,37 @@ namespace WebApp.Controllers.Admin
 
             ViewBag.Trainings = _trainingService.GetAllTraining();
 
-            return View("~/Views/Admin/TrainingManage.cshtml");
+            return View("~/Views/Admin/ViewTrainings.cshtml");
         }
 
         [Route("AddTraining")]
         public ActionResult AddTraining()
         {
-            return View("~/Views/Admin/TrainingAdd.cshtml");
+            ViewBag.PageTag = "train-add";
+
+            ViewBag.Departments = _departmentService.GetAllDepartments();
+            ViewBag.Managers = _userService.GetAllUsersByType(UserRoleType.Manager);
+            ViewBag.Prerequisites = _prerequisitService.GetAllPrerequisites();
+
+            return View("~/Views/Admin/AddTraining.cshtml");
         }
 
         [Route("AddTrainingPost")]
-        public ActionResult AddTrainingPost(Training training)
+        [HttpPost]
+        public ActionResult AddTrainingPost(TrainingDTO training)
         {
-            return View("~/Views/Admin/TrainingAdd.cshtml");
+            try
+            {
+                _trainingService.AddTrainingAndTrainingPrerequisite(training);
+
+                return Json(new { status = "ok" });
+
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 400;
+                return Json(new { Error = ex.Message });
+            }
         }
     }
 }

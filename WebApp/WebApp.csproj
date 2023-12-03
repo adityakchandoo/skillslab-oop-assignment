@@ -141,6 +141,8 @@
     <Compile Include="App_Start\UnityConfig.cs" />
     <Compile Include="App_Start\UnityMvcActivator.cs" />
     <Compile Include="Controllers\Admin\AdminController.cs" />
+    <Compile Include="Controllers\Admin\DepartmentController.cs" />
+    <Compile Include="Controllers\Admin\PrerequisiteController.cs" />
     <Compile Include="Controllers\Admin\TrainingController.cs" />
     <Compile Include="Controllers\Employee\EmployeeController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -210,9 +212,11 @@
     <Content Include="Views\User\Login.cshtml" />
     <Content Include="Views\Shared\SiteInfo.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
-    <Content Include="Views\Admin\TrainingManage.cshtml" />
+    <Content Include="Views\Admin\ViewTrainings.cshtml" />
     <Content Include="Views\Admin\Dash.cshtml" />
-    <Content Include="Views\Admin\TrainingAdd.cshtml" />
+    <Content Include="Views\Admin\AddTraining.cshtml" />
+    <Content Include="Views\Admin\Departments.cshtml" />
+    <Content Include="Views\Admin\Prerequisites.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -220,6 +224,7 @@
     <Folder Include="Content\adminlte\js\" />
     <Folder Include="Models\" />
     <Folder Include="Views\Dash\" />
+    <Folder Include="Views\Prerequisite\" />
     <Folder Include="Views\Training\" />
   </ItemGroup>
   <ItemGroup>

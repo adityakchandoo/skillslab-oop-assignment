@@ -31,8 +31,8 @@ create table Training (
 	TrainingId				int                  identity,
 	Name					nvarchar(40)         not null,
 	Description				text         		 not null,
-	Treshhold				int         		 null,
-	Deadline				datetime             null,
+	Threshold				int         		 not null,
+	Deadline				datetime             not null,
 	ManagerId				nvarchar(40)		 not null,
 	PreferedDepartmentId	int					 null,
     constraint PK_Training_TrainingId primary key (TrainingId),
@@ -56,7 +56,7 @@ create table Prerequisite (
 /* Table: TrainingPrerequisite                                  */
 /*==============================================================*/
 create table TrainingPrerequisite (
-	TrainingPrerequisiteId  int                  not null,
+	TrainingPrerequisiteId  int                  identity,
 	TrainingId				int                  not null,
 	PrerequisiteId			int                  not null,
 	constraint PK_TrainingPrerequisite_TrainingPrerequisiteId primary key (TrainingPrerequisiteId),
@@ -75,7 +75,7 @@ create table UserTrainingEnrollment (
 	UserId						nvarchar(40)         not null,
 	TrainingId					int       		     not null,
 	ApplyDate					datetime     	     not null,
-	EnrolledDate				datetime     	     null,
+	EnrolledDate				datetime     	     not null,
 	Status						tinyint     	     not null,
     constraint PK_UserTrainingEnrollment_UserTrainingEnrollmentId primary key (UserTrainingEnrollmentId),
 	constraint FK_UserTrainingEnrollment_UserId_AppUser_UserId foreign key (UserId)
@@ -90,7 +90,7 @@ create table UserTrainingEnrollment (
 create table EnrollmentAttachment (
 	EnrollmentAttachmentId	int                  identity,
 	EnrollmentId			int        			 not null,
-	TrainingPrerequisiteId  Int					 null,
+	TrainingPrerequisiteId  Int					 not null,
 	OriginalFilename		nvarchar(40)         not null,
 	SystemFilename			nvarchar(40)         not null,
     constraint EnrollmentAttachmentId primary key (EnrollmentAttachmentId),
@@ -108,7 +108,7 @@ create table TrainingContent (
 	TrainingId				int         		 not null,
 	Name					nvarchar(40)         not null,
 	Description				text    		     not null,
-	PostDate				datetime     	     null,
+	PostDate				datetime     	     not null,
     constraint PK_TrainingContent_TrainingContentId primary key (TrainingContentId),
 	constraint FK_TrainingContent_TrainingId_Training_TrainingId foreign key (TrainingId)
       references Training(TrainingId)

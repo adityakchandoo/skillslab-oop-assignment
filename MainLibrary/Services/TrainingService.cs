@@ -1,35 +1,66 @@
-﻿using MainLibrary.Entities;
+﻿using MainLibrary.DTO;
+using MainLibrary.Entities;
+using MainLibrary.Repo;
 using MainLibrary.Repo.Interfaces;
-using MainLibrary.Service.Interfaces;
+using MainLibrary.Services.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 
 namespace MainLibrary.Service
 {
     public class TrainingService : ITrainingService
     {
-        ITrainingRepo _trainingRepo;
-        public TrainingService(ITrainingRepo trainingRepo)
+        private readonly ITrainingRepo _trainingRepo;
+        private readonly ITrainingPrerequisiteRepo _trainingPrerequisiteRepo;
+        public TrainingService(ITrainingRepo trainingRepo, ITrainingPrerequisiteRepo trainingPrerequisiteRepo)
         {
             _trainingRepo = trainingRepo;
+            _trainingPrerequisiteRepo = trainingPrerequisiteRepo;
         }
 
         public void AddTraining(Training training)
         {
-            throw new NotImplementedException();
+            _trainingRepo.CreateTraining(training);
         }
 
-        public void DeleteTraining(Training training)
+        public void AddTrainingAndTrainingPrerequisite(TrainingDTO training)
         {
-            throw new NotImplementedException();
+            Training dbTraining = new Training()
+            {
+                Name = training.Name,
+                Description = training.Description,
+                Threshold = training.Threshold,
+                Deadline = training.Deadline,
+                ManagerId = training.ManagerId,
+                PreferedDepartmentId = training.PriorityDepartmentId
+            };
+
+            int insertedId = _trainingRepo.CreateTraining(dbTraining);
+
+            TrainingPrerequisite dbTrainingPrerequisite = new TrainingPrerequisite()
+            {
+                TrainingId = insertedId
+            };
+
+            foreach (int id in training.Prerequisites)
+            {
+                dbTrainingPrerequisite.PrerequisiteId = id;
+                _trainingPrerequisiteRepo.CreateTrainingPrerequisite(dbTrainingPrerequisite);
+            }
+        }
+
+        public void DeleteTraining(int id)
+        {
+            _trainingRepo.DeleteTraining(id);
         }
 
         public void EditTraining(Training training)
         {
-            throw new NotImplementedException();
+            _trainingRepo.UpdateTraining(training);
         }
 
         public IEnumerable<TrainingDetails> GetAllTraining()
@@ -39,7 +70,7 @@ namespace MainLibrary.Service
 
         public Training GetTraining(int id)
         {
-            throw new NotImplementedException();
+            return _trainingRepo.GetTraining(id);
         }
     }
 }

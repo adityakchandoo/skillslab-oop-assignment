@@ -43,9 +43,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DTO\DepartmentDTO.cs" />
     <Compile Include="DTO\LoginResponse.cs" />
+    <Compile Include="DTO\PrerequisiteDTO.cs" />
+    <Compile Include="DTO\TrainingDTO.cs" />
+    <Compile Include="Entities\Department.cs" />
+    <Compile Include="Entities\Prerequisite.cs" />
+    <Compile Include="Entities\TrainingPrerequisite.cs" />
     <Compile Include="Helpers\BadAuthentication.cs" />
     <Compile Include="Helpers\PasswordHasher.cs" />
+    <Compile Include="Repo\DepartmentRepo.cs" />
+    <Compile Include="Repo\Interfaces\IDepartmentRepo.cs" />
+    <Compile Include="Repo\Interfaces\IPrerequisiteRepo.cs" />
+    <Compile Include="Repo\Interfaces\ITrainingPrerequisiteRepo.cs" />
+    <Compile Include="Repo\PrerequisiteRepo.cs" />
+    <Compile Include="Repo\TrainingPrerequisiteRepo.cs" />
+    <Compile Include="Services\DepartmentService.cs" />
+    <Compile Include="Services\Interfaces\IDepartmentService.cs" />
+    <Compile Include="Services\Interfaces\IPrerequisiteService.cs" />
+    <Compile Include="Services\Interfaces\ITrainingPrerequisiteService.cs" />
+    <Compile Include="Services\PrerequisiteService.cs" />
     <Compile Include="SqlServer.cs" />
     <Compile Include="DTO\RegEnrollFormDTO.cs" />
     <Compile Include="DTO\RegisterFormDTO.cs" />

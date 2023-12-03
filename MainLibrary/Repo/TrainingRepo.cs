@@ -9,53 +9,55 @@ namespace MainLibrary.Repo
 {
     public class TrainingRepo : ITrainingRepo
     {
-        IDbConnection _conn;
+        private readonly IDbConnection _conn;
         public TrainingRepo(IDbContext dbContext)
         {
             _conn = dbContext.GetConn();
         }
 
-        public void CreateTraining(Training training)
+        public int CreateTraining(Training training)
         {
-            string sql = @"INSERT INTO [dbo].[Training] (Name,Description,Treshhold,Deadline,ManagerId,PreferedDepartmentId) VALUES 
-                          (Name,Description,Treshhold,Deadline,ManagerId,PreferedDepartmentId)";
+            string sql = @"INSERT INTO [dbo].[Training] (Name, Description, Threshold, Deadline, ManagerId, PreferedDepartmentId) 
+                           OUTPUT Inserted.TrainingId 
+                           VALUES (@Name, @Description, @Threshold, @Deadline, @ManagerId, @PreferedDepartmentId)";
+
 
             using (IDbCommand cmd = _conn.CreateCommand())
             {
                 cmd.CommandText = sql;
+                
 
                 MyExtensions.AddParameterWithValue(cmd, "@Name", training.Name);
                 MyExtensions.AddParameterWithValue(cmd, "@Description", training.Description);
-                MyExtensions.AddParameterWithValue(cmd, "@Treshhold", training.Treshhold);
+                MyExtensions.AddParameterWithValue(cmd, "@Threshold", training.Threshold);
                 MyExtensions.AddParameterWithValue(cmd, "@Deadline", training.Deadline);
                 MyExtensions.AddParameterWithValue(cmd, "@ManagerId", training.ManagerId);
-                MyExtensions.AddParameterWithValue(cmd, "@PreferedDepartmentId", training.PreferedDepartmentId);
+                MyExtensions.AddParameterWithValue(cmd, "@PreferedDepartmentId", training.PreferedDepartmentId == -1 ? DBNull.Value : (object)training.PreferedDepartmentId);
 
-                cmd.ExecuteNonQuery();
+                return (int)cmd.ExecuteScalar();
             }
         }
 
-        public void DeleteTraining(int id)
+        public void DeleteTraining(int TrainingId)
         {
-            string sql = "DELETE FROM [dbo].[Training] WHERE TrainingId = @id";
+            string sql = "DELETE FROM [dbo].[Training] WHERE TrainingId = @TrainingId";
 
             using (IDbCommand cmd = _conn.CreateCommand())
             {
                 cmd.CommandText = sql;
-
-                MyExtensions.AddParameterWithValue(cmd, "@id", id);
+                MyExtensions.AddParameterWithValue(cmd, "@TrainingId", TrainingId);
 
                 cmd.ExecuteNonQuery();
             }            
         }
-        public Training GetTraining(int id)
+        public Training GetTraining(int TrainingId)
         {
             string sql = "SELECT * FROM [dbo].[AppUser] WHERE TrainingId = @TrainingId;";
 
             using (IDbCommand cmd = _conn.CreateCommand())
             {
                 cmd.CommandText = sql;
-
+                MyExtensions.AddParameterWithValue(cmd, "@TrainingId", TrainingId);
                 using (IDataReader reader = cmd.ExecuteReader())
                 {
                     while (reader.Read())
@@ -140,7 +142,7 @@ namespace MainLibrary.Repo
 
         public void UpdateTraining(Training training)
         {
-            string sql = "UPDATE [dbo].[Training] SET Name = @Name, Description = @Description, Treshhold = @Treshhold, Deadline = @Deadline, ManagerId = @ManagerId, " +
+            string sql = "UPDATE [dbo].[Training] SET Name = @Name, Description = @Description, TrainingId = @TrainingId, Deadline = @Deadline, ManagerId = @ManagerId, " +
                          "PreferedDepartmentId = @PreferedDepartmentId WHERE TrainingId = @TrainingId;";
 
             using (IDbCommand cmd = _conn.CreateCommand())
@@ -150,7 +152,7 @@ namespace MainLibrary.Repo
                 MyExtensions.AddParameterWithValue(cmd, "@TrainingId", training.TrainingId);
                 MyExtensions.AddParameterWithValue(cmd, "@Name", training.Name);
                 MyExtensions.AddParameterWithValue(cmd, "@Description", training.Description);
-                MyExtensions.AddParameterWithValue(cmd, "@Treshhold", training.Treshhold);
+                MyExtensions.AddParameterWithValue(cmd, "@TrainingId", training.TrainingId);
                 MyExtensions.AddParameterWithValue(cmd, "@Deadline", training.Deadline);
                 MyExtensions.AddParameterWithValue(cmd, "@ManagerId", training.ManagerId);
                 MyExtensions.AddParameterWithValue(cmd, "@PreferedDepartmentId", training.PreferedDepartmentId);

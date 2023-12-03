@@ -100,11 +100,11 @@
                     remote: "Username already in use!"
                 }
             },
-            submitHandler: postForm
+            submitHandler: handlePost
         });
 
 
-        function postForm() {
+        function handlePost() {
             let form_data = $("#myForm").serialize();
             $.ajax({
                 url: "/user/RegisterPost",
@@ -115,7 +115,6 @@
 
                 Swal.fire({
                     title: "You are successfully registered!",
-                    showDenyButton: true,
                     showCancelButton: true,
                     confirmButtonText: "Login",
                     icon: "success"
@@ -123,6 +122,8 @@
                     /* Read more about isConfirmed, isDenied below */
                     if (result.isConfirmed) {
                         window.location.href = "/User/Login";
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        $("#myForm").trigger("reset");
                     }
                 });
 

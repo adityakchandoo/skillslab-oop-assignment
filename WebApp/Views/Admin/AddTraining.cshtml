@@ -1,61 +1,188 @@
-﻿
-@{
-    ViewBag.Title = "TrainingAdd";
+﻿@{
+    ViewBag.Title = "Dash";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>@ViewBag.Title</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">General Form</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
 
-<div class="card card-default">
-    <div class="card-header">
-        <h3 class="card-title">Training Entity Form</h3>
-        <div class="card-tools">
-            <!-- buttons or other elements can be added here if needed -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                    <!-- left column -->
+                    <div class="col-md-6">
+                        <!-- general form elements -->
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Training Details</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- form start -->
+                            <form id="myForm" method="post">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input type="text" class="form-control" id="Name" name="Name" placeholder="Enter Name">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="description">Description</label>
+                                        <textarea class="form-control" id="Description" name="Description" placeholder="Enter Description"></textarea>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="threshold">Threshold</label>
+                                        <input type="number" class="form-control" id="Threshold" name="Threshold" placeholder="Enter Threshold">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="deadline">Deadline</label>
+                                        <input type="date" class="form-control" id="Deadline" name="Deadline">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="managerId">Manager</label>
+                                        <select class="form-control select2" id="ManagerId" name="ManagerId" style="width: 100%;">
+                                            <option value="">Select your option</option>
+                                            @foreach (var Manager in ViewBag.Managers)
+                                            {
+                                                <option value="@Manager.UserId">@Manager.FirstName @Manager.FirstName</option>
+                                            }
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="preferedDepartmentId">Priority Department</label>
+                                        <select class="form-control select2" id="PriorityDepartmentId" name="PriorityDepartmentId" style="width: 100%;">
+                                            <option value="-1">None</option>
+                                            @foreach (var Department in ViewBag.Departments)
+                                            {
+                                                <option value="@Department.DepartmentId">@Department.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <!-- Form Element sizes -->
+                        <div class="card card-success">
+                            <div class="card-header">
+                                <h3 class="card-title">Training Prerequisites</h3>
+                            </div>
+                            <div class="card-body">
+                                <div class="form-group">
+                                    @foreach (var Prerequisite in ViewBag.Prerequisites)
+                                    {
+                                        <div class="custom-control custom-checkbox">
+                                            <input class="custom-control-input prereq" type="checkbox" id="Prerequisite@(@Prerequisite.PrerequisiteId)" name="@Prerequisite.PrerequisiteId">
+                                            <label for="Prerequisite@(Prerequisite.PrerequisiteId)" class="custom-control-label">@Prerequisite.Name</label>
+                                        </div>
+                                    }
+
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                    </div>
+            </div>
         </div>
-    </div>
-    <!-- /.card-header -->
-    <div class="card-body">
-        <form>
-            <div class="form-group">
-                <label for="trainingId">Training ID</label>
-                <input type="number" class="form-control" id="trainingId" placeholder="Enter Training ID">
-            </div>
-
-            <div class="form-group">
-                <label for="name">Name</label>
-                <input type="text" class="form-control" id="name" placeholder="Enter Name">
-            </div>
-
-            <div class="form-group">
-                <label for="description">Description</label>
-                <textarea class="form-control" id="description" placeholder="Enter Description"></textarea>
-            </div>
-
-            <div class="form-group">
-                <label for="threshold">Threshold</label>
-                <input type="number" class="form-control" id="threshold" placeholder="Enter Threshold">
-            </div>
-
-            <div class="form-group">
-                <label for="deadline">Deadline</label>
-                <input type="date" class="form-control" id="deadline">
-            </div>
-
-            <div class="form-group">
-                <label for="managerId">Manager ID</label>
-                <input type="text" class="form-control" id="managerId" placeholder="Enter Manager ID">
-            </div>
-
-            <div class="form-group">
-                <label for="preferedDepartmentId">Prefered Department ID</label>
-                <input type="number" class="form-control" id="preferedDepartmentId" placeholder="Enter Prefered Department ID">
-            </div>
-
-            <!-- Add any additional buttons or controls here -->
-        </form>
-    </div>
-    <!-- /.card-body -->
-    <div class="card-footer">
-        <!-- Footer or additional information can be added here -->
-    </div>
+    </section>
 </div>
 
+@section Scripts {
+    <script type="text/javascript">
+        $("#myForm").validate({
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            errorPlacement: function (error, element) {
+                error.insertAfter(element);
+                element.next().addClass("invalid-feedback")
+            },
+            errorElement: 'div',
 
+            rules: {
+                Name: { required: true },
+                Description: { required: true },
+                Threshold: { required: true },
+                Deadline: { required: true },
+                ManagerId: { required: true },
+                PriorityDepartmentId: { required: true },
+                
+            },
+            submitHandler: handlePost
+        });
+
+        function handlePost() {
+            const data = {
+                Name: $('#Name').val(),
+                Description: $('#Description').val(),
+                Threshold: $('#Threshold').val(),
+                Deadline: new Date($('#Deadline').val()).toISOString(),
+                ManagerId: $('#ManagerId').val(),
+                PriorityDepartmentId: $('#PriorityDepartmentId').val(),
+                Prerequisites: []
+            };
+
+
+            $('input[type="checkbox"]').each(function () { // Select all checkboxes
+                if ($(this).is(':checked')) { // Check if the checkbox is checked
+                    data.Prerequisites.push(parseInt($(this).attr('name')));
+                }
+            });
+
+
+            $.ajax({
+                url: "/admin/AddTrainingPost",
+                type: "POST",
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+            }).done(function (response) {
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Training Added!',
+                    showConfirmButton: false,
+                    timer: 2000 // 2000 milliseconds = 2 seconds
+                }).then(() => {
+                    //window.location.href = "Admin/ViewTrainings";
+                });
+
+            }).fail(function () {
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Contact Admin!',
+                });
+
+                //$("#myForm").trigger("reset");
+
+            });
+
+        }
+
+    </script>
+    }

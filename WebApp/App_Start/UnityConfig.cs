@@ -5,10 +5,12 @@ using MainLibrary;
 using MainLibrary.Repo;
 using MainLibrary.Repo.Interfaces;
 using MainLibrary.Service;
-using MainLibrary.Service.Interfaces;
+using MainLibrary.Services;
+using MainLibrary.Services.Interfaces;
 using Unity;
 using Unity.AspNet.Mvc;
 using Unity.Injection;
+using WebApp.Controllers;
 
 namespace WebApp
 {
@@ -58,11 +60,18 @@ namespace WebApp
             // Register Data Access Layer
             container.RegisterType<IUserRepo, UserRepo>(new PerRequestLifetimeManager());
             container.RegisterType<ITrainingRepo, TrainingRepo>(new PerRequestLifetimeManager());
+            container.RegisterType<IUserRepo, UserRepo>(new PerRequestLifetimeManager());
+            container.RegisterType<IDepartmentRepo, DepartmentRepo>(new PerRequestLifetimeManager());
+            container.RegisterType<IPrerequisiteRepo, PrerequisiteRepo>(new PerRequestLifetimeManager());
+            container.RegisterType<ITrainingPrerequisiteRepo, TrainingPrerequisiteRepo>(new PerRequestLifetimeManager());
 
 
             // Register Service Layer
             container.RegisterType<IUserService, UserService>(new PerRequestLifetimeManager());
             container.RegisterType<ITrainingService, TrainingService>(new PerRequestLifetimeManager());
+            container.RegisterType<IUserService, UserService>(new PerRequestLifetimeManager());
+            container.RegisterType<IDepartmentService, DepartmentService>(new PerRequestLifetimeManager());
+            container.RegisterType<IPrerequisiteService, PrerequisiteService>(new PerRequestLifetimeManager());
 
         }
     }

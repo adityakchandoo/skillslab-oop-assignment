@@ -9,7 +9,7 @@ namespace MainLibrary.Repo
 {
     public class UserRepo : IUserRepo
     {
-        IDbConnection _conn;
+        private readonly IDbConnection _conn;
         public UserRepo(IDbContext dbContext)
         {
             _conn = dbContext.GetConn();
@@ -76,6 +76,27 @@ namespace MainLibrary.Repo
             return results;
         }
 
+        public IEnumerable<User> GetAllUsersByType(UserRoleType userRoleType)
+        {
+            string sql = "SELECT * FROM [dbo].[AppUser] WHERE Role = @Role;";
+
+            List<User> results = new List<User>();
+
+            using (IDbCommand cmd = _conn.CreateCommand())
+            {
+                cmd.CommandText = sql;
+                MyExtensions.AddParameterWithValue(cmd, "@Role", (int)userRoleType);
+
+                using (IDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        results.Add(MyExtensions.ConvertToObject<User>(reader));
+                    }
+                }
+            }
+            return results;
+        }
 
         public User GetUser(string UserId)
         {

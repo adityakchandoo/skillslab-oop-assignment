@@ -56,7 +56,6 @@ namespace WebApp
                     new InjectionConstructor(ConfigurationManager.ConnectionStrings["default"].ConnectionString)
                 );
 
-
             // Register Data Access Layer
             container.RegisterType<IUserRepo, UserRepo>(new PerRequestLifetimeManager());
             container.RegisterType<ITrainingRepo, TrainingRepo>(new PerRequestLifetimeManager());

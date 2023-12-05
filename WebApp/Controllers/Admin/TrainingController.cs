@@ -3,10 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
-using MainLibrary.DTO;
-using MainLibrary.Entities;
-using MainLibrary.Services;
-using MainLibrary.Services.Interfaces;
+using BusinessLayer.Services.Interfaces;
+using Entities.Enums;
+using Entities.FormDTO;
 using WebApp.Helpers;
 
 namespace WebApp.Controllers.Admin
@@ -46,7 +45,7 @@ namespace WebApp.Controllers.Admin
             ViewBag.PageTag = "train-add";
 
             ViewBag.Departments = _departmentService.GetAllDepartments();
-            ViewBag.Managers = _userService.GetAllUsersByType(UserRoleType.Manager);
+            ViewBag.Managers = _userService.GetAllUsersByType(UserRoleEnum.Manager);
             ViewBag.Prerequisites = _prerequisitService.GetAllPrerequisites();
 
             return View("~/Views/Admin/AddTraining.cshtml");

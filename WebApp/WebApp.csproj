@@ -227,7 +227,6 @@
     <Folder Include="App_Data\" />
     <Folder Include="Content\adminlte\css\" />
     <Folder Include="Content\adminlte\js\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
@@ -257,9 +256,17 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MainLibrary\MainLibrary.csproj">
-      <Project>{79fb1630-a7ca-40ca-a212-8fa21648d19b}</Project>
-      <Name>MainLibrary</Name>
+    <ProjectReference Include="..\BusinessLayer\BusinessLayer.csproj">
+      <Project>{dbebbd6e-501b-4768-931f-e560620ca4e0}</Project>
+      <Name>BusinessLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataLayer\DataLayer.csproj">
+      <Project>{0730ced9-a7e1-48b8-8d23-7369c8e93b04}</Project>
+      <Name>DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Entities\Entities.csproj">
+      <Project>{0a243298-2ddd-47b0-9b1c-e29205cedd13}</Project>
+      <Name>Entities</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

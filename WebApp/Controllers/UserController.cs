@@ -1,9 +1,8 @@
-﻿using MainLibrary.DTO;
-using System;
+﻿using System;
 using System.Web.Mvc;
-using MainLibrary.Entities;
-using WebApp.Helpers;
-using MainLibrary.Services.Interfaces;
+using Entities.FormDTO;
+using Entities.DTO;
+using BusinessLayer.Services.Interfaces;
 
 namespace WebApp.Controllers
 {
@@ -42,8 +41,8 @@ namespace WebApp.Controllers
                     return Json(new { Error = "Invalid User/Pass" });
                 }
 
-                this.Session["UserId"] = authResponse.user.UserId;
-                this.Session["Role"] = (int)authResponse.user.Role;
+                this.Session["UserId"] = authResponse.AppUser.UserId;
+                this.Session["Role"] = (int)authResponse.AppUser.Role;
 
                 return Json(new { status = "ok", redirectPath = authResponse.RedirectPath });
 

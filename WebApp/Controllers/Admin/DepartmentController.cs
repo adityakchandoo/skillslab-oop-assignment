@@ -1,11 +1,12 @@
-﻿using MainLibrary.DTO;
-using MainLibrary.Service;
-using MainLibrary.Services.Interfaces;
+﻿using BusinessLayer.Services.Interfaces;
+using Entities.DbModels;
+using Entities.FormDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using System.Xml.Linq;
 
 namespace WebApp.Controllers.Admin
 {
@@ -32,6 +33,12 @@ namespace WebApp.Controllers.Admin
         [Route("AddDepartment")]
         public ActionResult AddDepartment(DepartmentDTO department)
         {
+            Department department_db = new Department()
+            {
+                Name = department.Name,
+                Description = department.Description,
+            };
+
             if (!ModelState.IsValid)
             {
                 Response.StatusCode = 400;
@@ -40,7 +47,7 @@ namespace WebApp.Controllers.Admin
 
             try
             {
-                _dapartmentService.AddDepartment(department);
+                _dapartmentService.AddDepartment(department_db);
 
                 return Json(new { status = "ok" });
 

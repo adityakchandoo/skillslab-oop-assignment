@@ -1,4 +1,4 @@
-﻿using MainLibrary.Entities;
+﻿using Entities.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,7 +13,7 @@ namespace WebApp.Helpers
         {
             if (filterContext.HttpContext.Session["UserId"] == null ||
                 filterContext.HttpContext.Session["Role"] == null ||
-                (UserRoleType)filterContext.HttpContext.Session["Role"] != UserRoleType.Employee)
+                (UserRoleEnum)filterContext.HttpContext.Session["Role"] != UserRoleEnum.Employee)
             {
                 filterContext.Result = new RedirectResult("~/User/Login"); // redirect to login action
             }

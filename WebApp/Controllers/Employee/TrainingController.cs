@@ -1,15 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography.X509Certificates;
-using System.Web;
 using System.Web.Mvc;
-using MainLibrary.DTO;
-using MainLibrary.Entities;
-using MainLibrary.Entities.Types;
-using MainLibrary.Service;
-using MainLibrary.Services;
-using MainLibrary.Services.Interfaces;
+using BusinessLayer.Services.Interfaces;
+using Entities.DbModels;
+using Entities.DTO;
+using Entities.Enums;
 using WebApp.Helpers;
 
 namespace WebApp.Controllers.Employee
@@ -106,11 +100,11 @@ namespace WebApp.Controllers.Employee
                 {
                     UserId = UserId,
                     TrainingId = trainingId,
-                    Status = EnrollStatusType.Pending
+                    Status = EnrollStatusEnum.Pending
                 };
 
                 Training training = _trainingService.GetTraining(trainingId);
-                User user = _userService.GetUser(training.ManagerId);
+                AppUser user = _userService.GetUser(training.ManagerId);
 
                 _userTrainingEnrollmentService.CreateUserTrainingEnrollment(enrollment);
 

@@ -3,7 +3,7 @@
 /*==============================================================*/
 create table Department (
 	DepartmentId			int                  identity,
-	Name					nvarchar(40)         not null,
+	Name					nvarchar(40)         not null unique,
 	Description				text        		 null,
 	constraint PK_Department_DepartmentId primary key (DepartmentId)
 )
@@ -22,7 +22,14 @@ create table AppUser (
 	CreatedOn				datetime             not null,
 	Status					tinyint         	 not null,
 	Role					tinyint              not null,
-	constraint PK_AppUser_UserId primary key (UserId)
+	ManagerId				nvarchar(40)		 null,
+	DepartmentId			int					 null,
+	constraint PK_AppUser_UserId primary key (UserId),
+	constraint FK_Training_ManagerId_AppUser_UserId foreign key (ManagerId)
+      references AppUser(UserId),
+	constraint FK_Training_DepartmentId_Department_DepartmentId foreign key (DepartmentId)
+      references Department(DepartmentId)
+
 )
 /*==============================================================*/
 /* Table: Training                                              */
@@ -33,21 +40,19 @@ create table Training (
 	Description				text         		 not null,
 	Threshold				int         		 not null,
 	Deadline				datetime             not null,
-	ManagerId				nvarchar(40)		 not null,
 	PreferedDepartmentId	int					 null,
     constraint PK_Training_TrainingId primary key (TrainingId),
 	constraint FK_Training_PreferedDepartmentId_Department_DepartmentId foreign key (PreferedDepartmentId)
-      references Department(DepartmentId),
-	constraint FK_Training_ManagerId_AppUser_UserId foreign key (ManagerId)
-      references AppUser(UserId)
+	references Department(DepartmentId)
 )
+
 
 /*==============================================================*/
 /* Table: Prerequisite                                          */
 /*==============================================================*/
 create table Prerequisite (
 	PrerequisiteId			int                  identity,
-	Name					nvarchar(40)         not null,
+	Name					nvarchar(40)         not null unique,
 	Description				text    		     not null,
     constraint PK_Prerequisite_PrerequisiteId primary key (PrerequisiteId)
 )
@@ -85,16 +90,16 @@ create table UserTrainingEnrollment (
 )
 
 /*==============================================================*/
-/* Table: EnrollmentAttachment                                  */
+/* Table: EnrollmentPrerequisiteAttachment                      */
 /*==============================================================*/
-create table EnrollmentAttachment (
-	EnrollmentAttachmentId	int                  identity,
-	EnrollmentId			int        			 not null,
-	TrainingPrerequisiteId  Int					 not null,
-	OriginalFilename		nvarchar(40)         not null,
-	SystemFilename			nvarchar(40)         not null,
-    constraint EnrollmentAttachmentId primary key (EnrollmentAttachmentId),
-	constraint FK_EnrollmentAttachment_EnrollmentId_UserTrainingEnrollment_UserTrainingEnrollmentId foreign key (EnrollmentId)
+create table EnrollmentPrerequisiteAttachment (
+	EnrollmentPrerequisiteAttachmentId	int                  identity,
+	EnrollmentId						int        			 not null,
+	TrainingPrerequisiteId  			Int					 not null,
+	OriginalFilename					nvarchar(40)         not null,
+	SystemFilename						nvarchar(40)         not null,
+    constraint EnrollmentPrerequisiteAttachmentId primary key (EnrollmentPrerequisiteAttachmentId),
+	constraint FK_EnrollmentPrerequisiteAttachment_EnrollmentId_UserTrainingEnrollment_UserTrainingEnrollmentId foreign key (EnrollmentId)
       references UserTrainingEnrollment(UserTrainingEnrollmentId),
 	constraint FK_EnrollmentAttachment_TrainingPrerequisiteId_TrainingPrerequisite_TrainingPrerequisiteId foreign key (TrainingPrerequisiteId)
       references TrainingPrerequisite(TrainingPrerequisiteId)
@@ -112,4 +117,18 @@ create table TrainingContent (
     constraint PK_TrainingContent_TrainingContentId primary key (TrainingContentId),
 	constraint FK_TrainingContent_TrainingId_Training_TrainingId foreign key (TrainingId)
       references Training(TrainingId)
+)
+
+/*==============================================================*/
+/* Table: TrainingContentAttachment                             */
+/*==============================================================*/
+create table TrainingContentAttachment (
+	TrainingContentAttachmentId		int                  identity,
+	TrainingContentId				int         		 not null,
+	Name					nvarchar(40)         not null,
+	Description				text    		     not null,
+	PostDate				datetime     	     not null,
+    constraint PK_TrainingContentAttachment_TrainingContentAttachmentId primary key (TrainingContentAttachmentId),
+	constraint FK_TrainingContentAttachment_TrainingContentAttachmentId_TrainingContent_TrainingContentId foreign key (TrainingContentId)
+      references TrainingContent(TrainingContentId)
 )

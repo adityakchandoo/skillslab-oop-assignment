@@ -1,0 +1,73 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{0A243298-2DDD-47B0-9B1C-E29205CEDD13}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Entities</RootNamespace>
+    <AssemblyName>Entities</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="DbCustom\TrainingDetails.cs" />
+    <Compile Include="DbModels\AppUsers.cs" />
+    <Compile Include="DbModels\Department.cs" />
+    <Compile Include="DbModels\EnrollmentPrerequisiteAttachment.cs" />
+    <Compile Include="DbModels\Prerequisite.cs" />
+    <Compile Include="DbModels\Training.cs" />
+    <Compile Include="DbModels\TrainingContent.cs" />
+    <Compile Include="DbModels\TrainingContentAttachment.cs" />
+    <Compile Include="DbModels\TrainingPrerequisite.cs" />
+    <Compile Include="DbModels\UserTrainingEnrollment.cs" />
+    <Compile Include="DTO\DepartmentDTO.cs" />
+    <Compile Include="DTO\AuthenticateResponseDTO.cs" />
+    <Compile Include="DTO\NotificationDTO.cs" />
+    <Compile Include="DTO\PrerequisiteDTO.cs" />
+    <Compile Include="DTO\UploadFileStore.cs" />
+    <Compile Include="FormDTO\RegEnrollFormDTO.cs" />
+    <Compile Include="Enums\EnrollStatusEnum.cs" />
+    <Compile Include="Enums\UserRoleEum.cs" />
+    <Compile Include="Enums\UserStatusEum.cs" />
+    <Compile Include="FormDTO\DepartmentDTO.cs" />
+    <Compile Include="FormDTO\PrerequisiteDTO.cs" />
+    <Compile Include="FormDTO\RegisterFormDTO.cs" />
+    <Compile Include="FormDTO\AddTrainingFormDTO.cs" />
+    <Compile Include="FormDTO\UserLoginFormDTO.cs" />
+    <Compile Include="Other\NotIdentity.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

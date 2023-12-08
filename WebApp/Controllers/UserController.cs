@@ -1,9 +1,10 @@
-﻿using MainLibrary.DTO;
-using System;
+﻿using System;
 using System.Web.Mvc;
-using MainLibrary.Entities;
-using WebApp.Helpers;
-using MainLibrary.Services.Interfaces;
+using Entities.FormDTO;
+using Entities.DTO;
+using BusinessLayer.Services.Interfaces;
+using Entities.Enums;
+using DataLayer.Repository.Interfaces;
 
 namespace WebApp.Controllers
 {
@@ -11,9 +12,11 @@ namespace WebApp.Controllers
     {
 
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly IDepartmentService _departmentService;
+        public UserController(IUserService userService, IDepartmentService departmentService)
         {
             _userService = userService;
+            _departmentService = departmentService;
         }
 
 
@@ -42,8 +45,8 @@ namespace WebApp.Controllers
                     return Json(new { Error = "Invalid User/Pass" });
                 }
 
-                this.Session["UserId"] = authResponse.user.UserId;
-                this.Session["Role"] = (int)authResponse.user.Role;
+                this.Session["UserId"] = authResponse.AppUser.UserId;
+                this.Session["Role"] = (int)authResponse.AppUser.Role;
 
                 return Json(new { status = "ok", redirectPath = authResponse.RedirectPath });
 
@@ -58,6 +61,8 @@ namespace WebApp.Controllers
 
         public ActionResult Register()
         {
+            ViewBag.Managers = _userService.GetAllUsersByType(UserRoleEnum.Manager);
+            ViewBag.Departments = _departmentService.GetAllDepartments();
             return View();
         }
 
@@ -81,7 +86,7 @@ namespace WebApp.Controllers
                 Response.StatusCode = 400;
                 return Json(new { Error = ex.Message });
             }
-            
+
         }
 
         [HttpPost]

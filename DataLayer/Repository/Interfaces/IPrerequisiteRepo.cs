@@ -1,0 +1,15 @@
+﻿using DataLayer.Generic;
+using Entities.DbModels;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace DataLayer.Repository.Interfaces
+{
+    public interface IPrerequisiteRepo : IDataAccessLayer<Prerequisite>
+    {
+        IEnumerable<Prerequisite> GetPrerequisitesByTraining(int training);
+    }
+}

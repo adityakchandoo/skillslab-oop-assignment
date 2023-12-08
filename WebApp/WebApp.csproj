@@ -149,6 +149,7 @@
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Manager\ManagerController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Helpers\ApplyTrainingFormDTO.cs" />
     <Compile Include="Helpers\ManagerSession.cs" />
     <Compile Include="Helpers\AdminSession.cs" />
     <Compile Include="Helpers\EmployeeSession.cs" />
@@ -159,6 +160,54 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\adminlte\assets\avatar-profile.png" />
+    <Content Include="Content\adminlte\bootstrap\js\bootstrap.bundle.js" />
+    <Content Include="Content\adminlte\bootstrap\js\bootstrap.bundle.min.js" />
+    <Content Include="Content\adminlte\bootstrap\js\bootstrap.js" />
+    <Content Include="Content\adminlte\bootstrap\js\bootstrap.min.js" />
+    <Content Include="Content\adminlte\dist\css\adminlte.css" />
+    <Content Include="Content\adminlte\dist\css\adminlte.min.css" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.components.css" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.components.min.css" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.core.css" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.core.min.css" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.extra-components.css" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.extra-components.min.css" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.light.css" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.light.min.css" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.pages.css" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.pages.min.css" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.plugins.css" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.plugins.min.css" />
+    <Content Include="Content\adminlte\dist\js\adminlte.js" />
+    <Content Include="Content\adminlte\dist\js\adminlte.min.js" />
+    <Content Include="Content\adminlte\dist\js\demo.js" />
+    <Content Include="Content\adminlte\dist\js\pages\dashboard.js" />
+    <Content Include="Content\adminlte\dist\js\pages\dashboard2.js" />
+    <Content Include="Content\adminlte\dist\js\pages\dashboard3.js" />
+    <Content Include="Content\adminlte\fontawesome-free\css\all.css" />
+    <Content Include="Content\adminlte\fontawesome-free\css\all.min.css" />
+    <Content Include="Content\adminlte\fontawesome-free\css\brands.css" />
+    <Content Include="Content\adminlte\fontawesome-free\css\brands.min.css" />
+    <Content Include="Content\adminlte\fontawesome-free\css\fontawesome.css" />
+    <Content Include="Content\adminlte\fontawesome-free\css\fontawesome.min.css" />
+    <Content Include="Content\adminlte\fontawesome-free\css\regular.css" />
+    <Content Include="Content\adminlte\fontawesome-free\css\regular.min.css" />
+    <Content Include="Content\adminlte\fontawesome-free\css\solid.css" />
+    <Content Include="Content\adminlte\fontawesome-free\css\solid.min.css" />
+    <Content Include="Content\adminlte\fontawesome-free\css\svg-with-js.css" />
+    <Content Include="Content\adminlte\fontawesome-free\css\svg-with-js.min.css" />
+    <Content Include="Content\adminlte\fontawesome-free\css\v4-shims.css" />
+    <Content Include="Content\adminlte\fontawesome-free\css\v4-shims.min.css" />
+    <Content Include="Content\adminlte\fontawesome-free\webfonts\fa-brands-400.svg" />
+    <Content Include="Content\adminlte\fontawesome-free\webfonts\fa-regular-400.svg" />
+    <Content Include="Content\adminlte\fontawesome-free\webfonts\fa-solid-900.svg" />
+    <Content Include="Content\adminlte\icheck-bootstrap\icheck-bootstrap.css" />
+    <Content Include="Content\adminlte\icheck-bootstrap\icheck-bootstrap.min.css" />
+    <Content Include="Content\adminlte\jquery\jquery.js" />
+    <Content Include="Content\adminlte\jquery\jquery.min.js" />
+    <Content Include="Content\adminlte\jquery\jquery.slim.js" />
+    <Content Include="Content\adminlte\jquery\jquery.slim.min.js" />
     <Content Include="Content\bootstrap-grid.css" />
     <Content Include="Content\bootstrap-grid.min.css" />
     <Content Include="Content\bootstrap-grid.rtl.css" />
@@ -178,12 +227,49 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\jquery.validate.additional-methods.js" />
     <Content Include="Scripts\bootstrap.bundle.js" />
     <Content Include="Scripts\bootstrap.bundle.min.js" />
     <Content Include="Scripts\bootstrap.esm.js" />
     <Content Include="Scripts\bootstrap.esm.min.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
+    <Content Include="Content\adminlte\bootstrap\js\bootstrap.bundle.js.map" />
+    <Content Include="Content\adminlte\bootstrap\js\bootstrap.bundle.min.js.map" />
+    <Content Include="Content\adminlte\bootstrap\js\bootstrap.js.map" />
+    <Content Include="Content\adminlte\bootstrap\js\bootstrap.min.js.map" />
+    <Content Include="Content\adminlte\dist\css\adminlte.css.map" />
+    <Content Include="Content\adminlte\dist\css\adminlte.min.css.map" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.components.css.map" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.components.min.css.map" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.core.css.map" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.core.min.css.map" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.extra-components.css.map" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.extra-components.min.css.map" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.light.css.map" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.light.min.css.map" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.pages.css.map" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.pages.min.css.map" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.plugins.css.map" />
+    <Content Include="Content\adminlte\dist\css\alt\adminlte.plugins.min.css.map" />
+    <Content Include="Content\adminlte\dist\js\.eslintrc.json" />
+    <Content Include="Content\adminlte\dist\js\adminlte.js.map" />
+    <Content Include="Content\adminlte\dist\js\adminlte.min.js.map" />
+    <Content Include="Content\adminlte\fontawesome-free\webfonts\fa-brands-400.eot" />
+    <Content Include="Content\adminlte\fontawesome-free\webfonts\fa-brands-400.ttf" />
+    <Content Include="Content\adminlte\fontawesome-free\webfonts\fa-brands-400.woff" />
+    <Content Include="Content\adminlte\fontawesome-free\webfonts\fa-brands-400.woff2" />
+    <Content Include="Content\adminlte\fontawesome-free\webfonts\fa-regular-400.eot" />
+    <Content Include="Content\adminlte\fontawesome-free\webfonts\fa-regular-400.ttf" />
+    <Content Include="Content\adminlte\fontawesome-free\webfonts\fa-regular-400.woff" />
+    <Content Include="Content\adminlte\fontawesome-free\webfonts\fa-regular-400.woff2" />
+    <Content Include="Content\adminlte\fontawesome-free\webfonts\fa-solid-900.eot" />
+    <Content Include="Content\adminlte\fontawesome-free\webfonts\fa-solid-900.ttf" />
+    <Content Include="Content\adminlte\fontawesome-free\webfonts\fa-solid-900.woff" />
+    <Content Include="Content\adminlte\fontawesome-free\webfonts\fa-solid-900.woff2" />
+    <Content Include="Content\adminlte\jquery\jquery.min.map" />
+    <Content Include="Content\adminlte\jquery\jquery.slim.min.map" />
+    <Content Include="Content\adminlte\icheck-bootstrap\LICENSE" />
     <None Include="Scripts\jquery-3.4.1.intellisense.js" />
     <Content Include="Scripts\jquery-3.4.1.js" />
     <Content Include="Scripts\jquery-3.4.1.min.js" />
@@ -222,12 +308,11 @@
     <Content Include="Views\Shared\_EmployeeLayout.cshtml" />
     <Content Include="Views\Admin\Blank.cshtml" />
     <Content Include="Views\Employee\SearchTrainings.cshtml" />
+    <Content Include="Views\Employee\ApplyTraining.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
-    <Folder Include="Content\adminlte\css\" />
     <Folder Include="Content\adminlte\js\" />
-    <Folder Include="Models\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />
@@ -257,9 +342,17 @@
     <Content Include="Scripts\jquery-3.4.1.min.map" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MainLibrary\MainLibrary.csproj">
-      <Project>{79fb1630-a7ca-40ca-a212-8fa21648d19b}</Project>
-      <Name>MainLibrary</Name>
+    <ProjectReference Include="..\BusinessLayer\BusinessLayer.csproj">
+      <Project>{dbebbd6e-501b-4768-931f-e560620ca4e0}</Project>
+      <Name>BusinessLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DataLayer\DataLayer.csproj">
+      <Project>{0730ced9-a7e1-48b8-8d23-7369c8e93b04}</Project>
+      <Name>DataLayer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Entities\Entities.csproj">
+      <Project>{0a243298-2ddd-47b0-9b1c-e29205cedd13}</Project>
+      <Name>Entities</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>

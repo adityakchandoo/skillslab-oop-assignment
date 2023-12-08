@@ -1,0 +1,169 @@
+﻿
+@{
+    ViewBag.Title = "ApplyTraining";
+    ViewBag.PageTag = "dfdfd";
+    Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+}
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <div class="col-md-3">
+
+
+                    <!-- About Me Box -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Training Details</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <div class="card-body">
+                            <strong><i class="fas fa-book mr-1"></i> Name</strong>
+                            <p class="text-muted">
+                                @ViewBag.Training.Name
+                            </p>
+
+                            <hr>
+
+                            <strong><i class="fas fa-map-marker-alt mr-1"></i> Max Seats Available</strong>
+                            <p class="text-muted">
+                                @ViewBag.Training.Threshold
+                            </p>
+
+                            <hr>
+
+                            <strong><i class="fas fa-pencil-alt mr-1"></i> Deadline</strong>
+
+                            <p class="text-muted">
+                                @ViewBag.Training.Deadline
+                            </p>
+
+                            <hr>
+
+                            <strong><i class="far fa-file-alt mr-1"></i> Description</strong>
+
+                            <p class="text-muted">
+                                @ViewBag.Training.Description
+                            </p>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+                <div class="col-md-9">
+                    <div class="card">
+                        <div class="card-header p-2">
+                            <h5>Upload Prerequisites</h5>
+                        </div><!-- /.card-header -->
+                        <div class="card-body">
+                            <div class="tab-content">
+                                <div class="active tab-pane" id="activity">
+                                    <!-- Post -->
+                                    <div class="post">
+
+                                        @foreach (var Prerequisite in ViewBag.Prerequisites)
+                                        {
+                                            <div class="form-group">
+                                                <label for="prereq@{@Prerequisite.PrerequisiteId}">@Prerequisite.Name</label>
+                                                <p>
+                                                    @Prerequisite.Description
+                                                </p>
+                                                <div class="input-group">
+                                                    <div class="custom-file">
+                                                        <input type="file" class="custom-file-input" id="prereq@{@Prerequisite.PrerequisiteId}" name="@{@Prerequisite.PrerequisiteId}">
+                                                        <label class="custom-file-label" for="prereq@{@Prerequisite.PrerequisiteId}">Choose file</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        }
+                                    </div>
+                                    <!-- /.post -->
+                                </div>
+                                <button type="button" onclick="upload();" class="btn btn-primary float-left">Submit</button>
+                            </div>
+                            <!-- /.tab-content -->
+                        </div><!-- /.card-body -->
+                    </div>
+                    <!-- /.card -->
+                </div>
+                <!-- /.col -->
+            </div>
+
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        var trainingId = @ViewBag.trainingId;
+
+        console.log($("input.custom-file-input"));
+
+        function upload() {
+            console.log('Upload function begins');
+            let pBar = document.getElementsByClassName('progress-bar')[0],
+                progressWindow = document.getElementById('modal-progress'),
+                formData = new FormData(),
+                xhr = new XMLHttpRequest(),
+                percent = 0;
+
+            formData.append("trainingId", trainingId);
+            
+            $("input.custom-file-input").each(function (i, obj) {
+                formData.append(obj.name, obj.files[0]);
+                console.log(obj.name)
+            });
+
+            
+            //formData.append(", trainingId)
+
+            console.log('Form Data created');
+            // Start upload
+            xhr.upload.onloadstart = function () {
+                //$('#modal-progress').hide().fadeIn();
+                //progressWindow
+            };
+
+            // Track upload progress
+            xhr.upload.onprogress = function (event) {
+                percent = parseInt(event.loaded / event.total * 100);
+                //pBar.innerHTML = percent + "%";
+                //pBar.style.width = percent + "%";
+                console.log(percent + '% completed');
+                //console.log('Uploaded event.loaded of event.total');
+            };
+
+            // Report if ends with an error
+            xhr.upload.onerror = function () {
+                console.log('An error has occurred')
+            };
+
+            // Track completion: Both successful or not
+            xhr.upload.onloadend = function () {
+                //$('#modal-progress').fadeOut().hide();
+                console.log('Upload complete with or without error ' + xhr.status);
+            };
+
+            // Track progress: Triggered on successful completion
+            xhr.upload.onload = function () {
+                console.log('Uploading complete');
+                //progressWindow.hidden = True;
+            };
+
+            xhr.open("POST", "/Employee/ApplyTrainingPost", true);
+            //xhr.setRequestHeader("Content-Type", "multipart/form-data");
+
+            // The 'setRequestHeader' function can only be called when xhr is opened.
+            //xhr.setRequestHeader('csrfmiddlewaretoken', '{{ csrf_token }}');
+            //xhr.setRequestHeader('test-info', 'something');
+            //xhr.setRequestHeader('Content-Type', 'application/gzip');
+
+            xhr.send(formData);
+        }
+
+    </script>
+}

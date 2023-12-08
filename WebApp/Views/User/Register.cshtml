@@ -6,7 +6,7 @@
 }
 
 <h2 class="mb-3">Employee Registration</h2>
-<form id="myForm" class="row g-3" novalidate method="post">
+<form id="myForm" class="row g-3" method="post" novalidate>
     <div class="col-md-6">
         <label for="FirstName" class="form-label">First Name</label>
         <input type="text" class="form-control" id="FirstName" name="FirstName">
@@ -48,6 +48,26 @@
         <input type="password" class="form-control" id="Pass2" name="Pass2">
     </div>
 
+    <div class="col-md-6">
+        <label for="Manager" class="form-label">Manager</label>
+        <select class="form-select" id="ManagerId" name="ManagerId" aria-label="Default select example">
+            <option value="">Select Manager</option>
+            @foreach (var Manager in ViewBag.Managers)
+            {
+                <option value="@Manager.UserId">@Manager.FirstName @Manager.FirstName</option>
+            }
+        </select>
+    </div>
+    <div class="col-md-6">
+        <label for="Department" class="form-label">Department</label>
+        <select class="form-select" id="DepartmentId" name="DepartmentId" aria-label="Default select example">
+            <option value="-1">None</option>
+            @foreach (var Department in ViewBag.Departments)
+            {
+                <option value="@Department.DepartmentId">@Department.Name</option>
+            }
+        </select>
+    </div>
 
 
     <div class="col-12 mt-3">
@@ -82,9 +102,11 @@
                     required: true,
                     pattern: "^.{1}[0-9]{6}.{7}$",
 
-                
+
                 },
                 MobileNumber: { required: true },
+                ManagerId: { required: true },
+                DepartmentId: { required: true },
                 Pass1: {
                     required: true,
                     minlength: 5

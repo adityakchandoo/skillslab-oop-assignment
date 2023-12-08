@@ -16,14 +16,12 @@ namespace WebApp.Controllers.Admin
     {
         private readonly ITrainingService _trainingService;
         private readonly IDepartmentService _departmentService;
-        private readonly IUserService _userService;
         private readonly IPrerequisiteService _prerequisitService;
 
-        public TrainingController(ITrainingService trainingService, IDepartmentService departmentService, IUserService userService, IPrerequisiteService prerequisitService)
+        public TrainingController(ITrainingService trainingService, IDepartmentService departmentService, IPrerequisiteService prerequisitService)
         {
             _trainingService = trainingService;
             _departmentService = departmentService;
-            _userService = userService;
             _prerequisitService = prerequisitService;
         }
 
@@ -34,7 +32,7 @@ namespace WebApp.Controllers.Admin
         {
             ViewBag.PageTag = "train-manage";
 
-            ViewBag.Trainings = _trainingService.GetAllTraining();
+            ViewBag.Trainings = _trainingService.GetAllTrainingDetails();
 
             return View("~/Views/Admin/ViewTrainings.cshtml");
         }
@@ -45,7 +43,6 @@ namespace WebApp.Controllers.Admin
             ViewBag.PageTag = "train-add";
 
             ViewBag.Departments = _departmentService.GetAllDepartments();
-            ViewBag.Managers = _userService.GetAllUsersByType(UserRoleEnum.Manager);
             ViewBag.Prerequisites = _prerequisitService.GetAllPrerequisites();
 
             return View("~/Views/Admin/AddTraining.cshtml");
@@ -53,11 +50,11 @@ namespace WebApp.Controllers.Admin
 
         [Route("AddTrainingPost")]
         [HttpPost]
-        public ActionResult AddTrainingPost(TrainingDTO training)
+        public ActionResult AddTrainingPost(AddTrainingFormDTO training)
         {
             try
             {
-                _trainingService.AddTrainingAndTrainingPrerequisite(training);
+                _trainingService.AddTrainingWithTrainingPrerequisite(training);
 
                 return Json(new { status = "ok" });
 

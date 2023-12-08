@@ -56,17 +56,6 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="managerId">Manager</label>
-                                        <select class="form-control select2" id="ManagerId" name="ManagerId" style="width: 100%;">
-                                            <option value="">Select your option</option>
-                                            @foreach (var Manager in ViewBag.Managers)
-                                            {
-                                                <option value="@Manager.UserId">@Manager.FirstName @Manager.FirstName</option>
-                                            }
-                                        </select>
-                                    </div>
-
-                                    <div class="form-group">
                                         <label for="preferedDepartmentId">Priority Department</label>
                                         <select class="form-control select2" id="PriorityDepartmentId" name="PriorityDepartmentId" style="width: 100%;">
                                             <option value="-1">None</option>
@@ -128,7 +117,6 @@
                 Description: { required: true },
                 Threshold: { required: true },
                 Deadline: { required: true },
-                ManagerId: { required: true },
                 PriorityDepartmentId: { required: true },
                 
             },
@@ -141,7 +129,6 @@
                 Description: $('#Description').val(),
                 Threshold: $('#Threshold').val(),
                 Deadline: new Date($('#Deadline').val()).toISOString(),
-                ManagerId: $('#ManagerId').val(),
                 PriorityDepartmentId: $('#PriorityDepartmentId').val(),
                 Prerequisites: []
             };
@@ -167,7 +154,7 @@
                     showConfirmButton: false,
                     timer: 2000 // 2000 milliseconds = 2 seconds
                 }).then(() => {
-                    window.location.href = "Admin/ViewTrainings";
+                    window.location.href = "/Admin/ViewTrainings";
                 });
 
             }).fail(function () {

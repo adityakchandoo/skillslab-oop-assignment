@@ -32,12 +32,6 @@ namespace WebApp.Controllers.Admin
         [Route("AddPrerequisite")]
         public ActionResult AddDepartment(PrerequisiteDTO prerequisite)
         {
-            Prerequisite prerequisite_db = new Prerequisite()
-            {
-                Name = prerequisite.Name,
-                Description = prerequisite.Description
-
-            };
             if (!ModelState.IsValid)
             {
                 Response.StatusCode = 400;
@@ -46,6 +40,13 @@ namespace WebApp.Controllers.Admin
 
             try
             {
+                Prerequisite prerequisite_db = new Prerequisite()
+                {
+                    Name = prerequisite.Name,
+                    Description = prerequisite.Description
+
+                };
+
                 _prerequisiteService.AddPrerequisite(prerequisite_db);
 
                 return Json(new { status = "ok" });

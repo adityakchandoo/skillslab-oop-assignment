@@ -14,5 +14,6 @@ namespace BusinessLayer.Services.Interfaces
         void AddPrerequisite(Prerequisite prerequisite);
         void DeletePrerequisite(int prerequisiteId);
         void UpdatePrerequisite(Prerequisite prerequisite);
+        IEnumerable<Prerequisite> GetPrerequisitesByTraining(int training);
     }
 }

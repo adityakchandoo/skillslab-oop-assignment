@@ -1,9 +1,13 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Configuration;
 using System.Web.Mvc;
+using BusinessLayer.Services;
 using BusinessLayer.Services.Interfaces;
 using Entities.DbModels;
 using Entities.DTO;
 using Entities.Enums;
+using Entities.FormDTO;
 using WebApp.Helpers;
 
 namespace WebApp.Controllers.Employee
@@ -15,14 +19,18 @@ namespace WebApp.Controllers.Employee
         private readonly ITrainingService _trainingService;
         private readonly IUserTrainingEnrollmentService _userTrainingEnrollmentService;
         private readonly IUserService _userService;
-        private readonly INotificationService _notificationService;
+        private readonly IPrerequisiteService _prerequisiteService;
 
-        public TrainingController(ITrainingService trainingService, IUserTrainingEnrollmentService userTrainingEnrollmentService, IUserService userService, INotificationService notificationService)
+        public TrainingController(
+            ITrainingService trainingService, 
+            IUserTrainingEnrollmentService userTrainingEnrollmentService, 
+            IUserService userService, 
+            IPrerequisiteService prerequisiteService)
         {
             _trainingService = trainingService;
             _userTrainingEnrollmentService = userTrainingEnrollmentService;
             _userService = userService;
-            _notificationService = notificationService;
+            _prerequisiteService = prerequisiteService;
         }
 
 
@@ -38,7 +46,6 @@ namespace WebApp.Controllers.Employee
                 ViewBag.Trainings = _trainingService.GetTrainingEnrolledByUser(UserId);
 
                 return View("~/Views/Employee/MyTrainings.cshtml");
-
             }
             catch (Exception ex)
             {
@@ -88,35 +95,33 @@ namespace WebApp.Controllers.Employee
             }
         }
 
-        [Route("ApplyTraining")]
-        [HttpPost]
+        [Route("ApplyTraining/{trainingId}")]
         public ActionResult ApplyTraining(int trainingId)
         {
+
+            ViewBag.trainingId = trainingId;
+            ViewBag.Training = _trainingService.GetTraining(trainingId);
+            ViewBag.Prerequisites = _prerequisiteService.GetPrerequisitesByTraining(trainingId);
+
+            return View("~/Views/Employee/ApplyTraining.cshtml");
+        }
+
+        [Route("ApplyTrainingPost")]
+        [HttpPost]
+        public ActionResult ApplyTrainingPost(int trainingId)
+        {
+            List<UploadFileStore> uploadFiles = new List<UploadFileStore>();
+
             try
             {
                 const string UserId = "aditya";// (string)this.Session["UserId"];
 
-                UserTrainingEnrollment enrollment = new UserTrainingEnrollment()
+                foreach (string key in Request.Files.AllKeys)
                 {
-                    UserId = UserId,
-                    TrainingId = trainingId,
-                    Status = EnrollStatusEnum.Pending
-                };
+                    uploadFiles.Add(new UploadFileStore() { FileId = int.Parse(key), FileName = Request.Files.Get(key).FileName, FileContent = Request.Files.Get(key).InputStream }); ;
+                }
 
-                Training training = _trainingService.GetTraining(trainingId);
-                AppUser user = _userService.GetUser(training.ManagerId);
-
-                _userTrainingEnrollmentService.CreateUserTrainingEnrollment(enrollment);
-
-
-                NotificationDTO notificationDTO = new NotificationDTO()
-                {
-                    To = user.Email,
-                    Subject = "New Student Applied to Training",
-                    Body = "Check website"
-                };
-
-                _notificationService.Send(notificationDTO);
+                _trainingService.ApplyTraining(UserId, trainingId, uploadFiles);
 
                 return Json(new { status = "ok" });
 

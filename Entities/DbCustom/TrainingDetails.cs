@@ -7,9 +7,16 @@ using System.Threading.Tasks;
 
 namespace Entities.DbCustom
 {
-    public class TrainingDetails : Training
+    public class TrainingDetails
     {
-        public string ManagerName { get; set; }
+        public Training Training { get; set; }
+        public TrainingExtra TrainingExtra { get; set; }
+    }
+
+    public class TrainingExtra
+    {
+        public int TrainingId { get; set; }
         public string DepartmentName { get; set; }
+        public int NumberOfEmployeesEnrolled { get; set; }
     }
 }

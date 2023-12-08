@@ -19,73 +19,103 @@ namespace DataLayer.Repository
 
         public IEnumerable<TrainingDetails> GetAllTraining()
         {
-            string sql = @"SELECT [Training].*, CONCAT(AppUser.FirstName,' ', AppUser.LastName) AS ManagerName, Department.Name AS DepartmentName FROM [dbo].[Training] 
-                         INNER JOIN AppUser ON Training.ManagerId = AppUser.UserId 
-                         LEFT JOIN Department ON Training.PreferedDepartmentId = Department.DepartmentId;";
-
+            // Workaround The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator.
 
             List<TrainingDetails> results = new List<TrainingDetails>();
 
-            using (IDbCommand cmd = _conn.CreateCommand())
-            {
-                cmd.CommandText = sql;
+            List<Training> tr = base.GetMany();
 
-                using (IDataReader reader = cmd.ExecuteReader())
+            string sql = @" SELECT 
+                                T.TrainingId,
+                                D.Name AS DepartmentName,
+                                COUNT(UTE.UserId) AS NumberOfEmployeesEnrolled
+                            FROM 
+                                Training T
+                            LEFT JOIN 
+                                UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId
+                            LEFT JOIN 
+                                AppUser AU ON UTE.UserId = AU.UserId
+                            LEFT JOIN 
+                                Department D ON AU.DepartmentId = D.DepartmentId
+                            GROUP BY 
+                                T.TrainingId, D.Name
+                            ORDER BY 
+                                T.TrainingId, D.Name;";
+
+            try
+            {
+                using (IDbCommand cmd = _conn.CreateCommand())
                 {
-                    while (reader.Read())
+                    cmd.CommandText = sql;
+
+                    using (IDataReader reader = cmd.ExecuteReader())
                     {
-                        results.Add(DbHelper.ConvertToObject<TrainingDetails>(reader));
+                        while (reader.Read())
+                        {
+                            Training new_tr = tr.Find(e => e.TrainingId == reader.GetInt32(0));
+                            var TrainingExtra = new TrainingExtra();
+                            TrainingExtra.TrainingId = reader.GetInt32(0);
+                            TrainingExtra.DepartmentName = reader.IsDBNull(1) ? "No" : reader.GetString(1);
+                            TrainingExtra.NumberOfEmployeesEnrolled = reader.GetInt32(2);
+
+                            results.Add(new TrainingDetails() { Training = new_tr, TrainingExtra = TrainingExtra });
+                        };                          
+                        
                     }
                 }
             }
+            catch (Exception ex)
+            {
+                throw ex;
+                throw;
+            }
+
             return results;
         }
 
-        public IEnumerable<TrainingDetails> GetTrainingEnrolledByUser(string UserId)
+        public int CreateTrainingReturningID(Training training)
         {
-            string sql = @"SELECT [dbo].[Training].* FROM [dbo].[Training] INNER JOIN [dbo].[UserTrainingEnrollment] ON 
+            try
+            {
+                string sql = @"INSERT INTO [dbo].[Training] (Name, Description, Threshold, Deadline, PreferedDepartmentId) 
+                               OUTPUT Inserted.TrainingId 
+                               VALUES (@Name, @Description, @Threshold, @Deadline, @PreferedDepartmentId)";
+
+
+                using (IDbCommand cmd = _conn.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+
+                    DbHelper.AddParameterWithValue(cmd, "@Name", training.Name);
+                    DbHelper.AddParameterWithValue(cmd, "@Description", training.Description);
+                    DbHelper.AddParameterWithValue(cmd, "@Threshold", training.Threshold);
+                    DbHelper.AddParameterWithValue(cmd, "@Deadline", training.Deadline);
+                    DbHelper.AddParameterWithValue(cmd, "@PreferedDepartmentId", training.PreferedDepartmentId == -1 ? DBNull.Value : (object)training.PreferedDepartmentId);
+
+                    return (int)cmd.ExecuteScalar();
+                }
+
+            } catch (Exception ex) { throw ex; }
+        }
+
+        public IEnumerable<Training> GetTrainingEnrolledByUser(string UserId)
+        {
+            string sql = $@"SELECT [dbo].[Training].* FROM [dbo].[UserTrainingEnrollment] INNER JOIN [dbo].[Training] ON 
                          [dbo].[Training].[TrainingId] = [dbo].[UserTrainingEnrollment].[TrainingId] 
-                         WHERE [dbo].[UserTrainingEnrollment].[UserId] = @UserId;";
+                         WHERE [dbo].[UserTrainingEnrollment].[Status] = @EnrollStatusEnum AND [dbo].[UserTrainingEnrollment].[UserId] = @UserId;";
 
+            Dictionary<string, object> myparam = new Dictionary<string, object>();
 
-            List<TrainingDetails> results = new List<TrainingDetails>();
+            myparam.Add("EnrollStatusEnum", (int)Entities.Enums.EnrollStatusEnum.Approved);
+            myparam.Add("UserId", UserId);
 
-            using (IDbCommand cmd = _conn.CreateCommand())
-            {
-                cmd.CommandText = sql;
-                DbHelper.AddParameterWithValue(cmd, "@UserId", UserId);
-                using (IDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        results.Add(DbHelper.ConvertToObject<TrainingDetails>(reader));
-                    }
-                }
-            }
+            return base.GetMany(sql, myparam);
 
-            return results;
         }
 
-        public IEnumerable<TrainingDetails> GetTrainingManagedByUser(string UserId)
+        public IEnumerable<Training> GetUsersManagedBy(string UserId)
         {
-            string sql = "SELECT * FROM [dbo].[Training] WHERE ManagerId = @ManagerId;";
-
-            List<TrainingDetails> results = new List<TrainingDetails>();
-
-            using (IDbCommand cmd = _conn.CreateCommand())
-            {
-                cmd.CommandText = sql;
-                DbHelper.AddParameterWithValue(cmd, "@ManagerId", UserId);
-                using (IDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        results.Add(DbHelper.ConvertToObject<TrainingDetails>(reader));
-                    }
-                }
-            }
-
-            return results;
+            return base.GetMany("SELECT * FROM [dbo].[AppUser] WHERE ManagerId = @ManagerId;");
         }
 
 

@@ -38,6 +38,11 @@ namespace BusinessLayer.Services
             return _prerequisiteRepo.GetByPK(prerequisiteId);
         }
 
+        public IEnumerable<Prerequisite> GetPrerequisitesByTraining(int training)
+        {
+            return _prerequisiteRepo.GetPrerequisitesByTraining(training);
+        }
+
         public void UpdatePrerequisite(Prerequisite prerequisite)
         {
             _prerequisiteRepo.Update(prerequisite);

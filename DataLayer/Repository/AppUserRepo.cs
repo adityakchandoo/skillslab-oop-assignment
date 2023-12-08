@@ -9,7 +9,7 @@ using DataLayer;
 
 namespace DataLayer.Repository
 {
-    public class AppUserRepo : DataAccessLayer<AppUser>, IUserRepo
+    public class AppUserRepo : DataAccessLayer<AppUser>, IAppUserRepo
     {
         private readonly IDbConnection _conn;
         public AppUserRepo(IDbContext dbContext) : base(dbContext)

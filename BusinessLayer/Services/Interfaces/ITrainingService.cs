@@ -12,13 +12,16 @@ namespace BusinessLayer.Services.Interfaces
 {
     public interface ITrainingService
     {
-        IEnumerable<TrainingDetails> GetAllTraining();
+        IEnumerable<TrainingDetails> GetAllTrainingDetails();
+        IEnumerable<Training> GetAllTraining();
         Training GetTraining(int id);
-        IEnumerable<TrainingDetails> GetTrainingEnrolledByUser(string UserId);
-        IEnumerable<TrainingDetails> GetTrainingManagedByUser(string UserId);
         void AddTraining(Training training);
-        void AddTrainingAndTrainingPrerequisite(TrainingDTO training);
         void EditTraining(Training training);
         void DeleteTraining(int id);
+        void AddTrainingWithTrainingPrerequisite(AddTrainingFormDTO training);
+        void ApplyTraining(string UserId, int trainingId, List<UploadFileStore> uploadFileStore);
+        IEnumerable<Training> GetTrainingEnrolledByUser(string UserId);
+        IEnumerable<Training> GetUsersManagedBy(string UserId);
+
     }
 }

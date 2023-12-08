@@ -1,8 +1,10 @@
 ﻿using BusinessLayer.Services.Interfaces;
+using DataLayer.Repository;
 using DataLayer.Repository.Interfaces;
 using Entities.DbCustom;
 using Entities.DbModels;
 using Entities.DTO;
+using Entities.Enums;
 using Entities.FormDTO;
 using System;
 using System.Collections.Generic;
@@ -17,10 +19,19 @@ namespace BusinessLayer.Services
     {
         private readonly ITrainingRepo _trainingRepo;
         private readonly ITrainingPrerequisiteRepo _trainingPrerequisiteRepo;
-        public TrainingService(ITrainingRepo trainingRepo, ITrainingPrerequisiteRepo trainingPrerequisiteRepo)
+        private readonly IAppUserRepo _appUserRepo;
+        private readonly IUserTrainingEnrollmentRepo _userTrainingEnrollmentRepo;
+        private readonly INotificationService _notificationService;
+        private readonly IEnrollmentPrerequisiteAttachmentRepo _enrollmentPrerequisiteAttachmentRepo;
+
+        public TrainingService(ITrainingRepo trainingRepo, ITrainingPrerequisiteRepo trainingPrerequisiteRepo, IAppUserRepo appUserRepo, IUserTrainingEnrollmentRepo userTrainingEnrollmentRepo, IEnrollmentPrerequisiteAttachmentRepo enrollmentPrerequisiteAttachmentRepo, INotificationService notificationService)
         {
             _trainingRepo = trainingRepo;
             _trainingPrerequisiteRepo = trainingPrerequisiteRepo;
+            _appUserRepo = appUserRepo;
+            _userTrainingEnrollmentRepo = userTrainingEnrollmentRepo;
+            _notificationService = notificationService;
+            _enrollmentPrerequisiteAttachmentRepo = enrollmentPrerequisiteAttachmentRepo;
         }
 
         public void AddTraining(Training training)
@@ -28,7 +39,33 @@ namespace BusinessLayer.Services
             _trainingRepo.Insert(training);
         }
 
-        public void AddTrainingAndTrainingPrerequisite(TrainingDTO training)
+        public IEnumerable<TrainingDetails> GetAllTrainingDetails()
+        {
+            return _trainingRepo.GetAllTraining();
+        }
+
+        public IEnumerable<Training> GetAllTraining()
+        {
+            return _trainingRepo.GetMany();
+        }
+
+        public Training GetTraining(int id)
+        {
+            return _trainingRepo.GetByPK(id);
+        }
+
+        public void DeleteTraining(int id)
+        {
+            _trainingRepo.Delete(new Training() { TrainingId = id });
+        }
+
+
+        public void EditTraining(Training training)
+        {
+            _trainingRepo.Update(training);
+        }
+
+        public void AddTrainingWithTrainingPrerequisite(AddTrainingFormDTO training)
         {
             Training dbTraining = new Training()
             {
@@ -36,11 +73,10 @@ namespace BusinessLayer.Services
                 Description = training.Description,
                 Threshold = training.Threshold,
                 Deadline = training.Deadline,
-                ManagerId = training.ManagerId,
                 PreferedDepartmentId = training.PriorityDepartmentId
             };
 
-            int insertedId = _trainingRepo.Insert(dbTraining);
+            int insertedId = _trainingRepo.CreateTrainingReturningID(dbTraining);
 
             TrainingPrerequisite dbTrainingPrerequisite = new TrainingPrerequisite()
             {
@@ -54,34 +90,45 @@ namespace BusinessLayer.Services
             }
         }
 
-        public void DeleteTraining(int id)
+        public void ApplyTraining(string UserId, int trainingId, List<UploadFileStore> uploadFileStore)
         {
-            _trainingRepo.Delete(new Training() { TrainingId = id });
+            AppUser currentUser = _appUserRepo.GetByPK(UserId);
+            AppUser currentUserManager = _appUserRepo.GetByPK(currentUser.ManagerId);
+
+            UserTrainingEnrollment enrollment = new UserTrainingEnrollment()
+            {
+                UserId = UserId,
+                TrainingId = trainingId,
+                Status = EnrollStatusEnum.Pending
+            };
+
+            int InsertedId = _userTrainingEnrollmentRepo.CreateUserTrainingEnrollmentReturningID(enrollment);
+
+            foreach (var File in uploadFileStore)
+            {
+                var genFileSystemName = Guid.NewGuid();
+
+                _enrollmentPrerequisiteAttachmentRepo.Insert(new EnrollmentPrerequisiteAttachment() { EnrollmentId = InsertedId, TrainingPrerequisiteId = File.FileId, OriginalFilename = File.FileName, SystemFilename = genFileSystemName.ToString() });
+            }
+
+            NotificationDTO notificationDTO = new NotificationDTO()
+            {
+                To = currentUserManager.Email,
+                Subject = "New Student Applied to Training",
+                Body = "Check website"
+            };
+
+            //_notificationService.Send(notificationDTO);
         }
 
-        public void EditTraining(Training training)
-        {
-            _trainingRepo.Update(training);
-        }
-
-        public IEnumerable<TrainingDetails> GetAllTraining()
-        {
-            return _trainingRepo.GetAllTraining();
-        }
-
-        public Training GetTraining(int id)
-        {
-            return _trainingRepo.GetByPK(id);
-        }
-
-        public IEnumerable<TrainingDetails> GetTrainingEnrolledByUser(string UserId)
+        public IEnumerable<Training> GetTrainingEnrolledByUser(string UserId)
         {
             return _trainingRepo.GetTrainingEnrolledByUser(UserId);
         }
 
-        public IEnumerable<TrainingDetails> GetTrainingManagedByUser(string UserId)
+        public IEnumerable<Training> GetUsersManagedBy(string UserId)
         {
-            return _trainingRepo.GetTrainingManagedByUser(UserId);
+            return _trainingRepo.GetUsersManagedBy(UserId);
         }
     }
 }

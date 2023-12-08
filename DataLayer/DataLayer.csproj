@@ -46,13 +46,15 @@
     <Compile Include="Generic\DataAccessLayer.cs" />
     <Compile Include="Generic\IDataAccessLayer.cs" />
     <Compile Include="IDbContext.cs" />
+    <Compile Include="Repository\EnrollmentPrerequisiteAttachmentRepo.cs" />
+    <Compile Include="Repository\Interfaces\IEnrollmentPrerequisiteAttachmentRepo.cs" />
     <Compile Include="SqlServer.cs" />
     <Compile Include="Repository\DepartmentRepo.cs" />
     <Compile Include="Repository\Interfaces\IDepartmentRepo.cs" />
     <Compile Include="Repository\Interfaces\IPrerequisiteRepo.cs" />
     <Compile Include="Repository\Interfaces\ITrainingPrerequisiteRepo.cs" />
     <Compile Include="Repository\Interfaces\ITrainingRepo.cs" />
-    <Compile Include="Repository\Interfaces\IUserRepo.cs" />
+    <Compile Include="Repository\Interfaces\IAppUserRepo.cs" />
     <Compile Include="Repository\Interfaces\IUserTrainingEnrollmentRepo.cs" />
     <Compile Include="Repository\PrerequisiteRepo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

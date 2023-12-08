@@ -44,6 +44,7 @@
     <Compile Include="PasswordHasher.cs" />
     <Compile Include="Services\DepartmentService.cs" />
     <Compile Include="Services\Interfaces\IDepartmentService.cs" />
+    <Compile Include="Services\Interfaces\IEnrollmentAttachmentService.cs" />
     <Compile Include="Services\Interfaces\INotificationService.cs" />
     <Compile Include="Services\Interfaces\IPrerequisiteService.cs" />
     <Compile Include="Services\Interfaces\ITrainingPrerequisiteService.cs" />

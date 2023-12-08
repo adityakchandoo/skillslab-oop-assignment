@@ -14,8 +14,8 @@ namespace Entities.DbModels
         public int UserTrainingEnrollmentId { get; set; }
         public string UserId { get; set; }
         public int TrainingId { get; set; }
-        public DateTime ApplyDate { get; set; }
-        public DateTime? EnrolledDate { get; set; }
+        public DateTime ApplyDate { get; set; } = DateTime.Now;
+        public DateTime? EnrolledDate { get; set; } = null;
         public EnrollStatusEnum Status { get; set; }
 
     }

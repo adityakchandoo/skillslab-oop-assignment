@@ -3,6 +3,8 @@ using System.Web.Mvc;
 using Entities.FormDTO;
 using Entities.DTO;
 using BusinessLayer.Services.Interfaces;
+using Entities.Enums;
+using DataLayer.Repository.Interfaces;
 
 namespace WebApp.Controllers
 {
@@ -10,9 +12,11 @@ namespace WebApp.Controllers
     {
 
         private readonly IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly IDepartmentService _departmentService;
+        public UserController(IUserService userService, IDepartmentService departmentService)
         {
             _userService = userService;
+            _departmentService = departmentService;
         }
 
 
@@ -57,6 +61,8 @@ namespace WebApp.Controllers
 
         public ActionResult Register()
         {
+            ViewBag.Managers = _userService.GetAllUsersByType(UserRoleEnum.Manager);
+            ViewBag.Departments = _departmentService.GetAllDepartments();
             return View();
         }
 
@@ -80,7 +86,7 @@ namespace WebApp.Controllers
                 Response.StatusCode = 400;
                 return Json(new { Error = ex.Message });
             }
-            
+
         }
 
         [HttpPost]

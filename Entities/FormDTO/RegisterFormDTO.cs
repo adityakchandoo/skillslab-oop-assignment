@@ -30,5 +30,7 @@ namespace Entities.FormDTO
         [Required(ErrorMessage = "Enter Comfirm Password")]
         [Compare("Pass1", ErrorMessage = "Confirm Pass Not Same")]
         public string Pass2 { get; set; }
+        public string ManagerId { get; set; }
+        public int? DepartmentId { get; set; } = null;
     }
 }

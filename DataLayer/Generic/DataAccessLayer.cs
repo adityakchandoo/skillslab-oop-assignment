@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Entities.Other;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
@@ -23,7 +24,7 @@ namespace DataLayer.Generic
 
             try
             {
-                sql = GenerateSelectQuery();
+                sql = string.IsNullOrEmpty(sql) ? GenerateSelectQuery() : sql;
                 using (IDbCommand cmd = _conn.CreateCommand())
                 {
                     cmd.CommandText = sql;
@@ -44,8 +45,10 @@ namespace DataLayer.Generic
                         }
                     }
                 }
-            } catch (Exception e)
+            }
+            catch (Exception ex)
             {
+                throw ex;
                 throw;
             }
             return result;
@@ -78,6 +81,7 @@ namespace DataLayer.Generic
             }
             catch (Exception ex)
             {
+                throw ex;
                 throw;
             }
 
@@ -90,7 +94,7 @@ namespace DataLayer.Generic
 
             try
             {
-                string sql = GenerateInsertQuery();
+                string sql = GenerateInsertQuery(item);
                 Dictionary<string, object> parameters = GenerateSqlParameters(item);
                 using (IDbCommand cmd = _conn.CreateCommand())
                 {
@@ -106,6 +110,7 @@ namespace DataLayer.Generic
             }
             catch (Exception ex)
             {
+                throw ex;
                 throw;
             }
             return rowAdded;
@@ -116,7 +121,7 @@ namespace DataLayer.Generic
             int rowUpdated = -1;
             try
             {
-                string sql = GenerateUpdateQuery();
+                string sql = GenerateUpdateQuery(item);
                 Dictionary<string, object> parameters = GenerateSqlParameters(item, true);
 
                 using (IDbCommand cmd = _conn.CreateCommand())
@@ -133,6 +138,7 @@ namespace DataLayer.Generic
             }
             catch (Exception ex)
             {
+                throw ex;
                 throw;
             }
 
@@ -161,6 +167,7 @@ namespace DataLayer.Generic
             }
             catch (Exception ex)
             {
+                throw ex;
                 throw;
             }
             return rowsDeleted;
@@ -201,7 +208,7 @@ namespace DataLayer.Generic
 
             PropertyInfo[] properties = typeof(T).GetProperties();
 
-            var propLists = includePK ? properties.ToList() : properties.Where(prop => !Attribute.IsDefined(prop, typeof(KeyAttribute)))
+            var propLists = includePK ? properties.ToList() : properties.Where(prop => !Attribute.IsDefined(prop, typeof(KeyAttribute)) || Attribute.IsDefined(prop, typeof(NotIdentity)))
             .ToList();
 
             foreach (PropertyInfo property in propLists)
@@ -257,15 +264,17 @@ namespace DataLayer.Generic
             return $"SELECT * FROM {typeof(T).Name} WHERE {primaryKeyName} = @{primaryKeyName};";
         }
 
-        private string GenerateInsertQuery()
+        private string GenerateInsertQuery(T item)
         {
             StringBuilder columns = new StringBuilder();
             StringBuilder values = new StringBuilder();
 
             PropertyInfo[] properties = typeof(T).GetProperties();
-            foreach (PropertyInfo property in properties.Where(prop => !Attribute.IsDefined(prop, typeof(KeyAttribute))))
+            foreach (PropertyInfo property in properties.Where(prop => !Attribute.IsDefined(prop, typeof(KeyAttribute)) || Attribute.IsDefined(prop, typeof(NotIdentity))))
             {
-                if (!property.CanRead) continue;
+                if (!property.CanRead || property.GetValue(item) == null)
+                    continue;
+
                 columns.Append(property.Name + ",");
                 values.Append("@" + property.Name + ",");
             }
@@ -276,14 +285,17 @@ namespace DataLayer.Generic
             return query;
         }
 
-        private string GenerateUpdateQuery()
+        private string GenerateUpdateQuery(T item)
         {
             StringBuilder updateColumns = new StringBuilder();
 
             PropertyInfo[] properties = typeof(T).GetProperties();
             foreach (PropertyInfo property in properties.Where(prop => !Attribute.IsDefined(prop, typeof(KeyAttribute))))
             {
-                if (!property.CanRead) continue;
+                if (!property.CanRead || property.GetValue(item) == null)
+                    continue;
+
+
                 updateColumns.Append(property.Name + "= @" + property.Name + ",");
             }
             updateColumns.Remove(updateColumns.Length - 1, 1); // Remove the last comma

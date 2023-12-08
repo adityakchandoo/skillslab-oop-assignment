@@ -1,5 +1,6 @@
 ﻿using DataLayer.Generic;
 using Entities.DbModels;
+using Entities.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +9,8 @@ using System.Threading.Tasks;
 
 namespace DataLayer.Repository.Interfaces
 {
-    public interface IPrerequisiteRepo : IDataAccessLayer<Prerequisite>
+    public interface IAppUserRepo : IDataAccessLayer<AppUser>
     {
-        IEnumerable<Prerequisite> GetPrerequisitesByTraining(int training);
+        IEnumerable<AppUser> GetAllUsersByType(UserRoleEnum userRoleType);
     }
 }

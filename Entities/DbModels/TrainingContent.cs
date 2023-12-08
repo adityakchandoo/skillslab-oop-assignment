@@ -14,7 +14,7 @@ namespace Entities.DbModels
         public int TrainingId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public DateTime PostDate { get; set; }
+        public DateTime PostDate { get; set; } = DateTime.Now;
 
     }
 

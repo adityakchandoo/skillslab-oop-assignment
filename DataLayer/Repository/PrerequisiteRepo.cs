@@ -18,6 +18,15 @@ namespace DataLayer.Repository
         {
             _conn = dbContext.GetConn();
         }
+        public IEnumerable<Prerequisite> GetPrerequisitesByTraining(int training)
+        {
+            var sql = @"SELECT Prerequisite.* FROM Prerequisite INNER JOIN TrainingPrerequisite ON Prerequisite.PrerequisiteId = TrainingPrerequisite.PrerequisiteId WHERE TrainingPrerequisite.TrainingId = @TrainingId";
+            
+            var param = new Dictionary<string, object>();
+            param.Add("TrainingId", training);
+
+            return base.GetMany(sql, param);
+        }
 
     }
 }

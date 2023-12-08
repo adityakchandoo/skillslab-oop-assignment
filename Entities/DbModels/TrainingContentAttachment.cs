@@ -7,16 +7,13 @@ using System.Threading.Tasks;
 
 namespace Entities.DbModels
 {
-    public class Training
+    public class TrainingContentAttachment
     {
         [Key]
-        public int TrainingId { get; set; }
+        public int TrainingContentAttachmentId { get; set; }
+        public int TrainingContentId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public int Threshold { get; set; }
-        public DateTime Deadline { get; set; }
-        public int? PreferedDepartmentId { get; set; }
-
+        public DateTime PostDate { get; set; } = DateTime.Now;
     }
-
 }

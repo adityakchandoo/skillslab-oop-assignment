@@ -33,12 +33,6 @@ namespace WebApp.Controllers.Admin
         [Route("AddDepartment")]
         public ActionResult AddDepartment(DepartmentDTO department)
         {
-            Department department_db = new Department()
-            {
-                Name = department.Name,
-                Description = department.Description,
-            };
-
             if (!ModelState.IsValid)
             {
                 Response.StatusCode = 400;
@@ -47,6 +41,12 @@ namespace WebApp.Controllers.Admin
 
             try
             {
+                Department department_db = new Department()
+                {
+                    Name = department.Name,
+                    Description = department.Description,
+                };
+
                 _dapartmentService.AddDepartment(department_db);
 
                 return Json(new { status = "ok" });

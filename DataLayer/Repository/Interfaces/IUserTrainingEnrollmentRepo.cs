@@ -10,5 +10,6 @@ namespace DataLayer.Repository.Interfaces
 {
     public interface IUserTrainingEnrollmentRepo : IDataAccessLayer<UserTrainingEnrollment>
     {
+        int CreateUserTrainingEnrollmentReturningID(UserTrainingEnrollment userTrainingEnrollment);
     }
 }

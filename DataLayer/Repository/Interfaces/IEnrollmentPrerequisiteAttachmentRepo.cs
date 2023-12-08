@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 
 namespace DataLayer.Repository.Interfaces
 {
-    public interface IPrerequisiteRepo : IDataAccessLayer<Prerequisite>
+    public interface IEnrollmentPrerequisiteAttachmentRepo : IDataAccessLayer<EnrollmentPrerequisiteAttachment>
     {
-        IEnumerable<Prerequisite> GetPrerequisitesByTraining(int training);
     }
 }

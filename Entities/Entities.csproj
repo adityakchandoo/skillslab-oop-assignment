@@ -45,16 +45,18 @@
     <Compile Include="DbCustom\TrainingDetails.cs" />
     <Compile Include="DbModels\AppUsers.cs" />
     <Compile Include="DbModels\Department.cs" />
-    <Compile Include="DbModels\EnrollmentAttachment.cs" />
+    <Compile Include="DbModels\EnrollmentPrerequisiteAttachment.cs" />
     <Compile Include="DbModels\Prerequisite.cs" />
     <Compile Include="DbModels\Training.cs" />
     <Compile Include="DbModels\TrainingContent.cs" />
+    <Compile Include="DbModels\TrainingContentAttachment.cs" />
     <Compile Include="DbModels\TrainingPrerequisite.cs" />
     <Compile Include="DbModels\UserTrainingEnrollment.cs" />
     <Compile Include="DTO\DepartmentDTO.cs" />
     <Compile Include="DTO\AuthenticateResponseDTO.cs" />
     <Compile Include="DTO\NotificationDTO.cs" />
     <Compile Include="DTO\PrerequisiteDTO.cs" />
+    <Compile Include="DTO\UploadFileStore.cs" />
     <Compile Include="FormDTO\RegEnrollFormDTO.cs" />
     <Compile Include="Enums\EnrollStatusEnum.cs" />
     <Compile Include="Enums\UserRoleEum.cs" />
@@ -62,8 +64,9 @@
     <Compile Include="FormDTO\DepartmentDTO.cs" />
     <Compile Include="FormDTO\PrerequisiteDTO.cs" />
     <Compile Include="FormDTO\RegisterFormDTO.cs" />
-    <Compile Include="FormDTO\TrainingDTO.cs" />
+    <Compile Include="FormDTO\AddTrainingFormDTO.cs" />
     <Compile Include="FormDTO\UserLoginFormDTO.cs" />
+    <Compile Include="Other\NotIdentity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

@@ -15,7 +15,9 @@
                 <div class="col-sm-6">
                     <h1>@ViewBag.Training.Name</h1>
                 </div>
-
+                <div class="col-sm-6">
+                    <a href="/Admin/Training/AddContent" role="button" class="btn btn-primary float-right">Add Content</a>
+                </div>
             </div>
         </div><!-- /.container-fluid -->
     </section>
@@ -51,7 +53,7 @@
                                     <div class="timeline-footer">
                                     @foreach (var Attachments in Content.TrainingContentAttachments)
                                     {
-                                    <a href="/Files/@Attachments.SystemFilename" class="btn btn-primary btn-sm">@Attachments.OriginalFilename</a>
+                                    <a href="/Files/@Attachments.SystemFilename/@Attachments.OriginalFilename" class="btn btn-primary btn-sm">@Attachments.OriginalFilename</a>
                                     }
                                     <a class="btn btn-danger btn-sm">Delete</a>
                                     </div>

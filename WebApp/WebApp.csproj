@@ -146,6 +146,7 @@
     <Compile Include="Controllers\Admin\TrainingController.cs" />
     <Compile Include="Controllers\Employee\EmployeeController.cs" />
     <Compile Include="Controllers\Employee\TrainingController.cs" />
+    <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Manager\ManagerController.cs" />
     <Compile Include="Controllers\UserController.cs" />
@@ -316,6 +317,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\adminlte\js\" />
+    <Folder Include="Views\File\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

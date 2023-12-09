@@ -9,7 +9,7 @@ namespace BusinessLayer.Services.Interfaces
 {
     public interface IStorageService
     {
-        void Put();
-        Stream Get();
+        void Put(Stream stream, string systemFileName);
+        Stream Get(string systemFileName);
     }
 }

@@ -24,9 +24,10 @@ namespace BusinessLayer.Services
         private readonly IAppUserRepo _appUserRepo;
         private readonly IUserTrainingEnrollmentRepo _userTrainingEnrollmentRepo;
         private readonly INotificationService _notificationService;
+        private readonly IStorageService _storageService;
         private readonly IEnrollmentPrerequisiteAttachmentRepo _enrollmentPrerequisiteAttachmentRepo;
 
-        public TrainingService(ITrainingRepo trainingRepo, ITrainingPrerequisiteRepo trainingPrerequisiteRepo, ITrainingContentRepo trainingContentRepo, ITrainingContentAttachmentRepo trainingContentAttachmentRepo, IAppUserRepo appUserRepo, IUserTrainingEnrollmentRepo userTrainingEnrollmentRepo, IEnrollmentPrerequisiteAttachmentRepo enrollmentPrerequisiteAttachmentRepo, INotificationService notificationService)
+        public TrainingService(ITrainingRepo trainingRepo, ITrainingPrerequisiteRepo trainingPrerequisiteRepo, ITrainingContentRepo trainingContentRepo, ITrainingContentAttachmentRepo trainingContentAttachmentRepo, IAppUserRepo appUserRepo, IUserTrainingEnrollmentRepo userTrainingEnrollmentRepo, IEnrollmentPrerequisiteAttachmentRepo enrollmentPrerequisiteAttachmentRepo, INotificationService notificationService, IStorageService storageService)
         {
             _trainingRepo = trainingRepo;
             _trainingPrerequisiteRepo = trainingPrerequisiteRepo;
@@ -36,6 +37,8 @@ namespace BusinessLayer.Services
             _userTrainingEnrollmentRepo = userTrainingEnrollmentRepo;
             _notificationService = notificationService;
             _enrollmentPrerequisiteAttachmentRepo = enrollmentPrerequisiteAttachmentRepo;
+            _storageService = storageService;
+
         }
 
         public void AddTraining(Training training)
@@ -111,6 +114,8 @@ namespace BusinessLayer.Services
             foreach (var File in uploadFileStore)
             {
                 var genFileSystemName = Guid.NewGuid();
+
+                _storageService.Put(File.FileContent, genFileSystemName.ToString());
 
                 _enrollmentPrerequisiteAttachmentRepo.Insert(new EnrollmentPrerequisiteAttachment() { EnrollmentId = InsertedId, TrainingPrerequisiteId = File.FileId, OriginalFilename = File.FileName, SystemFilename = genFileSystemName.ToString() });
             }

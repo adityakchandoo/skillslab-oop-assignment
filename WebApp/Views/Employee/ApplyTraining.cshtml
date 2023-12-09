@@ -99,6 +99,16 @@
 
 @section Scripts {
     <script type="text/javascript">
+        $(document).ready(function () {
+            $('.custom-file-input').on('change', function () {
+                // Get the file name
+                var fileName = $(this).val().split('\\').pop();
+                // Replace the "Choose a file" label
+                $(this).next('.custom-file-label').addClass("selected").html(fileName);
+            });
+        });
+
+
         var trainingId = @ViewBag.trainingId;
 
         console.log($("input.custom-file-input"));
@@ -139,7 +149,11 @@
 
             // Report if ends with an error
             xhr.upload.onerror = function () {
-                console.log('An error has occurred')
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Contact Admin!',
+                });
             };
 
             // Track completion: Both successful or not
@@ -151,6 +165,15 @@
             // Track progress: Triggered on successful completion
             xhr.upload.onload = function () {
                 console.log('Uploading complete');
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Application Successful!',
+                    showConfirmButton: false,
+                    timer: 2000
+                }).then(() => {
+                    history.back();
+                });
                 //progressWindow.hidden = True;
             };
 

@@ -13,7 +13,6 @@ namespace DataLayer.Repository.Interfaces
     {
         IEnumerable<TrainingDetails> GetAllTraining();
         IEnumerable<Training> GetTrainingEnrolledByUser(string UserId);
-        IEnumerable<Training> GetUsersManagedBy(string UserId);
         int CreateTrainingReturningID(Training training);
 
     }

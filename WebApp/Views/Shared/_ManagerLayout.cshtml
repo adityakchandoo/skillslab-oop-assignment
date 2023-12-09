@@ -21,7 +21,7 @@
             <ul class="navbar-nav">
 
                 <li class="nav-item d-none d-sm-inline-block">
-                    <div class="nav-link">Employee Panel</div>
+                    <div class="nav-link">Manager Panel</div>
                 </li>
             </ul>
 
@@ -70,11 +70,19 @@
                                 </p>
                             </a>
                         </li>
+                        <li class="nav-item">
+                            <a href="/Manager/Training" class="nav-link">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <p>
+                                    Training
+                                </p>
+                            </a>
+                        </li>
                         <li class="nav-item @(@ViewBag.PageTag.StartsWith("train-") ? "menu-open":"menu-close") ">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>
-                                    Training
+                                    Employees
                                     <i class="right fas fa-angle-left"></i>
                                 </p>
                             </a>
@@ -82,13 +90,13 @@
                                 <li class="nav-item">
                                     <a href="/Employee/MyTrainings" class="nav-link @(@ViewBag.PageTag == "train-my" ? "active":"")">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>My Training</p>
+                                        <p>My Employees</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
                                     <a href="/Employee/SearchTrainings" class="nav-link @(@ViewBag.PageTag == "train-search" ? "active":"")">
                                         <i class="far fa-circle nav-icon"></i>
-                                        <p>Search Training</p>
+                                        <p>All Employees</p>
                                     </a>
                                 </li>
                             </ul>

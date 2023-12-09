@@ -12,8 +12,7 @@ namespace Entities.DbModels
         [Key]
         public int TrainingContentAttachmentId { get; set; }
         public int TrainingContentId { get; set; }
-        public string Name { get; set; }
-        public string Description { get; set; }
-        public DateTime PostDate { get; set; } = DateTime.Now;
+        public string OriginalFilename { get; set; }
+        public string SystemFilename { get; set; }
     }
 }

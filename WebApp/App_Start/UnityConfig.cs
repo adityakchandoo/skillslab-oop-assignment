@@ -60,6 +60,8 @@ namespace WebApp
             container.RegisterType<ITrainingRepo, TrainingRepo>(new PerRequestLifetimeManager());
             container.RegisterType<IDepartmentRepo, DepartmentRepo>(new PerRequestLifetimeManager());
             container.RegisterType<IPrerequisiteRepo, PrerequisiteRepo>(new PerRequestLifetimeManager());
+            container.RegisterType<ITrainingContentRepo, TrainingContentRepo>(new PerRequestLifetimeManager());
+            container.RegisterType<ITrainingContentAttachmentRepo, TrainingContentAttachmentRepo>(new PerRequestLifetimeManager());
             container.RegisterType<ITrainingPrerequisiteRepo, TrainingPrerequisiteRepo>(new PerRequestLifetimeManager());
             container.RegisterType<IEnrollmentPrerequisiteAttachmentRepo, EnrollmentPrerequisiteAttachmentRepo>(new PerRequestLifetimeManager());
             container.RegisterType<IUserTrainingEnrollmentRepo, UserTrainingEnrollmentRepo>(new PerRequestLifetimeManager());
@@ -73,6 +75,7 @@ namespace WebApp
             container.RegisterType<IUserTrainingEnrollmentService, UserTrainingEnrollmentService>(new PerRequestLifetimeManager());
             
             
+            container.RegisterType<IStorageService, AmazonS3Service>(new PerRequestLifetimeManager());
             container.RegisterType<INotificationService, NotificationService>(new PerRequestLifetimeManager());
 
         }

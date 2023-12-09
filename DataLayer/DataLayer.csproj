@@ -48,6 +48,10 @@
     <Compile Include="IDbContext.cs" />
     <Compile Include="Repository\EnrollmentPrerequisiteAttachmentRepo.cs" />
     <Compile Include="Repository\Interfaces\IEnrollmentPrerequisiteAttachmentRepo.cs" />
+    <Compile Include="Repository\Interfaces\ITrainingContentAttachmentRepo.cs" />
+    <Compile Include="Repository\Interfaces\ITrainingContentRepo.cs" />
+    <Compile Include="Repository\TrainingContentAttachmentRepo.cs" />
+    <Compile Include="Repository\TrainingContentRepo.cs" />
     <Compile Include="SqlServer.cs" />
     <Compile Include="Repository\DepartmentRepo.cs" />
     <Compile Include="Repository\Interfaces\IDepartmentRepo.cs" />

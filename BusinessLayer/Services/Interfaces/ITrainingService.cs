@@ -20,8 +20,8 @@ namespace BusinessLayer.Services.Interfaces
         void DeleteTraining(int id);
         void AddTrainingWithTrainingPrerequisite(AddTrainingFormDTO training);
         void ApplyTraining(string UserId, int trainingId, List<UploadFileStore> uploadFileStore);
+        IEnumerable<TrainingWithContentDTO> GetTrainingWithContents(int trainingId);
         IEnumerable<Training> GetTrainingEnrolledByUser(string UserId);
-        IEnumerable<Training> GetUsersManagedBy(string UserId);
 
     }
 }

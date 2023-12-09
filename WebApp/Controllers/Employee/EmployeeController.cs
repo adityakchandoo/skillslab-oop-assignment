@@ -7,8 +7,8 @@ using WebApp.Helpers;
 
 namespace WebApp.Controllers.Employee
 {
+    //[EmployeeSession]
     [RoutePrefix("Employee")]
-    [EmployeeSession]
     public class EmployeeController : Controller
     {
 
@@ -16,8 +16,7 @@ namespace WebApp.Controllers.Employee
         // GET: Home
         public ActionResult Index()
         {
-            return Content("Employee Home"+ Session["UserId"]);
-
+            return View("~/Views/Employee/Dashboard.cshtml");
         }
     }
 }

@@ -63,15 +63,15 @@
                     <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
 
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="/Admin" class="nav-link @(@ViewBag.PageTag.Equals("dash") ? "active":"")">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>
                                     Dashboard
                                 </p>
                             </a>
                         </li>
-                        <li class="nav-item @(@ViewBag.PageTag.StartsWith("train-") ? "menu-open":"menu-close")">
-                            <a href="/Admin/ViewTrainings" class="nav-link">
+                        <li class="nav-item">
+                            <a href="/Admin/ViewTrainings" class="nav-link @(@ViewBag.PageTag.Equals("train-view") ? "active":"")">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>
                                     Training
@@ -80,7 +80,7 @@
                         </li>
 
                         
-                        <li class="nav-item menu-close">
+                        <li class="nav-item @(@ViewBag.PageTag.StartsWith("other-") ? "menu-open":"menu-close")">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>
@@ -90,13 +90,13 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="/Admin/Prerequisites" class="nav-link">
+                                    <a href="/Admin/Prerequisites" class="nav-link @(@ViewBag.PageTag.Equals("other-prerequisites") ? "active":"")">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Prequisites</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="/Admin/Departments" class="nav-link">
+                                    <a href="/Admin/Departments" class="nav-link @(@ViewBag.PageTag.Equals("other-departments") ? "active":"")">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Department</p>
                                     </a>
@@ -104,7 +104,7 @@
                             </ul>
                         </li>
                         <li class="nav-item menu-close">
-                            <a href="#" class="nav-link">
+                            <a href="#" class="nav-link @(@ViewBag.PageTag.StartsWith("users-") ? "menu-open":"menu-close")">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
                                 <p>
                                     Users

@@ -1,0 +1,71 @@
+﻿
+@{
+    ViewBag.Title = "Training";
+    ViewBag.PageTag = "";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>@ViewBag.Training.Name</h1>
+                </div>
+
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+
+            <!-- Timelime example  -->
+            <div class="row">
+                <div class="col-md-12">
+                    <!-- The time line -->
+                    <div class="timeline">
+
+                        @foreach (var Content in ViewBag.Contents)
+                        {
+
+                            <!-- timeline time label -->
+                            <div class="time-label">
+                                <span class="bg-red">10 Feb. 2014</span>
+                            </div>
+                            <!-- /.timeline-label -->
+                            <!-- timeline item -->
+                            <div>
+                                <i class="fas fa-envelope bg-blue"></i>
+                                <div class="timeline-item">
+                                    <span class="time"><i class="fas fa-clock"></i> 12:05</span>
+                                    <h3 class="timeline-header"><a href="#">@Content.TrainingContent.Name</a></h3>
+
+                                    <div class="timeline-body">
+                                        @Content.TrainingContent.Description
+                                    </div>
+                                    <div class="timeline-footer">
+                                    @foreach (var Attachments in Content.TrainingContentAttachments)
+                                    {
+                                    <a href="/Files/@Attachments.SystemFilename" class="btn btn-primary btn-sm">@Attachments.OriginalFilename</a>
+                                    }
+                                    <a class="btn btn-danger btn-sm">Delete</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- END timeline item -->
+                        }
+
+                        </div>
+                </div>
+                <!-- /.col -->
+            </div>
+        </div>
+        <!-- /.timeline -->
+    </section>
+</div>
+

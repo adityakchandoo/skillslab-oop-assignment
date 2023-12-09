@@ -7,15 +7,15 @@ using WebApp.Helpers;
 
 namespace WebApp.Controllers.Manager
 {    
+    //[ManagerSession]
     [RoutePrefix("Manager")]
-    [ManagerSession]
     public class ManagerController : Controller
     {
         [Route("")]
         // GET: Home
         public ActionResult Index()
         {
-            return Content("Manager Home");
+            return View("~/Views/Manager/Dashboard.cshtml");
 
         }
     }

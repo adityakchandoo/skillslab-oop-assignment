@@ -38,5 +38,14 @@ namespace DataLayer.Repository
             return results;
         }
 
+        // to cancel/move
+        public IEnumerable<AppUser> GetUsersManagedBy(string UserId)
+        {
+            return base.GetMany(
+                "SELECT * FROM [dbo].[AppUser] WHERE ManagerId = @ManagerId;",
+                new Dictionary<string, object>() { { "ManagerId", UserId } }
+            );
+        }
+
     }
 }

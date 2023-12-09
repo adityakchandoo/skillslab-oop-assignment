@@ -38,8 +38,6 @@ namespace WebApp.Controllers.Employee
         [Route("MyTrainings")]
         public ActionResult MyTrainings()
         {
-            ViewBag.PageTag = "train-manage";
-
             try
             {
                 const string UserId = "aditya";// (string)this.Session["UserId"];
@@ -59,8 +57,6 @@ namespace WebApp.Controllers.Employee
         [Route("Training/{Id}")]
         public ActionResult Training(int Id)
         {
-            ViewBag.PageTag = "train-manage";
-
             try
             {
                 return Content(Id.ToString());

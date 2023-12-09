@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Services.Interfaces;
 using DataLayer.Repository;
+using DataLayer.Repository.Interfaces;
 using Entities.DbModels;
 using Entities.DTO;
 using Entities.Enums;
@@ -104,6 +105,10 @@ namespace BusinessLayer.Services
         public AppUser GetUser(string UserId)
         {
             return _appUserRepo.GetByPK(UserId);
+        }
+        public IEnumerable<AppUser> GetUsersManagedBy(string UserId)
+        {
+            return _appUserRepo.GetUsersManagedBy(UserId);
         }
     }
 }

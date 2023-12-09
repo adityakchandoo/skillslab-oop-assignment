@@ -1,6 +1,6 @@
 ﻿using DataLayer.Generic;
 using Entities.DbModels;
-using Entities.Enums;
+using Entities.DTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +9,7 @@ using System.Threading.Tasks;
 
 namespace DataLayer.Repository.Interfaces
 {
-    public interface IAppUserRepo : IDataAccessLayer<AppUser>
+    public interface ITrainingContentAttachmentRepo : IDataAccessLayer<TrainingContentAttachment>
     {
-        IEnumerable<AppUser> GetAllUsersByType(UserRoleEnum userRoleType);
-        IEnumerable<AppUser> GetUsersManagedBy(string UserId);
     }
 }

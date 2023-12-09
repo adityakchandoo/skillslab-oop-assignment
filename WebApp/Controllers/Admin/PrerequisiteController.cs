@@ -21,9 +21,6 @@ namespace WebApp.Controllers.Admin
         [Route("Prerequisites")]
         public ActionResult Index()
         {
-
-            ViewBag.PageTag = "Prerequisite";
-
             ViewBag.Prerequisites = _prerequisiteService.GetAllPrerequisites();
 
             return View("~/Views/Admin/Prerequisites.cshtml");

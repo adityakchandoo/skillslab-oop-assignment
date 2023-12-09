@@ -23,8 +23,6 @@ namespace WebApp.Controllers.Admin
         public ActionResult Index()
         {
 
-            ViewBag.PageTag = "departments";
-
             ViewBag.Departments = _dapartmentService.GetAllDepartments();
 
             return View("~/Views/Admin/Departments.cshtml");

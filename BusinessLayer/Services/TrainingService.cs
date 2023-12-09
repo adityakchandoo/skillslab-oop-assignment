@@ -19,15 +19,19 @@ namespace BusinessLayer.Services
     {
         private readonly ITrainingRepo _trainingRepo;
         private readonly ITrainingPrerequisiteRepo _trainingPrerequisiteRepo;
+        private readonly ITrainingContentRepo _trainingContentRepo;
+        private readonly ITrainingContentAttachmentRepo _trainingContentAttachmentRepo;
         private readonly IAppUserRepo _appUserRepo;
         private readonly IUserTrainingEnrollmentRepo _userTrainingEnrollmentRepo;
         private readonly INotificationService _notificationService;
         private readonly IEnrollmentPrerequisiteAttachmentRepo _enrollmentPrerequisiteAttachmentRepo;
 
-        public TrainingService(ITrainingRepo trainingRepo, ITrainingPrerequisiteRepo trainingPrerequisiteRepo, IAppUserRepo appUserRepo, IUserTrainingEnrollmentRepo userTrainingEnrollmentRepo, IEnrollmentPrerequisiteAttachmentRepo enrollmentPrerequisiteAttachmentRepo, INotificationService notificationService)
+        public TrainingService(ITrainingRepo trainingRepo, ITrainingPrerequisiteRepo trainingPrerequisiteRepo, ITrainingContentRepo trainingContentRepo, ITrainingContentAttachmentRepo trainingContentAttachmentRepo, IAppUserRepo appUserRepo, IUserTrainingEnrollmentRepo userTrainingEnrollmentRepo, IEnrollmentPrerequisiteAttachmentRepo enrollmentPrerequisiteAttachmentRepo, INotificationService notificationService)
         {
             _trainingRepo = trainingRepo;
             _trainingPrerequisiteRepo = trainingPrerequisiteRepo;
+            _trainingContentRepo = trainingContentRepo;
+            _trainingContentAttachmentRepo = trainingContentAttachmentRepo;
             _appUserRepo = appUserRepo;
             _userTrainingEnrollmentRepo = userTrainingEnrollmentRepo;
             _notificationService = notificationService;
@@ -126,9 +130,28 @@ namespace BusinessLayer.Services
             return _trainingRepo.GetTrainingEnrolledByUser(UserId);
         }
 
-        public IEnumerable<Training> GetUsersManagedBy(string UserId)
+        public IEnumerable<TrainingWithContentDTO> GetTrainingWithContents(int trainingId)
         {
-            return _trainingRepo.GetUsersManagedBy(UserId);
+            var result = new List<TrainingWithContentDTO>();
+            
+            var trainingContents = _trainingContentRepo.GetMany("SELECT * FROM TrainingContent WHERE TrainingId = @TrainingId;",
+                                         new Dictionary<string, object> { { "TrainingId", trainingId } });
+
+            foreach (var item in trainingContents)
+            {
+                var attachments = _trainingContentAttachmentRepo.GetMany("SELECT * FROM TrainingContentAttachment WHERE TrainingContentId = @TrainingContentId;",
+                                         new Dictionary<string, object> { { "TrainingContentId", item.TrainingContentId } });
+
+                result.Add(
+                    new TrainingWithContentDTO()
+                    {
+                        TrainingContent = item,
+                        TrainingContentAttachments = attachments
+                    });
+
+            }
+            return result;
         }
+
     }
 }

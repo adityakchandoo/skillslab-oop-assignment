@@ -113,11 +113,5 @@ namespace DataLayer.Repository
 
         }
 
-        public IEnumerable<Training> GetUsersManagedBy(string UserId)
-        {
-            return base.GetMany("SELECT * FROM [dbo].[AppUser] WHERE ManagerId = @ManagerId;");
-        }
-
-
     }
 }

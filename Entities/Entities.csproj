@@ -54,6 +54,7 @@
     <Compile Include="DbModels\UserTrainingEnrollment.cs" />
     <Compile Include="DTO\DepartmentDTO.cs" />
     <Compile Include="DTO\AuthenticateResponseDTO.cs" />
+    <Compile Include="DTO\TrainingWithContentDTO.cs" />
     <Compile Include="DTO\NotificationDTO.cs" />
     <Compile Include="DTO\PrerequisiteDTO.cs" />
     <Compile Include="DTO\UploadFileStore.cs" />

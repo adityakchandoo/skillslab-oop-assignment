@@ -125,9 +125,8 @@ create table TrainingContent (
 create table TrainingContentAttachment (
 	TrainingContentAttachmentId		int                  identity,
 	TrainingContentId				int         		 not null,
-	Name					nvarchar(40)         not null,
-	Description				text    		     not null,
-	PostDate				datetime     	     not null,
+	OriginalFilename				nvarchar(40)         not null,
+	SystemFilename					nvarchar(40)         not null,
     constraint PK_TrainingContentAttachment_TrainingContentAttachmentId primary key (TrainingContentAttachmentId),
 	constraint FK_TrainingContentAttachment_TrainingContentAttachmentId_TrainingContent_TrainingContentId foreign key (TrainingContentId)
       references TrainingContent(TrainingContentId)

@@ -1,5 +1,6 @@
 ﻿@{
-    ViewBag.Title = "Dash";
+    ViewBag.Title = "View Trainings";
+    ViewBag.PageTag = "train-view";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 <div class="content-wrapper">
@@ -53,7 +54,7 @@
                                             <i class="fas fa-wrench"></i>
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" href="#">View Content</a>
+                                            <a class="dropdown-item" href="/Admin/Training/@Training.Training.TrainingId">View Content</a>
                                             <a class="dropdown-item" href="#">Export Student List</a>
                                         </div>
                                     </div>

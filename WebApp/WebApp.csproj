@@ -300,15 +300,18 @@
     <Content Include="Views\Shared\GlobalErrorDisplayPage.cshtml" />
     <Content Include="Views\Shared\_AdminLayout.cshtml" />
     <Content Include="Views\Admin\ViewTrainings.cshtml" />
-    <Content Include="Views\Admin\Dash.cshtml" />
+    <Content Include="Views\Admin\Dashboard.cshtml" />
     <Content Include="Views\Admin\AddTraining.cshtml" />
     <Content Include="Views\Admin\Departments.cshtml" />
     <Content Include="Views\Admin\Prerequisites.cshtml" />
     <Content Include="Views\Employee\MyTrainings.cshtml" />
     <Content Include="Views\Shared\_EmployeeLayout.cshtml" />
-    <Content Include="Views\Admin\Blank.cshtml" />
     <Content Include="Views\Employee\SearchTrainings.cshtml" />
     <Content Include="Views\Employee\ApplyTraining.cshtml" />
+    <Content Include="Views\Shared\_ManagerLayout.cshtml" />
+    <Content Include="Views\Employee\Dashboard.cshtml" />
+    <Content Include="Views\Manager\Dashboard.cshtml" />
+    <Content Include="Views\Admin\Training.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

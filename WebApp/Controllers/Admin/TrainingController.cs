@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using BusinessLayer.Services.Interfaces;
+using Entities.DbModels;
 using Entities.Enums;
 using Entities.FormDTO;
 using WebApp.Helpers;
@@ -30,18 +31,23 @@ namespace WebApp.Controllers.Admin
         [Route("ViewTrainings")]
         public ActionResult ViewTrainings()
         {
-            ViewBag.PageTag = "train-manage";
-
             ViewBag.Trainings = _trainingService.GetAllTrainingDetails();
 
             return View("~/Views/Admin/ViewTrainings.cshtml");
         }
 
+        [Route("Training/{trainingId}")]
+        public ActionResult Training(int trainingId)
+        {
+            ViewBag.Training = _trainingService.GetTraining(trainingId);
+            ViewBag.Contents = _trainingService.GetTrainingWithContents(trainingId);
+
+            return View("~/Views/Admin/Training.cshtml");
+        }
+
         [Route("AddTraining")]
         public ActionResult AddTraining()
         {
-            ViewBag.PageTag = "train-add";
-
             ViewBag.Departments = _departmentService.GetAllDepartments();
             ViewBag.Prerequisites = _prerequisitService.GetAllPrerequisites();
 

@@ -121,14 +121,11 @@ namespace BusinessLayer.Services
                 _enrollmentPrerequisiteAttachmentRepo.Insert(new EnrollmentPrerequisiteAttachment() { EnrollmentId = InsertedId, TrainingPrerequisiteId = File.FileId, OriginalFilename = File.FileName, SystemFilename = genFileSystemName.ToString() });
             }
 
-            NotificationDTO notificationDTO = new NotificationDTO()
-            {
-                To = currentUserManager.Email,
-                Subject = "New Student Applied to Training",
-                Body = "Check website"
-            };
+            var training = _trainingRepo.GetByPK(trainingId);
 
-            //_notificationService.Send(notificationDTO);
+            var employeeName = currentUser.FirstName + " " + currentUser.LastName;
+
+            _notificationService.NotifyTrainingRequest(currentUserManager.Email, employeeName, training.Name);
         }
 
         public IEnumerable<Training> GetTrainingEnrolledByUser(string UserId)

@@ -13,10 +13,12 @@ namespace BusinessLayer.Services
 {
     public class UserService : IUserService
     {
-        private readonly AppUserRepo _appUserRepo;
-        public UserService(AppUserRepo appUserRepo)
+        private readonly IAppUserRepo _appUserRepo;
+        private readonly INotificationService _notificationService;
+        public UserService(IAppUserRepo appUserRepo, INotificationService notificationService)
         {
             _appUserRepo = appUserRepo;
+            _notificationService = notificationService;
         }
 
 
@@ -75,6 +77,12 @@ namespace BusinessLayer.Services
 
                 _appUserRepo.Insert(db_user);
 
+                var managerEmail = _appUserRepo.GetByPK(reg.ManagerId).Email;
+
+                var employeeName = reg.FirstName + " " + reg.LastName;
+
+                _notificationService.NotifyUserRegistration(managerEmail, employeeName);
+
             } catch (Exception ex)
             {
                 throw;
@@ -116,14 +124,17 @@ namespace BusinessLayer.Services
             return _appUserRepo.GetUsersByManagerAndStatus(UserId, userStatusEnum);
         }
 
-        public void ProcessNewUser(string userId, bool approve)
+        public void ProcessNewUser(string userId, bool isApprove)
         {
             AppUser user = _appUserRepo.GetByPK(userId);
-            user.Status = approve ? UserStatusEnum.Registered : UserStatusEnum.Banned;
+            AppUser userManger = _appUserRepo.GetByPK(user.ManagerId);
+            user.Status = isApprove ? UserStatusEnum.Registered : UserStatusEnum.Banned;
 
             _appUserRepo.Update(user);
 
-            // Send Mail
+            var managerName = userManger.FirstName + " " + userManger.LastName;
+
+            _notificationService.NotifyUserRegistrationProcess(user.Email, managerName, isApprove);
 
         }
     }

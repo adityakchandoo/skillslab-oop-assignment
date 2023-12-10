@@ -9,6 +9,9 @@ namespace BusinessLayer.Services.Interfaces
 {
     public interface INotificationService
     {
-        void Send(NotificationDTO notification);
+        void NotifyUserRegistration(string managerMail, string employeeName);
+        void NotifyUserRegistrationProcess(string employeeMail, string managerName, bool isApproved);
+        void NotifyTrainingRequest(string managerMail, string employeeName, string trainingName);
+        void NotifyTrainingRequestProcess(string employeeMail, string trainingName, bool isApproved);
     }
 }

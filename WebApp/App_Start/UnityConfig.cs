@@ -76,7 +76,7 @@ namespace WebApp
             
             
             container.RegisterType<IStorageService, AmazonS3Service>(new PerRequestLifetimeManager());
-            container.RegisterType<INotificationService, NotificationService>(new PerRequestLifetimeManager());
+            container.RegisterType<INotificationService, EmailService>(new PerRequestLifetimeManager());
 
         }
     }

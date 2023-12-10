@@ -14,11 +14,17 @@ namespace BusinessLayer.Services
 {
     public class UserTrainingEnrollmentService : IUserTrainingEnrollmentService
     {
-        IUserTrainingEnrollmentRepo _userTrainingEnrollmentRepo;
+        private readonly IUserTrainingEnrollmentRepo _userTrainingEnrollmentRepo;
+        private readonly INotificationService _notificationService;
+        private readonly IAppUserRepo _appUserRepo;
+        private readonly ITrainingRepo _trainingRepo;
 
-        public UserTrainingEnrollmentService(IUserTrainingEnrollmentRepo userTrainingEnrollmentRepo)
+        public UserTrainingEnrollmentService(IUserTrainingEnrollmentRepo userTrainingEnrollmentRepo, INotificationService notificationService, IAppUserRepo appUserRepo, ITrainingRepo trainingRepo)
         {
             _userTrainingEnrollmentRepo = userTrainingEnrollmentRepo;
+            _notificationService = notificationService;
+            _appUserRepo = appUserRepo;
+            _trainingRepo = trainingRepo;
         }
 
         public UserTrainingEnrollmentService(UserTrainingEnrollmentRepo userTrainingEnrollmentRepo) 
@@ -67,11 +73,14 @@ namespace BusinessLayer.Services
             var userEnrollment = _userTrainingEnrollmentRepo.GetUserTrainingEnrollmentByUserTraining(targetUserId, targetTrainingId);
 
             userEnrollment.Status = isApproved ? EnrollStatusEnum.Approved : EnrollStatusEnum.Rejected;
+            userEnrollment.EnrolledDate = DateTime.Now; 
 
             _userTrainingEnrollmentRepo.Update(userEnrollment);
 
+            var user = _appUserRepo.GetByPK(targetUserId);
+            var training = _trainingRepo.GetByPK(targetTrainingId);
 
-            // TODO: Send Mail
+            _notificationService.NotifyTrainingRequestProcess(user.Email, training.Name, isApproved);
 
         }
     }

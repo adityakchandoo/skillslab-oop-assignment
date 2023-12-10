@@ -1,0 +1,181 @@
+﻿@{
+    ViewBag.Title = "Add Training Content";
+    ViewBag.PageTag = "train-add";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>@ViewBag.Title</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">General Form</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- left column -->
+                <div class="col-md-6">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Training Details</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <form id="myForm" method="post">
+                            <div class="card-body">
+                                <div class="form-group">
+                                    <label for="name">Name</label>
+                                    <input type="text" class="form-control" id="Name" name="Name" placeholder="Enter Name">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="description">Description</label>
+                                    <textarea class="form-control" rows="15" id="Description" name="Description" placeholder="Enter Description"></textarea>
+                                </div>
+
+
+                            </div>
+                            <!-- /.card-body -->
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <!-- Form Element sizes -->
+                    <div class="card card-success">
+                        <div class="card-header">
+                            <h3 class="card-title">Upload Files</h3>
+                        </div>
+                        <div class="card-body">
+                            <div class="form-group">
+                                <div class="input-group">
+                                    <div class="custom-file">
+                                        <input type="file" class="custom-file-input" id="exampleInputFile" multiple>
+                                        <label class="custom-file-label" for="exampleInputFile">Choose files</label>
+                                    </div>
+
+                                </div>
+                                <ul id="fileList"></ul>
+                            </div>
+                        </div>
+                        <!-- /.card-body -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {   
+
+    <script>
+        document.getElementById('exampleInputFile').addEventListener('change', function () {
+            var fileList = document.getElementById('fileList');
+            fileList.innerHTML = ''; // Clear existing list
+
+            // Loop through each file and add it to the list
+            for (var i = 0; i < this.files.length; i++) {
+                var li = document.createElement('li');
+                li.textContent = this.files[i].name;
+                fileList.appendChild(li);
+            }
+        });
+    </script>
+
+    <script type="text/javascript">
+        var trainingId = @ViewBag.trainingId;
+        $("#myForm").validate({
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            errorPlacement: function (error, element) {
+                error.insertAfter(element);
+                element.next().addClass("invalid-feedback")
+            },
+            errorElement: 'div',
+
+            rules: {
+                Name: { required: true },
+                Description: { required: true }
+
+            },
+            submitHandler: upload
+        });
+
+        function upload() {
+            $('.loading-mask').show();
+            var formData = new FormData();
+
+            formData.append("TrainingId", trainingId);
+            formData.append("Name", $('#Name').val());
+            formData.append("Description", $('#Description').val());
+
+            var inputFiles = $("#exampleInputFile")[0].files;
+
+            Array.from(inputFiles).forEach(function (file) {
+                formData.append("Files", file);
+            });
+
+            $.ajax({
+                url: '/Admin/AddTrainingContentPost', // replace with your server endpoint
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                xhr: function () {
+                    var xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", function (evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = evt.loaded / evt.total;
+                            percentComplete = parseInt(percentComplete * 100);
+                            console.log(percentComplete);
+
+                            if (percentComplete === 100) {
+                                // Handle the completion of the upload
+                            }
+                        }
+                    }, false);
+
+                    return xhr;
+                },
+                success: function (response) {
+                    $('.loading-mask').hide();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Content Added!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    }).then(() => {
+                        history.back();
+                    });
+                },
+                error: function (response) {
+                    $('.loading-mask').hide();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Contact Admin!',
+                    });
+                }
+            });
+
+        }
+
+    </script>
+}

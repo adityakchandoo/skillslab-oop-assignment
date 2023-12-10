@@ -61,29 +61,30 @@
                         </div><!-- /.card-header -->
                         <div class="card-body">
                             <div class="tab-content">
-                                <div class="active tab-pane" id="activity">
-                                    <!-- Post -->
-                                    <div class="post">
+                                    <div class="active tab-pane" id="activity">
+                                        <!-- Post -->
+                                        <div class="post">
 
-                                        @foreach (var Prerequisite in ViewBag.Prerequisites)
-                                        {
-                                            <div class="form-group">
-                                                <label for="prereq@{@Prerequisite.PrerequisiteId}">@Prerequisite.Name</label>
-                                                <p>
-                                                    @Prerequisite.Description
-                                                </p>
-                                                <div class="input-group">
-                                                    <div class="custom-file">
-                                                        <input type="file" class="custom-file-input" id="prereq@{@Prerequisite.PrerequisiteId}" name="@{@Prerequisite.PrerequisiteId}">
-                                                        <label class="custom-file-label" for="prereq@{@Prerequisite.PrerequisiteId}">Choose file</label>
+                                            @foreach (var Prerequisite in ViewBag.Prerequisites)
+                                            {
+                                                <div class="form-group">
+                                                    <label for="prereq@{@Prerequisite.PrerequisiteId}">@Prerequisite.Name</label>
+                                                    <p>
+                                                        @Prerequisite.Description
+                                                    </p>
+                                                    <div class="input-group">
+                                                        <div class="custom-file">
+                                                            <input type="file" class="custom-file-input" id="prereq@{@Prerequisite.PrerequisiteId}" name="@{@Prerequisite.PrerequisiteId}">
+                                                            <label class="custom-file-label" for="prereq@{@Prerequisite.PrerequisiteId}">Choose file</label>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        }
+                                            }
+
+                                        </div>
+                                        <!-- /.post -->
                                     </div>
-                                    <!-- /.post -->
-                                </div>
-                                <button type="button" onclick="upload();" class="btn btn-primary float-left">Submit</button>
+                                    <button type="button" onclick="upload()" class="btn btn-primary float-left">Submit</button>
                             </div>
                             <!-- /.tab-content -->
                         </div><!-- /.card-body -->
@@ -96,96 +97,91 @@
         </div>
     </section>
 </div>
-
 @section Scripts {
     <script type="text/javascript">
+
+        var trainingId = @ViewBag.trainingId;
+
         $(document).ready(function () {
             $('.custom-file-input').on('change', function () {
                 // Get the file name
                 var fileName = $(this).val().split('\\').pop();
                 // Replace the "Choose a file" label
                 $(this).next('.custom-file-label').addClass("selected").html(fileName);
+
             });
         });
 
-
-        var trainingId = @ViewBag.trainingId;
-
-        console.log($("input.custom-file-input"));
-
         function upload() {
-            console.log('Upload function begins');
-            let pBar = document.getElementsByClassName('progress-bar')[0],
-                progressWindow = document.getElementById('modal-progress'),
-                formData = new FormData(),
-                xhr = new XMLHttpRequest(),
-                percent = 0;
+
+            var allFilesSelected = Array.from(document.querySelectorAll('.custom-file-input')).every(input => input.files.length > 0);
+
+            if (!allFilesSelected) {
+                Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                }).fire({
+                    icon: 'error',
+                    title: 'You have to select filw for every prerequisites!'
+                })
+                return;
+            }
+
+            $('.loading-mask').show();
+            var formData = new FormData();
 
             formData.append("trainingId", trainingId);
-            
+
             $("input.custom-file-input").each(function (i, obj) {
                 formData.append(obj.name, obj.files[0]);
                 console.log(obj.name)
             });
 
-            
-            //formData.append(", trainingId)
+            $.ajax({
+                url: '/Employee/ApplyTrainingPost', // replace with your server endpoint
+                type: 'POST',
+                data: formData,
+                contentType: false,
+                processData: false,
+                xhr: function () {
+                    var xhr = new window.XMLHttpRequest();
+                    xhr.upload.addEventListener("progress", function (evt) {
+                        if (evt.lengthComputable) {
+                            var percentComplete = evt.loaded / evt.total;
+                            percentComplete = parseInt(percentComplete * 100);
+                            console.log(percentComplete);
 
-            console.log('Form Data created');
-            // Start upload
-            xhr.upload.onloadstart = function () {
-                //$('#modal-progress').hide().fadeIn();
-                //progressWindow
-            };
+                            if (percentComplete === 100) {
+                                // Handle the completion of the upload
+                            }
+                        }
+                    }, false);
 
-            // Track upload progress
-            xhr.upload.onprogress = function (event) {
-                percent = parseInt(event.loaded / event.total * 100);
-                //pBar.innerHTML = percent + "%";
-                //pBar.style.width = percent + "%";
-                console.log(percent + '% completed');
-                //console.log('Uploaded event.loaded of event.total');
-            };
+                    return xhr;
+                },
+                success: function (response) {
+                    $('.loading-mask').hide();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Application Successful!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    }).then(() => {
+                        history.back();
+                    });
+                },
+                error: function (response) {
+                    $('.loading-mask').hide();
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Contact Admin!',
+                    });
+                }
+            });
 
-            // Report if ends with an error
-            xhr.upload.onerror = function () {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops...',
-                    text: 'Contact Admin!',
-                });
-            };
-
-            // Track completion: Both successful or not
-            xhr.upload.onloadend = function () {
-                //$('#modal-progress').fadeOut().hide();
-                console.log('Upload complete with or without error ' + xhr.status);
-            };
-
-            // Track progress: Triggered on successful completion
-            xhr.upload.onload = function () {
-                console.log('Uploading complete');
-
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Application Successful!',
-                    showConfirmButton: false,
-                    timer: 2000
-                }).then(() => {
-                    history.back();
-                });
-                //progressWindow.hidden = True;
-            };
-
-            xhr.open("POST", "/Employee/ApplyTrainingPost", true);
-            //xhr.setRequestHeader("Content-Type", "multipart/form-data");
-
-            // The 'setRequestHeader' function can only be called when xhr is opened.
-            //xhr.setRequestHeader('csrfmiddlewaretoken', '{{ csrf_token }}');
-            //xhr.setRequestHeader('test-info', 'something');
-            //xhr.setRequestHeader('Content-Type', 'application/gzip');
-
-            xhr.send(formData);
         }
 
     </script>

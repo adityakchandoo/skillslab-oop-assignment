@@ -42,7 +42,7 @@ namespace WebApp.Controllers.Admin
             ViewBag.Training = _trainingService.GetTraining(trainingId);
             ViewBag.Contents = _trainingService.GetTrainingWithContents(trainingId);
 
-            return View("~/Views/Admin/Training.cshtml");
+            return View("~/Views/Admin/AdminTraining.cshtml");
         }
 
         [Route("AddTraining")]
@@ -61,6 +61,31 @@ namespace WebApp.Controllers.Admin
             try
             {
                 _trainingService.AddTrainingWithTrainingPrerequisite(training);
+
+                return Json(new { status = "ok" });
+
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 400;
+                return Json(new { Error = ex.Message });
+            }
+        }
+
+        [Route("AddTrainingContent/{trainingId}")]
+        public ActionResult AddTrainingContent(int trainingId)
+        {
+            ViewBag.trainingId = trainingId;
+            return View("~/Views/Admin/AddTrainingContent.cshtml");
+        }
+
+        [Route("AddTrainingContentPost")]
+        [HttpPost]
+        public ActionResult AddTrainingContentPost(AddTrainingContentDTO addTrainingContentDTO)
+        {
+            try
+            {
+                _trainingService.SaveTrainingWithContents(addTrainingContentDTO);
 
                 return Json(new { status = "ok" });
 

@@ -6,6 +6,8 @@ using DataLayer.Generic;
 using DataLayer.Repository.Interfaces;
 using Entities.DbCustom;
 using Entities.DbModels;
+using Entities.DTO;
+using Entities.Enums;
 
 namespace DataLayer.Repository
 {
@@ -104,12 +106,60 @@ namespace DataLayer.Repository
                          [dbo].[Training].[TrainingId] = [dbo].[UserTrainingEnrollment].[TrainingId] 
                          WHERE [dbo].[UserTrainingEnrollment].[Status] = @EnrollStatusEnum AND [dbo].[UserTrainingEnrollment].[UserId] = @UserId;";
 
-            Dictionary<string, object> myparam = new Dictionary<string, object>();
-
-            myparam.Add("EnrollStatusEnum", (int)Entities.Enums.EnrollStatusEnum.Approved);
-            myparam.Add("UserId", UserId);
+            Dictionary<string, object> myparam = new Dictionary<string, object>
+            {
+                { "EnrollStatusEnum", (int)Entities.Enums.EnrollStatusEnum.Approved },
+                { "UserId", UserId }
+            };
 
             return base.GetMany(sql, myparam);
+
+        }
+
+        public IEnumerable<PendingUserTraining> GetTrainingPendingForManager(string UserId)
+        {
+            var pendingUserTraining = new List<PendingUserTraining>();
+
+            string sql = $@"SELECT
+                                UTE.UserId as 'UserId',
+	                            UTE.TrainingId as 'TrainingId',
+                                AU.FirstName + ' ' + AU.LastName as 'Name',
+                                T.Name as 'TrainingName',
+                                AU.Email,
+                                AU.MobileNumber,
+                                T.Deadline as 'TrainingDeadline'
+                            FROM
+                                UserTrainingEnrollment UTE
+                            INNER JOIN
+                                AppUser AU ON UTE.UserId = AU.UserId
+                            INNER JOIN
+                                Training T ON UTE.TrainingId = T.TrainingId
+                            WHERE
+                                AU.ManagerId = @ManagerId
+                                AND UTE.Status = @EnrollStatusEnum;";
+
+            try
+            {
+                using (IDbCommand cmd = _conn.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+
+                    DbHelper.AddParameterWithValue(cmd, "@ManagerId", UserId);
+                    DbHelper.AddParameterWithValue(cmd, "@EnrollStatusEnum", (int)UserStatusEnum.Pending);
+
+
+                    using (IDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            pendingUserTraining.Add(DbHelper.ConvertToObject<PendingUserTraining>(reader));
+                        }
+                    }
+                }
+                return pendingUserTraining;
+
+            }
+            catch (Exception ex) { throw ex; }
 
         }
 

@@ -7,9 +7,11 @@ using System.Web;
 
 namespace Entities.FormDTO
 {
-    public class ApplyTrainingFormDTO
+    public class AddTrainingContentDTO
     {
         public int TrainingId { get; set; }
-        //public IEnumerable<HttpPostedFileBase> Files { get; set; }
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public IEnumerable<HttpPostedFileBase> Files { get; set; }
     }
 }

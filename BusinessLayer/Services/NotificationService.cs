@@ -35,7 +35,8 @@ namespace BusinessLayer.Services
                 mailMessage.To.Add(notification.To);
 
                 // Send the email
-                client.Send(mailMessage);
+                // TODO:  Mail Disabled
+                //client.Send(mailMessage);
             }
             catch (Exception ex)
             {

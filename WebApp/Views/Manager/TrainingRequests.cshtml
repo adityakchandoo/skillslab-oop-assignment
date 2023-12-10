@@ -1,0 +1,108 @@
+﻿
+@{
+    ViewBag.Title = "TrainingRequests";
+    ViewBag.PageTag = "";
+    Layout = "~/Views/Shared/_ManagerLayout.cshtml";
+}
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>@ViewBag.Title</h1>
+                </div>
+                <div class="col-sm-6">
+                    <a role="button" class="btn btn-primary float-right" href="/Admin/AddTraining">Add Trainings</a>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-body p-0">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th>Employee Name</th>
+                            <th>Training Applied</th>
+                            <th>Email</th>
+                            <th>MobileNumber</th>
+                            <th>TrainingDeadline</th>
+                            <th>Action</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var TrainingRequest in ViewBag.TrainingRequests)
+                        {
+                            <tr>
+                                <td>@TrainingRequest.UserId</td>
+                                <td>@TrainingRequest.Name</td>
+                                <td>@TrainingRequest.TrainingName</td>
+                                <td>@TrainingRequest.Email</td>
+                                <td>@TrainingRequest.MobileNumber</td>
+                                <td>@TrainingRequest.TrainingDeadline</td>
+                                <td><a href="/Manager/TrainingProcess/@TrainingRequest.UserId/@TrainingRequest.TrainingId" role="button" class="btn btn-secondary">View</a></td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- /.card -->
+
+
+    </section>
+    <!-- /.content -->
+</div>
+
+@section Scripts {
+    <script>
+        function showApprovalDialog(user) {
+            Swal.fire({
+                title: 'Approve or Reject User',
+                text: 'Do you want to approve or reject this user?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Approve',
+                cancelButtonText: 'Reject',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Logic for approval
+                    console.log('User Approved');
+                    processUser(user, true);
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // Logic for rejection
+                    console.log('User Rejected');
+                    processUser(user, false);
+                }
+            });
+        }
+
+
+        function processUser(user, isApproved) {
+            $.ajax({
+                type: "POST",
+                url: "/Manager/PendingEmployeeAction", // Change this to your server script
+                data: { userId: user, approve: isApproved }
+            }).done(function (response) {
+                console.log('User Approved');
+                location.reload();
+
+            }).fail(function () {
+                console.log('User Rejected');
+            })
+        }
+
+    </script>
+
+}

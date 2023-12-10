@@ -7,6 +7,7 @@ using Entities.DTO;
 using Entities.Enums;
 using Entities.FormDTO;
 using System;
+using System.Web;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -135,6 +136,11 @@ namespace BusinessLayer.Services
             return _trainingRepo.GetTrainingEnrolledByUser(UserId);
         }
 
+        public IEnumerable<PendingUserTraining> GetTrainingPendingForManager(string UserId)
+        {
+            return _trainingRepo.GetTrainingPendingForManager(UserId);
+        }
+
         public IEnumerable<TrainingWithContentDTO> GetTrainingWithContents(int trainingId)
         {
             var result = new List<TrainingWithContentDTO>();
@@ -156,6 +162,32 @@ namespace BusinessLayer.Services
 
             }
             return result;
+        }
+
+        public void SaveTrainingWithContents(AddTrainingContentDTO addTrainingContentDTO)
+        {
+            var trainingContent = new TrainingContent()
+            {
+                TrainingId = addTrainingContentDTO.TrainingId,
+                Name = addTrainingContentDTO.Name,
+                Description = addTrainingContentDTO.Description
+            };
+
+            var InsertedId = _trainingContentRepo.CreateTrainingContentReturningID(trainingContent);
+
+            foreach (HttpPostedFileBase File in addTrainingContentDTO.Files)
+            {
+                var genFileSystemName = Guid.NewGuid();
+
+                _storageService.Put(File.InputStream, genFileSystemName.ToString());
+
+                _trainingContentAttachmentRepo.Insert(new TrainingContentAttachment()
+                {
+                    TrainingContentId = InsertedId,
+                    OriginalFilename = File.FileName,
+                    SystemFilename = genFileSystemName.ToString(),
+                });
+            }
         }
 
     }

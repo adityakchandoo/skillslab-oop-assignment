@@ -8,9 +8,11 @@
     <!-- Google Font: Source Sans Pro -->
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
     <!-- Font Awesome -->
-    <link href="@Url.Content("~/content/adminlte/fontawesome-free/css/all.css")" rel="stylesheet" type="text/css" />
+    <link href="~/Content/adminlte/fontawesome-free/css/all.min.css" rel="stylesheet" />
     <!-- Theme style -->
-    <link rel="stylesheet" href="@Url.Content("~/content/adminlte/dist/css/adminlte.min.css")">
+    <link href="~/Content/adminlte/dist/css/adminlte.min.css" rel="stylesheet" />
+
+    <link href="~/Content/loadingmask.css" rel="stylesheet" />
 </head>
 <body class="hold-transition sidebar-mini">
     <!-- Site wrapper -->
@@ -79,7 +81,7 @@
                             </a>
                         </li>
 
-                        
+
                         <li class="nav-item @(@ViewBag.PageTag.StartsWith("other-") ? "menu-open":"menu-close")">
                             <a href="#" class="nav-link">
                                 <i class="nav-icon fas fa-tachometer-alt"></i>
@@ -113,19 +115,19 @@
                             </a>
                             <ul class="nav nav-treeview">
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="/Admin/ViewAdmins" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Admin</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="/Admin/ViewManagers" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Manager</p>
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a href="#" class="nav-link">
+                                    <a href="/Admin/ViewEmployees" class="nav-link">
                                         <i class="far fa-circle nav-icon"></i>
                                         <p>Employee</p>
                                     </a>
@@ -165,15 +167,25 @@
         <!-- /.control-sidebar -->
     </div>
     <!-- ./wrapper -->
+    <div class="loading-mask">
+        <div class="text-center">
+            <div class="spinner-border" role="status">
+                <span class="sr-only">Loading...</span>
+            </div>
+            <h4>Processing...</h4>
+        </div>
+    </div>
     <!-- jQuery -->
-    <script src="@Url.Content("~/content/adminlte/jquery/jquery.min.js")"></script>
+    <script src="~/Content/adminlte/jquery/jquery.min.js"></script>
     <!-- Bootstrap 4 -->
-    <script src="@Url.Content("~/content/adminlte/bootstrap/js/bootstrap.bundle.min.js")"></script>
+    <script src="~/Content/adminlte/bootstrap/js/bootstrap.bundle.min.js"></script>
     <!-- AdminLTE App -->
-    <script src="@Url.Content("~/content/adminlte//dist/js/adminlte.min.js")"></script>
-    @Scripts.Render("~/Scripts/sweetalert2.all.js")
-    @Scripts.Render("~/Scripts/jquery.validate.js")
-    @Scripts.Render("https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/additional-methods.js")
+    <script src="~/Content/adminlte/dist/js/adminlte.min.js"></script>
+
+    <script src="~/Scripts/sweetalert2.all.js"></script>
+
+    <script src="~/Scripts/jquery.validate.js"></script>
+    <script src="~/Scripts/jquery.validate.additional-methods.js"></script>
 
     @RenderSection("scripts", required: false)
 

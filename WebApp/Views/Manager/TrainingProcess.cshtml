@@ -1,0 +1,145 @@
+﻿
+@{
+    ViewBag.Title = "TrainingProcess";
+    ViewBag.PageTag = "";
+    Layout = "~/Views/Shared/_ManagerLayout.cshtml";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>Project Detail</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">Project Detail</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <!-- Default box -->
+        <div class="card">
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-12 col-md-12 col-lg-8 order-2 order-md-1">
+                        <div class="row">
+                            <div class="col-12">
+                                <h4>User Details</h4>
+                                <div class="post">
+                                    <div class="user-block">
+                                        <img class="img-circle img-bordered-sm" src="https://static.vecteezy.com/system/resources/thumbnails/004/511/281/small/default-avatar-photo-placeholder-profile-picture-vector.jpg" alt="user image">
+                                        <span class="username">
+                                            <a href="#">@ViewBag.User.FirstName @ViewBag.User.LastName</a>
+                                        </span>
+                                        <span class="description">UserId: @ViewBag.User.UserId</span>
+                                    </div>
+                                    <!-- /.user-block -->
+                                    <p>Email: @ViewBag.User.Email</p>
+                                    <p>Mobile: @ViewBag.User.MobileNumber</p>
+
+                                    <h5 class="text-muted">Prerequisites</h5>
+                                    <ul class="list-unstyled">
+
+                                        @foreach (var Attachment in ViewBag.Attachments)
+                                        {
+                                            <li class="text-primary">@Attachment.PrerequisiteName</li>
+                                            <ul>
+                                                <li>
+                                                    <a href="/File/@Attachment.SystemFilename/@Attachment.OriginalFilename/" class="btn-link text-secondary"><i class="far fa-fw fa-file-word"></i> @Attachment.OriginalFilename</a>
+                                                </li>
+                                            </ul>
+                                        }
+                                    </ul>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-12 col-md-12 col-lg-4 order-1 order-md-2">
+                        <h3 class="text-primary">@ViewBag.Training.Name</h3>
+                        <div class="text-muted">
+                            <p class="text-sm">
+                                Seats
+                                <b class="d-block">@ViewBag.Training.Threshold</b>
+                            </p>
+                            <p class="text-sm">
+                                Deadline
+                                <b class="d-block">@ViewBag.Training.Deadline</b>
+                            </p>
+                        </div>
+                        <br>
+                        <p class="text-muted">@ViewBag.Training.Description</p>
+
+
+
+                        <div class="text-center mt-5 mb-3">
+                            <button onclick="showApprovalDialog();" class="btn btn-lg btn-primary">Process</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-body -->
+        </div>
+        <!-- /.card -->
+
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+@section Scripts {
+    <script>
+        var trainingId = @ViewBag.Training.TrainingId;
+        var userId = "@ViewBag.User.UserId";
+
+        function showApprovalDialog() {
+            Swal.fire({
+                title: 'Approve or Reject Training Request',
+                text: 'Do you want to approve or reject Training Request?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonText: 'Approve',
+                cancelButtonText: 'Reject',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Logic for approval
+                    console.log('User Approved');
+                    processUser(true);
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    // Logic for rejection
+                    console.log('User Rejected');
+                    processUser(false);
+                }
+            });
+        }
+
+
+        function processUser(isApproved) {
+            $.ajax({
+                type: "POST",
+                url: "/Manager/TrainingRequestsAction", // Change this to your server script
+                data: { targetUserId: userId, targetTrainingId: trainingId, approve: isApproved }
+            }).done(function (response) {
+                console.log('User Approved');
+                location.reload();
+
+            }).fail(function () {
+                console.log('User Rejected');
+            })
+        }
+
+    </script>
+
+}

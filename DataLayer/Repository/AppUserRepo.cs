@@ -18,32 +18,25 @@ namespace DataLayer.Repository
         }
         public IEnumerable<AppUser> GetAllUsersByType(UserRoleEnum userRoleEnum)
         {
-            string sql = "SELECT * FROM [dbo].[AppUser] WHERE Role = @Role;";
-
-            List<AppUser> results = new List<AppUser>();
-
-            using (IDbCommand cmd = _conn.CreateCommand())
-            {
-                cmd.CommandText = sql;
-                DbHelper.AddParameterWithValue(cmd, "@Role", (int)userRoleEnum);
-
-                using (IDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        results.Add(DbHelper.ConvertToObject<AppUser>(reader));
-                    }
-                }
-            }
-            return results;
+            return base.GetMany(
+                "SELECT * FROM [dbo].[AppUser] WHERE Role = @Role;",
+                new Dictionary<string, object>() { { "Role", (int)userRoleEnum } }
+            );
         }
 
-        // to cancel/move
-        public IEnumerable<AppUser> GetUsersManagedBy(string UserId)
+        public IEnumerable<AppUser> GetUsersByManager(string UserId)
         {
             return base.GetMany(
                 "SELECT * FROM [dbo].[AppUser] WHERE ManagerId = @ManagerId;",
                 new Dictionary<string, object>() { { "ManagerId", UserId } }
+            );
+        }
+
+        public IEnumerable<AppUser> GetUsersByManagerAndStatus(string UserId, UserStatusEnum userStatusEnum)
+        {
+            return base.GetMany(
+                "SELECT * FROM [dbo].[AppUser] WHERE ManagerId = @ManagerId AND Status = @Status;",
+                new Dictionary<string, object>() { { "ManagerId", UserId }, { "Status", userStatusEnum } }
             );
         }
 

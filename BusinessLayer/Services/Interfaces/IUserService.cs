@@ -21,5 +21,8 @@ namespace BusinessLayer.Services.Interfaces
         void ConfirmAccount(string UserId);
         IEnumerable<AppUser> ExportSelectedEmployees();
         AppUser GetUser(string UserId);
+        IEnumerable<AppUser> GetUsersByManager(string UserId);
+        IEnumerable<AppUser> GetUsersByManagerAndStatus(string UserId, UserStatusEnum userStatusEnum);
+        void ProcessNewUser(string userId, bool approve);
     }
 }

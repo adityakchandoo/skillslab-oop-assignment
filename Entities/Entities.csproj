@@ -34,6 +34,7 @@
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -54,10 +55,13 @@
     <Compile Include="DbModels\UserTrainingEnrollment.cs" />
     <Compile Include="DTO\DepartmentDTO.cs" />
     <Compile Include="DTO\AuthenticateResponseDTO.cs" />
+    <Compile Include="DTO\PendingUserTraining.cs" />
+    <Compile Include="DTO\TrainingEnrollmentDetails.cs" />
     <Compile Include="DTO\TrainingWithContentDTO.cs" />
     <Compile Include="DTO\NotificationDTO.cs" />
     <Compile Include="DTO\PrerequisiteDTO.cs" />
     <Compile Include="DTO\UploadFileStore.cs" />
+    <Compile Include="FormDTO\AddTrainingContentDTO.cs" />
     <Compile Include="FormDTO\RegEnrollFormDTO.cs" />
     <Compile Include="Enums\EnrollStatusEnum.cs" />
     <Compile Include="Enums\UserRoleEum.cs" />

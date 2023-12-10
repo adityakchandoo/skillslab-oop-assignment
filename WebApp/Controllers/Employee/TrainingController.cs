@@ -12,8 +12,8 @@ using WebApp.Helpers;
 
 namespace WebApp.Controllers.Employee
 {
-    [RoutePrefix("Employee")]
     //[EmployeeSession]
+    [RoutePrefix("Employee")]
     public class TrainingController : Controller
     {
         private readonly ITrainingService _trainingService;
@@ -38,9 +38,12 @@ namespace WebApp.Controllers.Employee
         [Route("MyTrainings")]
         public ActionResult MyTrainings()
         {
+            // TODO: User Session
+            const string UserId = "aditya";
+            //const string UserId = (string)this.Session["UserId"];
             try
             {
-                const string UserId = "aditya";// (string)this.Session["UserId"];
+
                 ViewBag.Trainings = _trainingService.GetTrainingEnrolledByUser(UserId);
 
                 return View("~/Views/Employee/MyTrainings.cshtml");
@@ -54,12 +57,16 @@ namespace WebApp.Controllers.Employee
 
         }
 
-        [Route("Training/{Id}")]
-        public ActionResult Training(int Id)
+        [Route("Training/{trainingId}")]
+        public ActionResult Training(int trainingId)
         {
             try
             {
-                return Content(Id.ToString());
+                ViewBag.Training = _trainingService.GetTraining(trainingId);
+                ViewBag.Contents = _trainingService.GetTrainingWithContents(trainingId);
+
+                return View("~/Views/Employee/Training.cshtml");
+
             }
             catch (Exception ex)
             {
@@ -73,11 +80,11 @@ namespace WebApp.Controllers.Employee
         [Route("SearchTrainings")]
         public ActionResult SearchTrainings()
         {
-            ViewBag.PageTag = "train-manage";
-
+            // TODO: User Session
+            const string UserId = "aditya";
+            //const string UserId = (string)this.Session["UserId"];
             try
             {
-                const string UserId = "aditya";// (string)this.Session["UserId"];
                 ViewBag.Trainings = _trainingService.GetAllTraining();
 
                 return View("~/Views/Employee/SearchTrainings.cshtml");
@@ -94,7 +101,19 @@ namespace WebApp.Controllers.Employee
         [Route("ApplyTraining/{trainingId}")]
         public ActionResult ApplyTraining(int trainingId)
         {
+            // TODO: User Session
+            const string UserId = "aditya";
+            //const string UserId = (string)this.Session["UserId"];
 
+            try
+            {
+                var enrollement = _userTrainingEnrollmentService.GetUserTrainingEnrollmentByUserTraining(UserId, trainingId);
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 400;
+                return Content("Already Applied!");
+            }
             ViewBag.trainingId = trainingId;
             ViewBag.Training = _trainingService.GetTraining(trainingId);
             ViewBag.Prerequisites = _prerequisiteService.GetPrerequisitesByTraining(trainingId);
@@ -106,12 +125,14 @@ namespace WebApp.Controllers.Employee
         [HttpPost]
         public ActionResult ApplyTrainingPost(int trainingId)
         {
+            // TODO: User Session
+            const string UserId = "aditya";
+            //const string UserId = (string)this.Session["UserId"];
+
             List<UploadFileStore> uploadFiles = new List<UploadFileStore>();
 
             try
             {
-                const string UserId = "aditya";// (string)this.Session["UserId"];
-
                 foreach (string key in Request.Files.AllKeys)
                 {
                     uploadFiles.Add(new UploadFileStore() { FileId = int.Parse(key), FileName = Request.Files.Get(key).FileName, FileContent = Request.Files.Get(key).InputStream }); ;

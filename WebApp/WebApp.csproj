@@ -144,13 +144,16 @@
     <Compile Include="Controllers\Admin\DepartmentController.cs" />
     <Compile Include="Controllers\Admin\PrerequisiteController.cs" />
     <Compile Include="Controllers\Admin\TrainingController.cs" />
+    <Compile Include="Controllers\Admin\UserController.cs" />
     <Compile Include="Controllers\Employee\EmployeeController.cs" />
     <Compile Include="Controllers\Employee\TrainingController.cs" />
     <Compile Include="Controllers\FileController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\Manager\ManagerController.cs" />
+    <Compile Include="Controllers\Manager\TrainingController.cs" />
+    <Compile Include="Controllers\Manager\UserController.cs" />
     <Compile Include="Controllers\UserController.cs" />
-    <Compile Include="Helpers\ApplyTrainingFormDTO.cs" />
+    <Compile Include="Helpers\Base64Encode.cs" />
     <Compile Include="Helpers\ManagerSession.cs" />
     <Compile Include="Helpers\AdminSession.cs" />
     <Compile Include="Helpers\EmployeeSession.cs" />
@@ -225,6 +228,7 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\loadingmask.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -282,6 +286,7 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
+    <Content Include="Scripts\sweetalert2.all.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
@@ -312,12 +317,20 @@
     <Content Include="Views\Shared\_ManagerLayout.cshtml" />
     <Content Include="Views\Employee\Dashboard.cshtml" />
     <Content Include="Views\Manager\Dashboard.cshtml" />
-    <Content Include="Views\Admin\Training.cshtml" />
+    <Content Include="Views\Admin\AdminTraining.cshtml" />
+    <Content Include="Views\Admin\AddTrainingContent.cshtml" />
+    <Content Include="Views\Manager\UserTableView.cshtml" />
+    <Content Include="Views\Manager\PendingEmployees.cshtml" />
+    <Content Include="Views\Manager\AllTrainings.cshtml" />
+    <Content Include="Views\Manager\TrainingRequests.cshtml" />
+    <Content Include="Views\Employee\Training.cshtml" />
+    <Content Include="Views\Manager\TrainingProcess.cshtml" />
+    <Content Include="Views\Admin\UserTableView.cshtml" />
+    <Content Include="Views\Manager\Training.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\adminlte\js\" />
-    <Folder Include="Views\File\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

@@ -70,7 +70,7 @@ namespace BusinessLayer.Services
                 db_user.MobileNumber = reg.MobileNumber;
                 db_user.DepartmentId = reg.DepartmentId == -1 ? null : reg.DepartmentId;
                 db_user.ManagerId = reg.ManagerId;
-                db_user.Status = UserStatusEnum.Unverified;
+                db_user.Status = UserStatusEnum.Pending;
                 db_user.Role = UserRoleEnum.Employee;
 
                 _appUserRepo.Insert(db_user);
@@ -106,9 +106,25 @@ namespace BusinessLayer.Services
         {
             return _appUserRepo.GetByPK(UserId);
         }
-        public IEnumerable<AppUser> GetUsersManagedBy(string UserId)
+        public IEnumerable<AppUser> GetUsersByManager(string UserId)
         {
-            return _appUserRepo.GetUsersManagedBy(UserId);
+            return _appUserRepo.GetUsersByManager(UserId);
+        }
+
+        public IEnumerable<AppUser> GetUsersByManagerAndStatus(string UserId, UserStatusEnum userStatusEnum)
+        {
+            return _appUserRepo.GetUsersByManagerAndStatus(UserId, userStatusEnum);
+        }
+
+        public void ProcessNewUser(string userId, bool approve)
+        {
+            AppUser user = _appUserRepo.GetByPK(userId);
+            user.Status = approve ? UserStatusEnum.Registered : UserStatusEnum.Banned;
+
+            _appUserRepo.Update(user);
+
+            // Send Mail
+
         }
     }
 }

@@ -12,6 +12,7 @@ namespace DataLayer.Repository.Interfaces
     public interface IAppUserRepo : IDataAccessLayer<AppUser>
     {
         IEnumerable<AppUser> GetAllUsersByType(UserRoleEnum userRoleType);
-        IEnumerable<AppUser> GetUsersManagedBy(string UserId);
+        IEnumerable<AppUser> GetUsersByManager(string UserId);
+        IEnumerable<AppUser> GetUsersByManagerAndStatus(string UserId, UserStatusEnum userStatusEnum);
     }
 }

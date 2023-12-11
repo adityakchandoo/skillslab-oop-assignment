@@ -172,6 +172,9 @@ namespace BusinessLayer.Services
 
             var InsertedId = _trainingContentRepo.CreateTrainingContentReturningID(trainingContent);
 
+            if (addTrainingContentDTO.Files == null)
+                return;
+
             foreach (HttpPostedFileBase File in addTrainingContentDTO.Files)
             {
                 var genFileSystemName = Guid.NewGuid();

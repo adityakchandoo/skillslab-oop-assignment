@@ -7,9 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using WebApp.Helpers;
 
 namespace WebApp.Controllers.Manager
 {
+    [ManagerSession]
     [RoutePrefix("Manager")]
     public class UserController : Controller
     {
@@ -37,8 +39,9 @@ namespace WebApp.Controllers.Manager
         public ActionResult MyEmployees()
         {
             // TODO: User Session
-            const string UserId = "aditya";
-            //const string UserId = (string)this.Session["UserId"];
+            //string UserId = "aditya";
+            string UserId = this.Session["UserId"].ToString();
+
 
             ViewBag.Title = "My Employees";
             ViewBag.Users = _userService.GetUsersByManager(UserId);
@@ -49,8 +52,9 @@ namespace WebApp.Controllers.Manager
         public ActionResult PendingEmployees()
         {
             // TODO: User Session
-            const string UserId = "aditya";
-            //const string UserId = (string)this.Session["UserId"];
+            //string UserId = "aditya";
+            string UserId = this.Session["UserId"].ToString();
+
 
             ViewBag.Title = "Pending Employees";
             ViewBag.Employees = _userService.GetUsersByManagerAndStatus(UserId, Entities.Enums.UserStatusEnum.Pending);

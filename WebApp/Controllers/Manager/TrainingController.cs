@@ -6,9 +6,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using WebApp.Helpers;
 
 namespace WebApp.Controllers.Manager
 {
+    [ManagerSession]
     [RoutePrefix("Manager")]
     public class TrainingController : Controller
     {
@@ -48,8 +50,9 @@ namespace WebApp.Controllers.Manager
         public ActionResult TrainingRequests()
         {
             // TODO: User Session
-            const string UserId = "gavish";
-            //const string UserId = (string)this.Session["UserId"];
+            //string UserId = "aditya";
+            string UserId = this.Session["UserId"].ToString();
+
 
 
             ViewBag.TrainingRequests = _trainingService.GetTrainingPendingForManager(UserId);
@@ -59,10 +62,6 @@ namespace WebApp.Controllers.Manager
         [Route("TrainingProcess/{targetUserId}/{targetTrainingId}")]
         public ActionResult TrainingProcess(string targetUserId, int targetTrainingId)
         {
-            // TODO: User Session
-            const string UserId = "aditya";
-            //const string UserId = (string)this.Session["UserId"];
-
             ViewBag.User = _userService.GetUser(targetUserId);
             ViewBag.Training = _trainingService.GetTraining(targetTrainingId);
             ViewBag.Attachments = _userTrainingEnrollmentService.GetUserTrainingEnrollmentInfo(targetUserId, targetTrainingId);

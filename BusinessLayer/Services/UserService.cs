@@ -42,6 +42,12 @@ namespace BusinessLayer.Services
             AuthenticateResponse authenticateResponse = new AuthenticateResponse();
             AppUser appUser = _appUserRepo.GetByPK(form.Username);
 
+            if (appUser == null)
+            {
+                authenticateResponse.IsLoginSuccessful = false;
+                return authenticateResponse;
+            }
+
             if (PasswordHasher.VerifySHA256Hash(form.Password, appUser.Password))
             {
                 authenticateResponse.IsLoginSuccessful = true;

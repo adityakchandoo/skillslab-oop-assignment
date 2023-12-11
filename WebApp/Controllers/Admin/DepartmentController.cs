@@ -7,9 +7,11 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using System.Xml.Linq;
+using WebApp.Helpers;
 
 namespace WebApp.Controllers.Admin
 {
+    [AdminSession]
     [RoutePrefix("Admin")]
     public class DepartmentController : Controller
     {

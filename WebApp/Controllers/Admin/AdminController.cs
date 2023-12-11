@@ -7,7 +7,7 @@ using WebApp.Helpers;
 
 namespace WebApp.Controllers.Admin
 {
-    //[AdminSession]
+    [AdminSession]
     [RoutePrefix("Admin")]
     public class AdminController : Controller
     {

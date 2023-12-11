@@ -35,8 +35,8 @@ namespace BusinessLayer.Services
                 mailMessage.To.Add(to);
 
                 // Send the email
-                // TODO:  Mail Disabled
-                //client.Send(mailMessage);
+                // TODO: Mail Toggle
+                client.Send(mailMessage);
             }
             catch (Exception ex)
             {

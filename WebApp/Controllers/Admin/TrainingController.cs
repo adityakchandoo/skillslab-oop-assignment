@@ -11,8 +11,8 @@ using WebApp.Helpers;
 
 namespace WebApp.Controllers.Admin
 {
+    [AdminSession]
     [RoutePrefix("Admin")]
-    //[AdminSession]
     public class TrainingController : Controller
     {
         private readonly ITrainingService _trainingService;

@@ -12,7 +12,7 @@ using WebApp.Helpers;
 
 namespace WebApp.Controllers.Employee
 {
-    //[EmployeeSession]
+    [EmployeeSession]
     [RoutePrefix("Employee")]
     public class TrainingController : Controller
     {
@@ -39,8 +39,9 @@ namespace WebApp.Controllers.Employee
         public ActionResult MyTrainings()
         {
             // TODO: User Session
-            const string UserId = "aditya";
-            //const string UserId = (string)this.Session["UserId"];
+            //string UserId = "aditya";
+            string UserId = this.Session["UserId"].ToString();
+
             try
             {
 
@@ -80,9 +81,6 @@ namespace WebApp.Controllers.Employee
         [Route("SearchTrainings")]
         public ActionResult SearchTrainings()
         {
-            // TODO: User Session
-            const string UserId = "aditya";
-            //const string UserId = (string)this.Session["UserId"];
             try
             {
                 ViewBag.Trainings = _trainingService.GetAllTraining();
@@ -102,23 +100,30 @@ namespace WebApp.Controllers.Employee
         public ActionResult ApplyTraining(int trainingId)
         {
             // TODO: User Session
-            const string UserId = "aditya";
-            //const string UserId = (string)this.Session["UserId"];
+            //string UserId = "aditya";
+            string UserId = this.Session["UserId"].ToString();
 
             try
             {
                 var enrollement = _userTrainingEnrollmentService.GetUserTrainingEnrollmentByUserTraining(UserId, trainingId);
+
+                if (enrollement.Status == EnrollStatusEnum.Pending)
+                {
+                    Response.StatusCode = 400;
+                    return Content("Already Applied!");
+                }
+            
+                ViewBag.trainingId = trainingId;
+                ViewBag.Training = _trainingService.GetTraining(trainingId);
+                ViewBag.Prerequisites = _prerequisiteService.GetPrerequisitesByTraining(trainingId);
+
+                return View("~/Views/Employee/ApplyTraining.cshtml");
             }
             catch (Exception ex)
             {
                 Response.StatusCode = 400;
-                return Content("Already Applied!");
+                return Content("Error");
             }
-            ViewBag.trainingId = trainingId;
-            ViewBag.Training = _trainingService.GetTraining(trainingId);
-            ViewBag.Prerequisites = _prerequisiteService.GetPrerequisitesByTraining(trainingId);
-
-            return View("~/Views/Employee/ApplyTraining.cshtml");
         }
 
         [Route("ApplyTrainingPost")]
@@ -126,8 +131,8 @@ namespace WebApp.Controllers.Employee
         public ActionResult ApplyTrainingPost(int trainingId)
         {
             // TODO: User Session
-            const string UserId = "aditya";
-            //const string UserId = (string)this.Session["UserId"];
+            //string UserId = "aditya";
+            string UserId = this.Session["UserId"].ToString();
 
             List<UploadFileStore> uploadFiles = new List<UploadFileStore>();
 

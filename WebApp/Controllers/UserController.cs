@@ -109,10 +109,24 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        [Route("UserIdCheck")]
-        public ActionResult UserIdCheck(string UserId)
+        [Route("UsernameCheck")]
+        public ActionResult UsernameCheck(string Username)
         {
-            return Content(_userService.IsUserIdExists(UserId).ToString().ToLower());
+            return Content((!_userService.IsUsernameExists(Username)).ToString().ToLower());
+        }
+
+        [HttpPost]
+        [Route("EmailCheck")]
+        public ActionResult EmailCheck(string Email)
+        {
+            return Content((!_userService.IsEmailExists(Email)).ToString().ToLower());
+        }
+
+        [HttpPost]
+        [Route("NicCheck")]
+        public ActionResult NicCheck(string NIC)
+        {
+            return Content((!_userService.IsNICExists(NIC)).ToString().ToLower());
         }
 
     }

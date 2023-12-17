@@ -47,8 +47,8 @@
                                     </div>
 
                                     <div class="form-group">
-                                        <label for="threshold">Threshold</label>
-                                        <input type="number" class="form-control" id="Threshold" name="Threshold" placeholder="Enter Threshold">
+                                        <label for="MaxSeat">Max Seat Available</label>
+                                        <input type="number" class="form-control" id="MaxSeat" name="MaxSeat" placeholder="Enter MaxSeat">
                                     </div>
 
                                     <div class="form-group">
@@ -78,7 +78,7 @@
 
                     <div class="col-md-6">
                         <!-- Form Element sizes -->
-                        <div class="card card-success">
+                        <div class="card card-primary">
                             <div class="card-header">
                                 <h3 class="card-title">Training Prerequisites</h3>
                             </div>
@@ -116,7 +116,7 @@
             rules: {
                 Name: { required: true },
                 Description: { required: true },
-                Threshold: { required: true },
+                MaxSeat: { required: true },
                 Deadline: { required: true },
                 PriorityDepartmentId: { required: true },
                 
@@ -128,7 +128,7 @@
             const data = {
                 Name: $('#Name').val(),
                 Description: $('#Description').val(),
-                Threshold: $('#Threshold').val(),
+                MaxSeat: $('#MaxSeat').val(),
                 Deadline: new Date($('#Deadline').val()).toISOString(),
                 PriorityDepartmentId: $('#PriorityDepartmentId').val(),
                 Prerequisites: []

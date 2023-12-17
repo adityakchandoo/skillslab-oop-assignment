@@ -13,6 +13,6 @@ namespace Entities.DTO
         public int TrainingId { get; set; }
         public string PrerequisiteName { get; set; }
         public string OriginalFilename { get; set; }
-        public string SystemFilename { get; set; }
+        public Guid FileKey { get; set; }
     }
 }

@@ -39,8 +39,8 @@ namespace WebApp.Controllers.Employee
         public ActionResult MyTrainings()
         {
             // TODO: User Session
-            //string UserId = "aditya";
-            string UserId = this.Session["UserId"].ToString();
+            //string UserId = 1;
+            int UserId = (int)this.Session["UserId"];
 
             try
             {
@@ -100,14 +100,14 @@ namespace WebApp.Controllers.Employee
         public ActionResult ApplyTraining(int trainingId)
         {
             // TODO: User Session
-            //string UserId = "aditya";
-            string UserId = this.Session["UserId"].ToString();
+            //string UserId = 1;
+            int UserId = (int)this.Session["UserId"];
 
             try
             {
-                var enrollement = _userTrainingEnrollmentService.GetUserTrainingEnrollmentByUserTraining(UserId, trainingId);
+                var enrollement = _userTrainingEnrollmentService.GetUserTrainingEnrollment(UserId, trainingId);
 
-                if (enrollement.Status == EnrollStatusEnum.Pending)
+                if (enrollement != null && enrollement.Status == EnrollStatusEnum.Pending)
                 {
                     Response.StatusCode = 400;
                     return Content("Already Applied!");
@@ -131,8 +131,8 @@ namespace WebApp.Controllers.Employee
         public ActionResult ApplyTrainingPost(int trainingId)
         {
             // TODO: User Session
-            //string UserId = "aditya";
-            string UserId = this.Session["UserId"].ToString();
+            //string UserId = 1;
+            int UserId = (int)this.Session["UserId"];
 
             List<UploadFileStore> uploadFiles = new List<UploadFileStore>();
 

@@ -14,7 +14,7 @@ namespace Entities.DbModels
         public int EnrollmentId { get; set; }
         public int TrainingPrerequisiteId { get; set; }
         public string OriginalFilename { get; set; }
-        public string SystemFilename { get; set; }
+        public Guid FileKey { get; set; }
 
     }
 

@@ -6,5 +6,9 @@ using System.Threading.Tasks;
 
 namespace Entities.Enums
 {
-    public enum UserRoleEnum { Admin, Manager, Employee }
+    public enum UserRoleEnum { 
+        Admin = 1,
+        Manager = 2,
+        Employee = 3 
+    }
 }

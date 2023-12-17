@@ -14,9 +14,9 @@ namespace BusinessLayer.Services.Interfaces
         void DeleteUserTrainingEnrollment(int userTrainingEnrollmentId);
         IEnumerable<UserTrainingEnrollment> GetAllUserTrainingEnrollments();
         UserTrainingEnrollment GetUserTrainingEnrollment(int userTrainingEnrollmentId);
-        UserTrainingEnrollment GetUserTrainingEnrollmentByUserTraining(string userId, int trainingId);
+        UserTrainingEnrollment GetUserTrainingEnrollment(int userId, int trainingId);
         void UpdateUserTrainingEnrollment(UserTrainingEnrollment userTrainingEnrollment);
-        IEnumerable<TrainingEnrollmentDetails> GetUserTrainingEnrollmentInfo(string userId, int trainingId);
-        void ProcessTrainingRequest(string targetUserId, int targetTrainingId, bool approve);
+        IEnumerable<TrainingEnrollmentDetails> GetUserTrainingEnrollmentInfo(int userId, int trainingId);
+        void ProcessTrainingRequest(int targetUserId, int targetTrainingId, bool approve);
     }
 }

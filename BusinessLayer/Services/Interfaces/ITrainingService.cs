@@ -19,11 +19,11 @@ namespace BusinessLayer.Services.Interfaces
         void EditTraining(Training training);
         void DeleteTraining(int id);
         void AddTrainingWithTrainingPrerequisite(AddTrainingFormDTO training);
-        void ApplyTraining(string UserId, int trainingId, List<UploadFileStore> uploadFileStore);
+        void ApplyTraining(int UserId, int trainingId, List<UploadFileStore> uploadFileStore);
         void SaveTrainingWithContents(AddTrainingContentDTO addTrainingContentDTO);
         IEnumerable<TrainingWithContentDTO> GetTrainingWithContents(int trainingId);
-        IEnumerable<Training> GetTrainingEnrolledByUser(string UserId);
-        IEnumerable<PendingUserTraining> GetTrainingPendingForManager(string UserId);
+        IEnumerable<Training> GetTrainingEnrolledByUser(int UserId);
+        IEnumerable<UserTraining> GetTrainingPendingForManager(int UserId);
 
     }
 }

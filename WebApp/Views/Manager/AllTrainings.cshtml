@@ -42,15 +42,15 @@
                         @foreach (var Training in ViewBag.Trainings)
                         {
                             <tr>
-                                <td>@Training.Training.TrainingId</td>
-                                <td>@Training.Training.Name</td>
-                                <td>@Training.Training.Description</td>
-                                <td>@Training.Training.Threshold</td>
-                                <td>@Training.Training.Deadline</td>
-                                <td>@Training.TrainingExtra.DepartmentName</td>
-                                <td>@Training.TrainingExtra.NumberOfEmployeesEnrolled</td>
+                                <td>@Training.TrainingId</td>
+                                <td>@Training.Name</td>
+                                <td>@Training.Description</td>
+                                <td>@Training.MaxSeat</td>
+                                <td>@Training.Deadline</td>
+                                <td>@Training.DepartmentName</td>
+                                <td>@Training.NumberOfEmployeesEnrolled</td>
                                 <td>
-                                    <a href="/Manager/Training/@Training.Training.TrainingId" role="button" class="btn btn-secondary btn-sm">View</a>
+                                    <a href="/Manager/Training/@Training.TrainingId" role="button" class="btn btn-secondary btn-sm">View</a>
                                 </td>
                             </tr>
                         }

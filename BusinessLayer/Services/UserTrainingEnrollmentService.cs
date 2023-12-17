@@ -58,19 +58,19 @@ namespace BusinessLayer.Services
             _userTrainingEnrollmentRepo.Update(userTrainingEnrollment);
         }
 
-        public UserTrainingEnrollment GetUserTrainingEnrollmentByUserTraining(string userId, int trainingId)
+        public UserTrainingEnrollment GetUserTrainingEnrollment(int userId, int trainingId)
         {
-            return _userTrainingEnrollmentRepo.GetUserTrainingEnrollmentByUserTraining(userId, trainingId);
+            return _userTrainingEnrollmentRepo.GetUserTrainingEnrollment(userId, trainingId);
         }
 
-        public IEnumerable<TrainingEnrollmentDetails> GetUserTrainingEnrollmentInfo(string userId, int trainingId)
+        public IEnumerable<TrainingEnrollmentDetails> GetUserTrainingEnrollmentInfo(int userId, int trainingId)
         {
             return _userTrainingEnrollmentRepo.GetUserTrainingEnrollmentInfo(userId, trainingId);
         }
 
-        public void ProcessTrainingRequest(string targetUserId, int targetTrainingId, bool isApproved)
+        public void ProcessTrainingRequest(int targetUserId, int targetTrainingId, bool isApproved)
         {
-            var userEnrollment = _userTrainingEnrollmentRepo.GetUserTrainingEnrollmentByUserTraining(targetUserId, targetTrainingId);
+            var userEnrollment = _userTrainingEnrollmentRepo.GetUserTrainingEnrollment(targetUserId, targetTrainingId);
 
             userEnrollment.Status = isApproved ? EnrollStatusEnum.Approved : EnrollStatusEnum.Rejected;
             userEnrollment.EnrolledDate = DateTime.Now; 

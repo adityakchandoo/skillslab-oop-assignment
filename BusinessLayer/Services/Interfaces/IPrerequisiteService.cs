@@ -1,4 +1,5 @@
-﻿using Entities.DbModels;
+﻿using Entities.DbCustom;
+using Entities.DbModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,6 @@ namespace BusinessLayer.Services.Interfaces
         void AddPrerequisite(Prerequisite prerequisite);
         void DeletePrerequisite(int prerequisiteId);
         void UpdatePrerequisite(Prerequisite prerequisite);
-        IEnumerable<Prerequisite> GetPrerequisitesByTraining(int training);
+        IEnumerable<PrerequisiteDetails> GetPrerequisitesByTraining(int training);
     }
 }

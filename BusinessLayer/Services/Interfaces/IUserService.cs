@@ -12,17 +12,16 @@ namespace BusinessLayer.Services.Interfaces
 {
     public interface IUserService
     {
+        AppUser GetUser(int UserId);
         AuthenticateResponse AuthenticateUser(UserLoginFormDTO form);
-        IEnumerable<AppUser> GetAllUsersByType(UserRoleEnum userRoleEnum);
-        void ForgetPass();
-        void ResetPass();
         void Register(RegisterFormDTO reg);
-        bool IsUserIdExists(string UserId);
-        void ConfirmAccount(string UserId);
+        IEnumerable<AppUser> GetAllUsersByType(UserRoleEnum userRoleEnum);
         IEnumerable<AppUser> ExportSelectedEmployees();
-        AppUser GetUser(string UserId);
-        IEnumerable<AppUser> GetUsersByManager(string UserId);
-        IEnumerable<AppUser> GetUsersByManagerAndStatus(string UserId, UserStatusEnum userStatusEnum);
-        void ProcessNewUser(string userId, bool approve);
+        bool IsUsernameExists(string value);
+        bool IsNICExists(string value);
+        bool IsEmailExists(string value);
+        IEnumerable<AppUser> GetUsersByManager(int UserId);
+        IEnumerable<AppUser> GetUsersByManagerAndStatus(int UserId, UserStatusEnum userStatusEnum);
+        void ProcessNewUser(int userId, bool approve);
     }
 }

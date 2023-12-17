@@ -39,8 +39,8 @@ namespace WebApp.Controllers.Manager
         public ActionResult MyEmployees()
         {
             // TODO: User Session
-            //string UserId = "aditya";
-            string UserId = this.Session["UserId"].ToString();
+            //string UserId = 1;
+            int UserId = (int)this.Session["UserId"];
 
 
             ViewBag.Title = "My Employees";
@@ -52,8 +52,8 @@ namespace WebApp.Controllers.Manager
         public ActionResult PendingEmployees()
         {
             // TODO: User Session
-            //string UserId = "aditya";
-            string UserId = this.Session["UserId"].ToString();
+            //string UserId = 1;
+            int UserId = (int)this.Session["UserId"];
 
 
             ViewBag.Title = "Pending Employees";
@@ -63,7 +63,7 @@ namespace WebApp.Controllers.Manager
 
         [Route("PendingEmployeeAction")]
         [HttpPost]
-        public ActionResult PendingEmployeeAction(string userId, bool approve)
+        public ActionResult PendingEmployeeAction(int userId, bool approve)
         {
             try
             {

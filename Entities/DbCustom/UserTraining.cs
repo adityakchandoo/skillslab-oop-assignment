@@ -4,16 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities.DTO
+namespace Entities.DbCustom
 {
-    public class PendingUserTraining
+    public class UserTraining
     {
-        public string UserId { get; set; }
+        public int UserId { get; set; }
+        public string UserName { get; set; }
         public int TrainingId { get; set; }
         public string Name { get; set; }
+        public string TrainingName { get; set; }
         public string Email { get; set; }
         public string MobileNumber { get; set; }
-        public string TrainingName { get; set; }
         public DateTime TrainingDeadline { get; set; }
 
     }

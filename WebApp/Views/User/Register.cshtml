@@ -26,8 +26,8 @@
     </div>
 
     <div class="col-md-4">
-        <label for="UserId" class="form-label">Username</label>
-        <input type="text" class="form-control" id="UserId" name="UserId">
+        <label for="Username" class="form-label">Username</label>
+        <input type="text" class="form-control" id="Username" name="Username">
     </div>
     <div class="col-md-4">
         <label for="Email" class="form-label">Email</label>
@@ -89,21 +89,29 @@
             rules: {
                 FirstName: { required: true },
                 LastName: { required: true },
-                UserId: {
+                Username: {
                     required: true,
                     remote: {
-                        url: "/User/UserIdCheck",
+                        url: "/User/UsernameCheck",
+                        type: "post"
+                    }
+                },
+                Email: {
+                    required: true,
+                    remote: {
+                        url: "/User/EmailCheck",
+                        type: "post"
+                    }
+                },
+                NIC: {
+                    required: true,
+                    pattern: "^.{1}[0-9]{6}.{7}$",
+                    remote: {
+                        url: "/User/NicCheck",
                         type: "post"
                     }
                 },
                 DOB: { required: true },
-                Email: { required: true },
-                NIC: {
-                    required: true,
-                    pattern: "^.{1}[0-9]{6}.{7}$",
-
-
-                },
                 MobileNumber: { required: true },
                 ManagerId: { required: true },
                 DepartmentId: { required: true },

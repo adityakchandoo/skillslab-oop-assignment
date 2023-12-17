@@ -13,7 +13,7 @@ namespace Entities.DbModels
         public int TrainingId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public int Threshold { get; set; }
+        public int MaxSeat { get; set; }
         public DateTime Deadline { get; set; }
         public int? PreferedDepartmentId { get; set; }
 

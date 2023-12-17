@@ -43,7 +43,10 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DbCustom\AppUserDetails.cs" />
+    <Compile Include="DbCustom\PrerequisiteDetails.cs" />
     <Compile Include="DbCustom\TrainingDetails.cs" />
+    <Compile Include="DbCustom\UserTraining.cs" />
     <Compile Include="DbModels\AppUsers.cs" />
     <Compile Include="DbModels\Department.cs" />
     <Compile Include="DbModels\EnrollmentPrerequisiteAttachment.cs" />
@@ -52,10 +55,11 @@
     <Compile Include="DbModels\TrainingContent.cs" />
     <Compile Include="DbModels\TrainingContentAttachment.cs" />
     <Compile Include="DbModels\TrainingPrerequisite.cs" />
+    <Compile Include="DbModels\UserManager.cs" />
+    <Compile Include="DbModels\UserRole.cs" />
     <Compile Include="DbModels\UserTrainingEnrollment.cs" />
     <Compile Include="DTO\DepartmentDTO.cs" />
     <Compile Include="DTO\AuthenticateResponseDTO.cs" />
-    <Compile Include="DTO\PendingUserTraining.cs" />
     <Compile Include="DTO\TrainingEnrollmentDetails.cs" />
     <Compile Include="DTO\TrainingWithContentDTO.cs" />
     <Compile Include="DTO\NotificationDTO.cs" />

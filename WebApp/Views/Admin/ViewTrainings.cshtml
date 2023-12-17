@@ -41,20 +41,20 @@
                         @foreach (var Training in ViewBag.Trainings)
                         {
                             <tr>
-                                <td>@Training.Training.TrainingId</td>
-                                <td>@Training.Training.Name</td>
-                                <td>@Training.Training.Description</td>
-                                <td>@Training.Training.Threshold</td>
-                                <td>@Training.Training.Deadline</td>
-                                <td>@Training.TrainingExtra.DepartmentName</td>
-                                <td>@Training.TrainingExtra.NumberOfEmployeesEnrolled</td>
+                                <td>@Training.TrainingId</td>
+                                <td>@Training.Name</td>
+                                <td>@Training.Description</td>
+                                <td>@Training.MaxSeat</td>
+                                <td>@Training.Deadline</td>
+                                <td>@(@Training.DepartmentName ?? "None")</td>
+                                <td>@Training.NumberOfEmployeesEnrolled</td>
                                 <td>
                                     <div class="dropdown">
                                         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                             <i class="fas fa-wrench"></i>
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                            <a class="dropdown-item" href="/Admin/Training/@Training.Training.TrainingId">View Content</a>
+                                            <a class="dropdown-item" href="/Admin/Training/@Training.TrainingId">View Content</a>
                                             <a class="dropdown-item" href="#">Export Student List</a>
                                         </div>
                                     </div>

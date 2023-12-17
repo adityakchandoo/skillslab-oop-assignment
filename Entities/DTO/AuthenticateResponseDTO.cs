@@ -1,4 +1,5 @@
-﻿using Entities.DbModels;
+﻿using Entities.DbCustom;
+using Entities.DbModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,6 +12,6 @@ namespace Entities.DTO
     {
         public bool IsLoginSuccessful;
         public string RedirectPath { get; set; }
-        public AppUser AppUser { get; set; }
+        public AppUserDetails AppUser { get; set; }
     }
 }

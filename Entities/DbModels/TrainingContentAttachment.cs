@@ -13,6 +13,6 @@ namespace Entities.DbModels
         public int TrainingContentAttachmentId { get; set; }
         public int TrainingContentId { get; set; }
         public string OriginalFilename { get; set; }
-        public string SystemFilename { get; set; }
+        public Guid FileKey { get; set; }
     }
 }

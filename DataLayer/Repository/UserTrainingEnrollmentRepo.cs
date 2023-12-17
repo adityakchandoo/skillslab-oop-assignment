@@ -49,7 +49,7 @@ namespace DataLayer.Repository
 
         }
 
-        public UserTrainingEnrollment GetUserTrainingEnrollmentByUserTraining(string targetUserId, int targetTrainingId)
+        public UserTrainingEnrollment GetUserTrainingEnrollment(int targetUserId, int targetTrainingId)
         {
             var userEnrollment = base.GetMany(
                 "SELECT * FROM UserTrainingEnrollment WHERE UserId = @UserId AND TrainingId = @TrainingId",
@@ -65,14 +65,14 @@ namespace DataLayer.Repository
             
         }
 
-        public IEnumerable<TrainingEnrollmentDetails> GetUserTrainingEnrollmentInfo(string userId, int trainingId)
+        public IEnumerable<TrainingEnrollmentDetails> GetUserTrainingEnrollmentInfo(int userId, int trainingId)
         {
             var trainingEnrollmentDetails = new List<TrainingEnrollmentDetails>();
 
             string sql = @" SELECT 
                                     epa.EnrollmentPrerequisiteAttachmentId,
                                     epa.OriginalFilename,
-                                    epa.SystemFilename,
+                                    epa.FileKey,
                                     tpr.TrainingId,
                                     tpr.PrerequisiteId,
                                     p.Name as PrerequisiteName

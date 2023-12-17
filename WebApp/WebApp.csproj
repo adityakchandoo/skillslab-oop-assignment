@@ -153,6 +153,7 @@
     <Compile Include="Controllers\Manager\TrainingController.cs" />
     <Compile Include="Controllers\Manager\UserController.cs" />
     <Compile Include="Controllers\UserController.cs" />
+    <Compile Include="Helpers\GlobalExceptionHandler.cs" />
     <Compile Include="Helpers\ManagerSession.cs" />
     <Compile Include="Helpers\AdminSession.cs" />
     <Compile Include="Helpers\EmployeeSession.cs" />
@@ -326,6 +327,7 @@
     <Content Include="Views\Manager\TrainingProcess.cshtml" />
     <Content Include="Views\Admin\UserTableView.cshtml" />
     <Content Include="Views\Manager\Training.cshtml" />
+    <Content Include="Views\Shared\GenericErrorPage.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

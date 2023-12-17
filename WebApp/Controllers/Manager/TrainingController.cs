@@ -50,8 +50,8 @@ namespace WebApp.Controllers.Manager
         public ActionResult TrainingRequests()
         {
             // TODO: User Session
-            //string UserId = "aditya";
-            string UserId = this.Session["UserId"].ToString();
+            //string UserId = 1;
+            int UserId = (int)this.Session["UserId"];
 
 
 
@@ -60,7 +60,7 @@ namespace WebApp.Controllers.Manager
         }
 
         [Route("TrainingProcess/{targetUserId}/{targetTrainingId}")]
-        public ActionResult TrainingProcess(string targetUserId, int targetTrainingId)
+        public ActionResult TrainingProcess(int targetUserId, int targetTrainingId)
         {
             ViewBag.User = _userService.GetUser(targetUserId);
             ViewBag.Training = _trainingService.GetTraining(targetTrainingId);
@@ -71,7 +71,7 @@ namespace WebApp.Controllers.Manager
 
         [HttpPost]
         [Route("TrainingRequestsAction")]
-        public ActionResult TrainingRequestsAction(string targetUserId, int targetTrainingId, bool approve)
+        public ActionResult TrainingRequestsAction(int targetUserId, int targetTrainingId, bool approve)
         {
             try
             {

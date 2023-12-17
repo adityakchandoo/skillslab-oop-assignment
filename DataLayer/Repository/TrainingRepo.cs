@@ -21,28 +21,12 @@ namespace DataLayer.Repository
 
         public IEnumerable<TrainingDetails> GetAllTraining()
         {
-            // Workaround The text, ntext, and image data types cannot be compared or sorted, except when using IS NULL or LIKE operator.
-
             List<TrainingDetails> results = new List<TrainingDetails>();
 
-            List<Training> tr = base.GetMany();
+            // AllTrainingWithDepartmentName is a view
 
-            string sql = @" SELECT 
-                                T.TrainingId,
-                                D.Name AS DepartmentName,
-                                COUNT(UTE.UserId) AS NumberOfEmployeesEnrolled
-                            FROM 
-                                Training T
-                            LEFT JOIN 
-                                UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId
-                            LEFT JOIN 
-                                AppUser AU ON UTE.UserId = AU.UserId
-                            LEFT JOIN 
-                                Department D ON AU.DepartmentId = D.DepartmentId
-                            GROUP BY 
-                                T.TrainingId, D.Name
-                            ORDER BY 
-                                T.TrainingId, D.Name;";
+            string sql = @"SELECT Training.*, A.DepartmentName, A.NumberOfEmployeesEnrolled FROM Training 
+                           INNER JOIN AllTrainingWithDepartmentName A ON Training.TrainingId = A.TrainingId";
 
             try
             {
@@ -54,13 +38,7 @@ namespace DataLayer.Repository
                     {
                         while (reader.Read())
                         {
-                            Training new_tr = tr.Find(e => e.TrainingId == reader.GetInt32(0));
-                            var TrainingExtra = new TrainingExtra();
-                            TrainingExtra.TrainingId = reader.GetInt32(0);
-                            TrainingExtra.DepartmentName = reader.IsDBNull(1) ? "No" : reader.GetString(1);
-                            TrainingExtra.NumberOfEmployeesEnrolled = reader.GetInt32(2);
-
-                            results.Add(new TrainingDetails() { Training = new_tr, TrainingExtra = TrainingExtra });
+                            results.Add(DbHelper.ConvertToObject<TrainingDetails>(reader));
                         };                          
                         
                     }
@@ -79,9 +57,9 @@ namespace DataLayer.Repository
         {
             try
             {
-                string sql = @"INSERT INTO [dbo].[Training] (Name, Description, Threshold, Deadline, PreferedDepartmentId) 
+                string sql = @"INSERT INTO [dbo].[Training] (Name, Description, MaxSeat, Deadline, PreferedDepartmentId) 
                                OUTPUT Inserted.TrainingId 
-                               VALUES (@Name, @Description, @Threshold, @Deadline, @PreferedDepartmentId)";
+                               VALUES (@Name, @Description, @MaxSeat, @Deadline, @PreferedDepartmentId)";
 
 
                 using (IDbCommand cmd = _conn.CreateCommand())
@@ -90,7 +68,7 @@ namespace DataLayer.Repository
 
                     DbHelper.AddParameterWithValue(cmd, "@Name", training.Name);
                     DbHelper.AddParameterWithValue(cmd, "@Description", training.Description);
-                    DbHelper.AddParameterWithValue(cmd, "@Threshold", training.Threshold);
+                    DbHelper.AddParameterWithValue(cmd, "@MaxSeat", training.MaxSeat);
                     DbHelper.AddParameterWithValue(cmd, "@Deadline", training.Deadline);
                     DbHelper.AddParameterWithValue(cmd, "@PreferedDepartmentId", training.PreferedDepartmentId == -1 ? DBNull.Value : (object)training.PreferedDepartmentId);
 
@@ -100,7 +78,7 @@ namespace DataLayer.Repository
             } catch (Exception ex) { throw ex; }
         }
 
-        public IEnumerable<Training> GetTrainingEnrolledByUser(string UserId)
+        public IEnumerable<Training> GetTrainingEnrolledByUser(int UserId)
         {
             string sql = $@"SELECT [dbo].[Training].* FROM [dbo].[UserTrainingEnrollment] INNER JOIN [dbo].[Training] ON 
                          [dbo].[Training].[TrainingId] = [dbo].[UserTrainingEnrollment].[TrainingId] 
@@ -116,27 +94,26 @@ namespace DataLayer.Repository
 
         }
 
-        public IEnumerable<PendingUserTraining> GetTrainingPendingForManager(string UserId)
+        public IEnumerable<UserTraining> GetUserTrainingByStatusAndManagerId(EnrollStatusEnum enrollStatusEnum, int UserId)
         {
-            var pendingUserTraining = new List<PendingUserTraining>();
+            var pendingUserTraining = new List<UserTraining>();
 
             string sql = $@"SELECT
                                 UTE.UserId as 'UserId',
+                                AU.UserName as 'UserName',
 	                            UTE.TrainingId as 'TrainingId',
                                 AU.FirstName + ' ' + AU.LastName as 'Name',
                                 T.Name as 'TrainingName',
                                 AU.Email,
                                 AU.MobileNumber,
                                 T.Deadline as 'TrainingDeadline'
-                            FROM
-                                UserTrainingEnrollment UTE
-                            INNER JOIN
-                                AppUser AU ON UTE.UserId = AU.UserId
-                            INNER JOIN
-                                Training T ON UTE.TrainingId = T.TrainingId
-                            WHERE
-                                AU.ManagerId = @ManagerId
-                                AND UTE.Status = @EnrollStatusEnum;";
+                            FROM Training T
+                            JOIN UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId
+                            JOIN AppUser AU ON UTE.UserId = AU.UserId
+                            JOIN UserManager UM ON AU.UserId = UM.UserId
+                            WHERE UM.ManagerId = @ManagerId
+                            AND UTE.Status = @EnrollStatusEnum
+                            ";
 
             try
             {
@@ -145,14 +122,14 @@ namespace DataLayer.Repository
                     cmd.CommandText = sql;
 
                     DbHelper.AddParameterWithValue(cmd, "@ManagerId", UserId);
-                    DbHelper.AddParameterWithValue(cmd, "@EnrollStatusEnum", (int)UserStatusEnum.Pending);
+                    DbHelper.AddParameterWithValue(cmd, "@EnrollStatusEnum", (int)enrollStatusEnum);
 
 
                     using (IDataReader reader = cmd.ExecuteReader())
                     {
                         while (reader.Read())
                         {
-                            pendingUserTraining.Add(DbHelper.ConvertToObject<PendingUserTraining>(reader));
+                            pendingUserTraining.Add(DbHelper.ConvertToObject<UserTraining>(reader));
                         }
                     }
                 }

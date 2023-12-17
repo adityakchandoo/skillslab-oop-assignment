@@ -1,5 +1,6 @@
 ﻿using BusinessLayer.Services.Interfaces;
 using DataLayer.Repository.Interfaces;
+using Entities.DbCustom;
 using Entities.DbModels;
 using System;
 using System.Collections.Generic;
@@ -38,7 +39,7 @@ namespace BusinessLayer.Services
             return _prerequisiteRepo.GetByPK(prerequisiteId);
         }
 
-        public IEnumerable<Prerequisite> GetPrerequisitesByTraining(int training)
+        public IEnumerable<PrerequisiteDetails> GetPrerequisitesByTraining(int training)
         {
             return _prerequisiteRepo.GetPrerequisitesByTraining(training);
         }

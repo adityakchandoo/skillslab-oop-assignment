@@ -7,10 +7,8 @@ using System.Threading.Tasks;
 
 namespace Entities.DbCustom
 {
-    public class TrainingDetails : Training
+    public class PrerequisiteDetails : Prerequisite
     {
-        public string DepartmentName { get; set; }
-        public int NumberOfEmployeesEnrolled { get; set; }
+        public int TrainingPrerequisiteId { get; set; }
     }
-
 }

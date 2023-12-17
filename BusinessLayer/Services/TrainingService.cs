@@ -59,6 +59,9 @@ namespace BusinessLayer.Services
 
         public Training GetTraining(int id)
         {
+            var train = _trainingRepo.GetByPK(id);
+
+
             return _trainingRepo.GetByPK(id);
         }
 
@@ -66,7 +69,6 @@ namespace BusinessLayer.Services
         {
             _trainingRepo.Delete(new Training() { TrainingId = id });
         }
-
 
         public void EditTraining(Training training)
         {
@@ -79,7 +81,7 @@ namespace BusinessLayer.Services
             {
                 Name = training.Name,
                 Description = training.Description,
-                Threshold = training.Threshold,
+                MaxSeat = training.MaxSeat,
                 Deadline = training.Deadline,
                 PreferedDepartmentId = training.PriorityDepartmentId
             };
@@ -98,10 +100,10 @@ namespace BusinessLayer.Services
             }
         }
 
-        public void ApplyTraining(string UserId, int trainingId, List<UploadFileStore> uploadFileStore)
+        public void ApplyTraining(int UserId, int trainingId, List<UploadFileStore> uploadFileStore)
         {
             AppUser currentUser = _appUserRepo.GetByPK(UserId);
-            AppUser currentUserManager = _appUserRepo.GetByPK(currentUser.ManagerId);
+            AppUser currentUserManager = _appUserRepo.GetUserManager(UserId);
 
             UserTrainingEnrollment enrollment = new UserTrainingEnrollment()
             {
@@ -118,7 +120,13 @@ namespace BusinessLayer.Services
 
                 _storageService.Put(File.FileContent, genFileSystemName.ToString());
 
-                _enrollmentPrerequisiteAttachmentRepo.Insert(new EnrollmentPrerequisiteAttachment() { EnrollmentId = InsertedId, TrainingPrerequisiteId = File.FileId, OriginalFilename = File.FileName, SystemFilename = genFileSystemName.ToString() });
+                _enrollmentPrerequisiteAttachmentRepo.Insert(
+                    new EnrollmentPrerequisiteAttachment() { 
+                        EnrollmentId = InsertedId,
+                        TrainingPrerequisiteId = File.FileId,
+                        OriginalFilename = File.FileName,
+                        FileKey = genFileSystemName
+                    });
             }
 
             var training = _trainingRepo.GetByPK(trainingId);
@@ -128,14 +136,14 @@ namespace BusinessLayer.Services
             _notificationService.NotifyTrainingRequest(currentUserManager.Email, employeeName, training.Name);
         }
 
-        public IEnumerable<Training> GetTrainingEnrolledByUser(string UserId)
+        public IEnumerable<Training> GetTrainingEnrolledByUser(int UserId)
         {
             return _trainingRepo.GetTrainingEnrolledByUser(UserId);
         }
 
-        public IEnumerable<PendingUserTraining> GetTrainingPendingForManager(string UserId)
+        public IEnumerable<UserTraining> GetTrainingPendingForManager(int UserId)
         {
-            return _trainingRepo.GetTrainingPendingForManager(UserId);
+            return _trainingRepo.GetUserTrainingByStatusAndManagerId(EnrollStatusEnum.Pending, UserId);
         }
 
         public IEnumerable<TrainingWithContentDTO> GetTrainingWithContents(int trainingId)
@@ -185,7 +193,7 @@ namespace BusinessLayer.Services
                 {
                     TrainingContentId = InsertedId,
                     OriginalFilename = File.FileName,
-                    SystemFilename = genFileSystemName.ToString(),
+                    FileKey = genFileSystemName,
                 });
             }
         }

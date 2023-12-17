@@ -14,7 +14,7 @@ namespace WebApp.Helpers
             if (filterContext.HttpContext.Session["UserId"] == null ||
                 filterContext.HttpContext.Session["Role"] == null ||
                 filterContext.HttpContext.Session["Name"] == null ||
-                (UserRoleEnum)filterContext.HttpContext.Session["Role"] != UserRoleEnum.Manager)
+                (int)filterContext.HttpContext.Session["Role"] != (int)UserRoleEnum.Manager)
             {
                 filterContext.Controller.TempData["Error"] = "You are not logged in or you do not have the nessary permission to access this page";
                 filterContext.Result = new RedirectResult("~/User/Login"); // redirect to login action

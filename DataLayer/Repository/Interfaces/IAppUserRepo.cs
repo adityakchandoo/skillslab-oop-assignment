@@ -1,4 +1,5 @@
 ﻿using DataLayer.Generic;
+using Entities.DbCustom;
 using Entities.DbModels;
 using Entities.Enums;
 using System;
@@ -11,8 +12,13 @@ namespace DataLayer.Repository.Interfaces
 {
     public interface IAppUserRepo : IDataAccessLayer<AppUser>
     {
-        IEnumerable<AppUser> GetAllUsersByType(UserRoleEnum userRoleType);
-        IEnumerable<AppUser> GetUsersByManager(string UserId);
-        IEnumerable<AppUser> GetUsersByManagerAndStatus(string UserId, UserStatusEnum userStatusEnum);
+        AppUserDetails GetUserByUsername(string username);
+        bool IsRecordExists(string column, string value);
+        AppUser GetUserManager(int UserId);
+        int CreateUserReturningID(AppUser appUser);
+        IEnumerable<AppUser> GetAllUsersByRole(UserRoleEnum userRoleEnum);
+        IEnumerable<AppUser> GetAllUsersByManager(int ManagerId);
+        IEnumerable<AppUser> GetAllUsersByManagerAndStatus(int ManagerId, UserStatusEnum userStatusEnum);
+
     }
 }

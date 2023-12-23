@@ -42,21 +42,6 @@ namespace BusinessLayer.Services
 
         }
 
-        public void AddTraining(Training training)
-        {
-            _trainingRepo.Insert(training);
-        }
-
-        public IEnumerable<TrainingDetails> GetAllTrainingDetails()
-        {
-            return _trainingRepo.GetAllTraining();
-        }
-
-        public IEnumerable<Training> GetAllTraining()
-        {
-            return _trainingRepo.GetMany();
-        }
-
         public Training GetTraining(int id)
         {
             var train = _trainingRepo.GetByPK(id);
@@ -64,19 +49,47 @@ namespace BusinessLayer.Services
 
             return _trainingRepo.GetByPK(id);
         }
-
+        public void AddTraining(Training training)
+        {
+            _trainingRepo.Insert(training);
+        }
+        public void EditTraining(Training training)
+        {
+            _trainingRepo.Update(training);
+        }
         public void DeleteTraining(int id)
         {
             _trainingRepo.Delete(new Training() { TrainingId = id });
         }
 
-        public void EditTraining(Training training)
+
+        public IEnumerable<TrainingEnrollCount> GetAllTrainingWithEnrollCount()
         {
-            _trainingRepo.Update(training);
+            return _trainingRepo.GetAllTrainingWithEnrollCount();
         }
+        public IEnumerable<TrainingStatus> GetAllTraining(int UserId)
+        {
+            return _trainingRepo.GetAllTraining(UserId);
+        }
+        public IEnumerable<TrainingStatus> GetTrainingEnrolledByUser(int UserId, EnrollStatusEnum status)
+        {
+            return _trainingRepo.GetTrainingEnrolledByUser(UserId,status);
+        }
+
+        public IEnumerable<TrainingStatus> GetTrainingEnrolledByUser(int UserId)
+        {
+            return _trainingRepo.GetTrainingEnrolledByUser(UserId);
+        }
+        public IEnumerable<UserTraining> GetTrainingPendingForManager(int UserId)
+        {
+            return _trainingRepo.GetUserTrainingByStatusAndManagerId(EnrollStatusEnum.Pending, UserId);
+        }
+
 
         public void AddTrainingWithTrainingPrerequisite(AddTrainingFormDTO training)
         {
+            // TODO: To Combine sql statements
+
             Training dbTraining = new Training()
             {
                 Name = training.Name,
@@ -99,9 +112,10 @@ namespace BusinessLayer.Services
                 _trainingPrerequisiteRepo.Insert(dbTrainingPrerequisite);
             }
         }
-
         public void ApplyTraining(int UserId, int trainingId, List<UploadFileStore> uploadFileStore)
         {
+            // TODO: To Combine sql statements
+
             AppUser currentUser = _appUserRepo.GetByPK(UserId);
             AppUser currentUserManager = _appUserRepo.GetUserManager(UserId);
 
@@ -135,17 +149,6 @@ namespace BusinessLayer.Services
 
             _notificationService.NotifyTrainingRequest(currentUserManager.Email, employeeName, training.Name);
         }
-
-        public IEnumerable<Training> GetTrainingEnrolledByUser(int UserId)
-        {
-            return _trainingRepo.GetTrainingEnrolledByUser(UserId);
-        }
-
-        public IEnumerable<UserTraining> GetTrainingPendingForManager(int UserId)
-        {
-            return _trainingRepo.GetUserTrainingByStatusAndManagerId(EnrollStatusEnum.Pending, UserId);
-        }
-
         public IEnumerable<TrainingWithContentDTO> GetTrainingWithContents(int trainingId)
         {
             var result = new List<TrainingWithContentDTO>();
@@ -168,7 +171,6 @@ namespace BusinessLayer.Services
             }
             return result;
         }
-
         public void SaveTrainingWithContents(AddTrainingContentDTO addTrainingContentDTO)
         {
             var trainingContent = new TrainingContent()

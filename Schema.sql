@@ -14,18 +14,19 @@ create table Department (
 create table AppUser (
 	UserId					int	   			     identity,
 	UserName				nvarchar(50)	     not null unique,
-	Password				nvarchar(64)         not null,
+	Password				varchar(64)          not null,
 	FirstName				nvarchar(255)        not null,
 	LastName				nvarchar(255)        not null,	
-	Email					nvarchar(255)        not null,
+	Email					nvarchar(255)        not null unique,
 	DOB						date             	 not null,
 	NIC						varchar(14)          not null unique,
 	MobileNumber			varchar(20)          not null,
 	CreatedOn				date            	 not null,
 	Status					tinyint         	 not null,
-	DepartmentId			int					 null,
+	IsActive				tinyint         	 not null DEFAULT 1,
+	DepartmentId			int					 not null,
 	constraint PK_AppUser_UserId primary key (UserId),
-	constraint FK_Training_DepartmentId_Department_DepartmentId foreign key (DepartmentId)
+	constraint FK_AppUser_DepartmentId_Department_DepartmentId foreign key (DepartmentId)
       references Department(DepartmentId)
 )
 
@@ -52,6 +53,18 @@ CREATE TABLE UserRole (
 );
 
 /*==============================================================*/
+/* Table: RolePermission                                        */
+/*==============================================================*/
+CREATE TABLE RolePermission (
+	RolePermissionId	int	    		 identity,
+	RoleId        		int     		 NOT NULL,
+    Permission     		varchar(100)	 NOT NULL,
+    CONSTRAINT PK_RolePermission_RolePermissionId PRIMARY KEY (RolePermissionId),
+	CONSTRAINT FK_RolePermission_RoleId_Role_RoleId FOREIGN KEY (RoleId)
+        REFERENCES Role(RoleId)
+);
+
+/*==============================================================*/
 /* Table: UserManager                                              */
 /*==============================================================*/
 CREATE TABLE UserManager (
@@ -73,6 +86,7 @@ create table Training (
 	Name					nvarchar(255)        not null,
 	Description				text         		 not null,
 	MaxSeat					int         		 not null,
+	IsActive				tinyint         	 not null DEFAULT 1,
 	Deadline				datetime             not null,
 	PreferedDepartmentId	int					 null,
     constraint PK_Training_TrainingId primary key (TrainingId),
@@ -148,6 +162,7 @@ create table TrainingContent (
 	Name					nvarchar(255)        not null,
 	Description				text    		     not null,
 	PostDate				datetime     	     not null,
+	IsActive				tinyint         	 not null DEFAULT 1,
     constraint PK_TrainingContent_TrainingContentId primary key (TrainingContentId),
 	constraint FK_TrainingContent_TrainingId_Training_TrainingId foreign key (TrainingId)
       references Training(TrainingId)

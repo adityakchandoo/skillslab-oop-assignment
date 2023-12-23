@@ -5,38 +5,39 @@ using Entities.DTO;
 using BusinessLayer.Services.Interfaces;
 using Entities.Enums;
 using DataLayer.Repository.Interfaces;
+using WebApp.Helpers;
+using BusinessLayer.Services;
+using System.Web;
+using System.Net;
+using System.Collections.Generic;
+using Entities.DbCustom;
+using System.Linq;
+using Entities.DbModels;
 
 namespace WebApp.Controllers
 {
-    [RoutePrefix("User")]
-    public class UserController : Controller
+    public partial class UserController : Controller
     {
 
         private readonly IUserService _userService;
+        private readonly IUserRoleService _userRoleService;
         private readonly IDepartmentService _departmentService;
-        public UserController(IUserService userService, IDepartmentService departmentService)
+        public UserController(IUserService userService, IDepartmentService departmentService, IUserRoleService userRoleService)
         {
             _userService = userService;
             _departmentService = departmentService;
+            _userRoleService = userRoleService;
         }
 
 
-        [Route("Login")]
         public ActionResult Login()
         {
             return View();
         }
 
         [HttpPost]
-        [Route("Authenticate")]
         public ActionResult Authenticate(UserLoginFormDTO form)
         {
-            if (!ModelState.IsValid)
-            {
-                Response.StatusCode = 400;
-                return Json(ModelState);
-            }
-
             try
             {
                 AuthenticateResponse authResponse = _userService.AuthenticateUser(form);
@@ -44,39 +45,55 @@ namespace WebApp.Controllers
                 if (!authResponse.IsLoginSuccessful)
                 {
                     Response.StatusCode = 400;
-                    return Json(new { Error = "Invalid User/Pass" });
-                }
+                    return Json(new { authResponse.Error });
+                }                
 
-                if (authResponse.AppUser.Role == UserRoleEnum.Employee &&
-                    authResponse.AppUser.Status != UserStatusEnum.Registered)
-                {
-                    Response.StatusCode = 400;
-                    return Json(new { Error = "Employee not comfirmed" });
-                }
-
-                this.Session["UserId"] = authResponse.AppUser.UserId;
-                this.Session["Role"] = (int)authResponse.AppUser.Role;
+                this.Session["UserId"] = authResponse.AppUser.UserId;                
                 this.Session["Name"] = authResponse.AppUser.FirstName + " " + authResponse.AppUser.LastName;
 
-                return Json(new { status = "ok", redirectPath = authResponse.RedirectPath });
+                return Json(new { status = "ok", redirectPath = "/User/SelectRole" });
 
             }
             catch (Exception ex)
             {
-                Response.StatusCode = 400;
+                Response.StatusCode = (int)HttpStatusCode.BadRequest;
                 return Json(new { Error = ex.Message });
             }
 
         }
 
-        [Route("Logout")]
+        public ActionResult SelectRole()
+        {
+            if (this.Session["UserId"] == null)
+                return RedirectToAction("Login");
+
+            IEnumerable<AppUserRole> userRoles = _userService.GetRolesByUserId((int)this.Session["UserId"]);
+
+            if (userRoles.Count() == 1)
+            {
+                this.Session["Role"] = userRoles.First().RoleId;
+                return new RedirectResult($"~/Dash/{userRoles.First().RoleName}Dash");
+            }
+            else
+            {
+                ViewBag.Roles = userRoles;
+                return View();
+            }
+        }
+
+        [HttpPost]
+        public ActionResult SelectRolePost(AppUserRole appUserRole)
+        {
+            this.Session["Role"] = appUserRole.RoleId;
+            return new RedirectResult($"~/Dash/{appUserRole.RoleName}Dash");
+        }
+
         public ActionResult Logout()
         {
             this.Session.Abandon();
             return new RedirectResult("~/User/Login");
         }
 
-        [Route("Register")]
         public ActionResult Register()
         {
             ViewBag.Managers = _userService.GetAllUsersByType(UserRoleEnum.Manager);
@@ -85,15 +102,8 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        [Route("RegisterPost")]
         public ActionResult RegisterPost(RegisterFormDTO form)
         {
-            if (!ModelState.IsValid)
-            {
-                Response.StatusCode = 400;
-                return Json(ModelState);
-            }
-
             try
             {
                 _userService.Register(form);
@@ -109,24 +119,64 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        [Route("UsernameCheck")]
         public ActionResult UsernameCheck(string Username)
         {
             return Content((!_userService.IsUsernameExists(Username)).ToString().ToLower());
         }
 
         [HttpPost]
-        [Route("EmailCheck")]
         public ActionResult EmailCheck(string Email)
         {
             return Content((!_userService.IsEmailExists(Email)).ToString().ToLower());
         }
 
         [HttpPost]
-        [Route("NicCheck")]
         public ActionResult NicCheck(string NIC)
         {
             return Content((!_userService.IsNICExists(NIC)).ToString().ToLower());
+        }
+
+
+        [AuthorizePermission("user.profile")]
+        public ActionResult MyProfile()
+        {
+            ViewBag.User = _userService.GetUser((int)this.Session["UserId"]);
+            return View();
+        }
+
+        [AuthorizePermission("user.profile")]
+        [HttpPost]
+        public ActionResult UpdateProfile(UpdateProfileDTO updateProfileDTO)
+        {
+            
+
+            try
+            {
+                _userService.UpdateProfile(
+                    (int)this.Session["UserId"],
+                    updateProfileDTO
+                );
+                return Json(new { status = "ok" });
+            }
+
+            catch (Exception ex)
+            {
+                Response.StatusCode = 400;
+                return Json(new { Error = ex.Message });
+            }
+
+        }
+
+        [AuthorizePermission("user.profile")]
+        [HttpPost]
+        public ActionResult UpdatePassword(UpdatePasswordDTO updatePasswordDTO)
+        {
+            _userService.UpdatePassword(
+                    (int)this.Session["UserId"],
+                    updatePasswordDTO
+                );
+
+            return Json(new { status = "ok" });
         }
 
     }

@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "PendingEmployees";
     ViewBag.PageTag = "";
-    Layout = "~/Views/Shared/_ManagerLayout.cshtml";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <div class="content-wrapper">
@@ -91,7 +91,7 @@
         function processUser(user, isApproved) {
             $.ajax({
                 type: "POST",
-                url: "/Manager/PendingEmployeeAction", // Change this to your server script
+                url: "/User/PendingSubordinateAction", // Change this to your server script
                 data: { userId: user, approve: isApproved }
             }).done(function (response) {
                 console.log('User Approved');

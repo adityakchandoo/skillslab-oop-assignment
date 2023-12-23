@@ -19,15 +19,11 @@ namespace DataLayer.Repository
             _conn = dbContext.GetConn();
         }
 
-        public AppUserDetails GetUserByUsername(string username)
+        public AppUser GetUserByUsername(string username)
         {
             try
             {
-                string sql = @" SELECT AppUser.*, UserRole.RoleId As Role, Role.Name AS RoleName, UserManager.ManagerId FROM AppUser
-                                INNER JOIN UserRole ON AppUser.UserId = UserRole.UserId
-                                INNER JOIN Role ON Role.RoleId = UserRole.RoleId
-                                LEFT JOIN UserManager ON AppUser.UserId = UserManager.UserId
-                                WHERE AppUser.Username = @Username;";
+                string sql = @" SELECT * FROM AppUser WHERE Username = @Username;";
 
                 using (IDbCommand cmd = _conn.CreateCommand())
                 {
@@ -38,13 +34,69 @@ namespace DataLayer.Repository
                     {
                         while (reader.Read())
                         {
-                            return DbHelper.ConvertToObject<AppUserDetails>(reader);
+                            return DbHelper.ConvertToObject<AppUser>(reader);
                         }
                     }
                     return null;
                 }
             }
             catch (Exception ex) { throw ex; }
+        }
+
+        public IEnumerable<AppUserRole> GetRolesByUserId(int UserId)
+        {
+            List<AppUserRole> results = new List<AppUserRole>();
+            try
+            {
+                string sql = @"SELECT r.RoleId, r.Name AS RoleName FROM UserRole ur INNER JOIN Role r ON ur.RoleId = r.RoleId WHERE ur.UserId = @UserId;";
+
+                using (IDbCommand cmd = _conn.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    DbHelper.AddParameterWithValue(cmd, "@UserId", UserId);
+
+                    using (IDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(DbHelper.ConvertToObject<AppUserRole>(reader));
+                        }
+                    }
+                    return results;
+                }
+            }
+            catch (Exception ex) { throw ex; }
+        }
+        public IEnumerable<AppUsersInlineRoles> GetAllUsersWithInlineRoles()
+        {
+            List<AppUsersInlineRoles> results = new List<AppUsersInlineRoles>();
+
+            string sql = @"SELECT U.*, R.Roles FROM AppUser U
+                           LEFT JOIN UserRolesInline R ON U.UserId = R.UserId;";
+
+            try
+            {
+                using (IDbCommand cmd = _conn.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+
+                    using (IDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(DbHelper.ConvertToObject<AppUsersInlineRoles>(reader));
+                        };
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                throw;
+            }
+
+            return results;
         }
 
         public bool IsRecordExists(string column, string value)
@@ -92,6 +144,7 @@ namespace DataLayer.Repository
 
             return null;
         }
+
         public int CreateUserReturningID(AppUser appUser)
         {
             try
@@ -115,15 +168,7 @@ namespace DataLayer.Repository
                     DbHelper.AddParameterWithValue(cmd, "@MobileNumber", appUser.MobileNumber);
                     DbHelper.AddParameterWithValue(cmd, "@CreatedOn", appUser.CreatedOn);
                     DbHelper.AddParameterWithValue(cmd, "@Status", appUser.Status);
-
-                    if (appUser.DepartmentId == -1)
-                    {
-                        DbHelper.AddParameterWithValue(cmd, "@DepartmentId", DBNull.Value);                        
-                    }
-                    else
-                    {
-                        DbHelper.AddParameterWithValue(cmd, "@DepartmentId", appUser.DepartmentId);
-                    }
+                    DbHelper.AddParameterWithValue(cmd, "@DepartmentId", appUser.DepartmentId);
 
                     return (int)cmd.ExecuteScalar();
                 }
@@ -154,6 +199,26 @@ namespace DataLayer.Repository
                 "SELECT * FROM [dbo].[AppUser] INNER JOIN UserManager ON AppUser.UserId = UserManager.UserId WHERE UserManager.ManagerId = @ManagerId AND AppUser.Status = @Status;",
                 new Dictionary<string, object>() { { "ManagerId", ManagerId }, { "Status", (int)userStatusEnum } }
             );
+        }
+
+        public bool CheckPermission(int UserId, string permission)
+        {
+            try
+            {
+                string sql = $"EXEC CheckUserPermission @UserId = @UserID, @Permission = @Permission";
+
+                using (IDbCommand cmd = _conn.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    DbHelper.AddParameterWithValue(cmd, "@UserID", UserId);
+                    DbHelper.AddParameterWithValue(cmd, "@Permission", permission);
+
+                    var result = (int)cmd.ExecuteScalar() == 1 ? true : false;
+
+                    return result;
+                }
+            }
+            catch (Exception ex) { throw ex; }
         }
 
     }

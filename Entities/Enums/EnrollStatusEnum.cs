@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Entities.Enums
 {
-    public enum EnrollStatusEnum { Pending, Approved, Rejected }
+    public enum EnrollStatusEnum { Pending = 1, Approved = 2, Rejected = 3 }
 }

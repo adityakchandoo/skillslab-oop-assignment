@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Entities.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -16,6 +17,7 @@ namespace Entities.DbModels
         public int MaxSeat { get; set; }
         public DateTime Deadline { get; set; }
         public int? PreferedDepartmentId { get; set; }
+        public IsActive IsActive { get; set; } = IsActive.Yes;
 
     }
 

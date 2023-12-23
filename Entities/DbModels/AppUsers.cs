@@ -1,5 +1,4 @@
 ﻿using Entities.Enums;
-using Entities.Other;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -22,8 +21,9 @@ namespace Entities.DbModels
         public string NIC { get; set; }
         public string MobileNumber { get; set; }
         public DateTime CreatedOn { get; set; } = DateTime.Now;
-        public int? DepartmentId { get; set; } = null;
+        public int DepartmentId { get; set; }
         public UserStatusEnum Status { get; set; }
+        public IsActive IsActive { get; set; } = IsActive.Yes;
     }
 
 }

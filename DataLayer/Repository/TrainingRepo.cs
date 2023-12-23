@@ -19,40 +19,6 @@ namespace DataLayer.Repository
             _conn = dbContext.GetConn();
         }
 
-        public IEnumerable<TrainingDetails> GetAllTraining()
-        {
-            List<TrainingDetails> results = new List<TrainingDetails>();
-
-            // AllTrainingWithDepartmentName is a view
-
-            string sql = @"SELECT Training.*, A.DepartmentName, A.NumberOfEmployeesEnrolled FROM Training 
-                           INNER JOIN AllTrainingWithDepartmentName A ON Training.TrainingId = A.TrainingId";
-
-            try
-            {
-                using (IDbCommand cmd = _conn.CreateCommand())
-                {
-                    cmd.CommandText = sql;
-
-                    using (IDataReader reader = cmd.ExecuteReader())
-                    {
-                        while (reader.Read())
-                        {
-                            results.Add(DbHelper.ConvertToObject<TrainingDetails>(reader));
-                        };                          
-                        
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-                throw;
-            }
-
-            return results;
-        }
-
         public int CreateTrainingReturningID(Training training)
         {
             try
@@ -77,23 +43,156 @@ namespace DataLayer.Repository
 
             } catch (Exception ex) { throw ex; }
         }
-
-        public IEnumerable<Training> GetTrainingEnrolledByUser(int UserId)
+        public IEnumerable<TrainingStatus> GetAllTraining(int UserId)
         {
-            string sql = $@"SELECT [dbo].[Training].* FROM [dbo].[UserTrainingEnrollment] INNER JOIN [dbo].[Training] ON 
-                         [dbo].[Training].[TrainingId] = [dbo].[UserTrainingEnrollment].[TrainingId] 
-                         WHERE [dbo].[UserTrainingEnrollment].[Status] = @EnrollStatusEnum AND [dbo].[UserTrainingEnrollment].[UserId] = @UserId;";
+            List<TrainingStatus> results = new List<TrainingStatus>();
 
-            Dictionary<string, object> myparam = new Dictionary<string, object>
+            string sql = @"SELECT 
+                            T.*,
+                            CASE 
+                                WHEN UTE.UserId IS NULL THEN 0
+                                ELSE UTE.Status
+                            END AS EnrollmentStatus
+                            FROM 
+                              Training T
+                            LEFT JOIN 
+                              UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId AND UTE.UserId = @UserId;";
+
+            try
             {
-                { "EnrollStatusEnum", (int)Entities.Enums.EnrollStatusEnum.Approved },
-                { "UserId", UserId }
-            };
+                using (IDbCommand cmd = _conn.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    DbHelper.AddParameterWithValue(cmd, "@UserId", UserId);
 
-            return base.GetMany(sql, myparam);
+                    using (IDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(DbHelper.ConvertToObject<TrainingStatus>(reader));
+                        };
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                throw;
+            }
+
+            return results;
+        }
+        public IEnumerable<TrainingStatus> GetTrainingEnrolledByUser(int UserId, EnrollStatusEnum status)
+        {
+            List<TrainingStatus> results = new List<TrainingStatus>();
+
+            string sql = $@"SELECT 
+                            T.*,
+                            UTE.Status AS EnrollmentStatus
+                            FROM 
+                              Training T
+                            LEFT JOIN 
+                              UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId
+                            WHERE UTE.UserId = @UserId AND UTE.Status = @Status;";
+            try
+            {
+                using (IDbCommand cmd = _conn.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    DbHelper.AddParameterWithValue(cmd, "@UserId", UserId);
+                    DbHelper.AddParameterWithValue(cmd, "@Status", (int)status);
+
+                    using (IDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(DbHelper.ConvertToObject<TrainingStatus>(reader));
+                        };
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                throw;
+            }
+
+            return results;
 
         }
+        public IEnumerable<TrainingStatus> GetTrainingEnrolledByUser(int UserId)
+        {
+            List<TrainingStatus> results = new List<TrainingStatus>();
 
+            string sql = $@"SELECT 
+                            T.*,
+                            UTE.Status AS EnrollmentStatus
+                            FROM 
+                              Training T
+                            LEFT JOIN 
+                              UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId
+                            WHERE UTE.UserId = @UserId;";
+            try
+            {
+                using (IDbCommand cmd = _conn.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+                    DbHelper.AddParameterWithValue(cmd, "@UserId", UserId);
+
+                    using (IDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(DbHelper.ConvertToObject<TrainingStatus>(reader));
+                        };
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                throw;
+            }
+
+            return results;
+
+        }
+        public IEnumerable<TrainingEnrollCount> GetAllTrainingWithEnrollCount()
+        {
+            List<TrainingEnrollCount> results = new List<TrainingEnrollCount>();
+
+            // AllTrainingWithDepartmentName is a view
+
+            string sql = @"SELECT Training.*, A.DepartmentName, A.NumberOfEmployeesEnrolled FROM Training 
+                           LEFT JOIN AllTrainingWithDepartmentName A ON Training.TrainingId = A.TrainingId";
+
+            try
+            {
+                using (IDbCommand cmd = _conn.CreateCommand())
+                {
+                    cmd.CommandText = sql;
+
+                    using (IDataReader reader = cmd.ExecuteReader())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(DbHelper.ConvertToObject<TrainingEnrollCount>(reader));
+                        };                          
+                        
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+                throw;
+            }
+
+            return results;
+        }
         public IEnumerable<UserTraining> GetUserTrainingByStatusAndManagerId(EnrollStatusEnum enrollStatusEnum, int UserId)
         {
             var pendingUserTraining = new List<UserTraining>();

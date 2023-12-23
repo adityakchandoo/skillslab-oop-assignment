@@ -14,8 +14,18 @@ LEFT JOIN
     Department D ON AU.DepartmentId = D.DepartmentId
 GROUP BY 
     T.TrainingId, D.Name;
+GO
 /*==============================================================*/
-
-INSERT INTO Role (RoleId, Name) VALUES (1, 'Admin');
-INSERT INTO Role (RoleId, Name) VALUES (2, 'Manager');
-INSERT INTO Role (RoleId, Name) VALUES (3, 'Employee');
+CREATE VIEW UserRolesInline AS
+SELECT 
+    u.UserId,
+    STRING_AGG(r.Name, ',') WITHIN GROUP (ORDER BY r.Name) AS Roles
+FROM 
+    AppUser u
+INNER JOIN 
+    UserRole ur ON u.UserId = ur.UserId
+INNER JOIN 
+    Role r ON ur.RoleId = r.RoleId
+GROUP BY 
+    u.UserId
+GO

@@ -5,18 +5,15 @@ using System.Web;
 using System.Web.Mvc;
 using WebApp.Helpers;
 
-namespace WebApp.Controllers.Manager
+namespace WebApp.Controllers
 {    
-    [ManagerSession]
-    [RoutePrefix("Manager")]
-    public class ManagerController : Controller
+
+    public partial class DashController : Controller
     {
-        [Route("")]
-        // GET: Home
-        public ActionResult Index()
+        [AuthorizePermission("manager.dash")]
+        public ActionResult ManagerDash()
         {
             return View("~/Views/Manager/Dashboard.cshtml");
-
         }
     }
 }

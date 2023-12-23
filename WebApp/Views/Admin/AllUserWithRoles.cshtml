@@ -1,0 +1,168 @@
+﻿
+@{
+    ViewBag.PageTag = "train-view";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>@ViewBag.Title</h1>
+                </div>
+                <div class="col-sm-6">
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+
+        <!-- Default box -->
+        <div class="card">
+            <div class="card-body p-0">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th style="width: 10px">#</th>
+                            <th>UserName</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>MobileNumber</th>
+                            <th>Roles</th>
+                            <th>Action</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var User in ViewBag.Users)
+                        {
+                            <tr>
+                                <td>@User.UserId</td>
+                                <td>@User.UserName</td>
+                                <td>@User.FirstName @User.LastName</td>
+                                <td>@User.Email</td>
+                                <td>@User.MobileNumber</td>
+                                <td>@User.Roles</td>
+                                <td>
+                                    <div class="dropdown">
+                                        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                            <i class="fas fa-wrench"></i>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                            <a class="dropdown-item" onclick="openRoleModal(@User.UserId);" href="#">Set Roles</a>
+                                            <a class="dropdown-item" href="#">Delete</a>
+                                        </div>
+                                    </div>
+                                </td>
+
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <!-- /.card -->
+
+
+    </section>
+    <!-- /.content -->
+</div>
+
+<div class="modal fade" id="roleModal" tabindex="-1" role="dialog" aria-labelledby="roleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="roleModalLabel">Assign Roles</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="roleForm">
+                    <!-- Checkboxes will be added here dynamically -->
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="saveRoles">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+@section Scripts {
+
+    <script type="text/javascript">
+
+        // Function to open the modal and load roles
+        var globalUserId;
+        function openRoleModal(UserId) {
+            globalUserId = UserId
+            $.ajax({
+                url: '/User/GetUserRoles/' + UserId, // Replace with your API endpoint
+                method: 'GET',
+                success: function (response) {
+                    var roles = response;
+                    var formContent = '';
+                    roles.forEach(function (role) {
+                        formContent += '<div class="form-check">' +
+                            '<input class="form-check-input" type="checkbox" value="' + role.RoleId + '" id="role' + role.RoleId + '" ' + (role.IsAssigned ? 'checked' : '') + '>' +
+                            '<label class="form-check-label" for="role' + role.RoleId + '">' +
+                            role.RoleName +
+                            '</label>' +
+                            '</div>';
+                    });
+                    $('#roleForm').html(formContent);
+                    $('#roleModal').modal('show');
+                }
+            });
+        }
+
+        // Function to handle the Save button click
+        $('#saveRoles').click(function () {
+            var updatedRoles = [];
+            $('#roleForm input[type=checkbox]').each(function () {
+                updatedRoles.push({
+                    RoleId: parseInt(this.value),
+                    RoleName: $(this).next('label').text(),
+                    IsAssigned: this.checked ? 1 : 0
+                });
+            });
+
+            // AJAX call to update roles
+            $.ajax({
+                url: '/User/EditUserRole/' + globalUserId, // Replace with your API endpoint
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(updatedRoles),
+                success: function (response) {
+                    $('#roleModal').modal('hide');
+                    // Handle success (e.g., show a message to the user)
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Login Successful!',
+                        showConfirmButton: false,
+                        timer: 2000
+                    }).then(() => {
+                        location.reload()
+                    });
+                },
+                error: function () {
+                    $('#roleModal').modal('hide');
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Oops...',
+                        text: 'Contact Admin',
+                    });
+                }
+            });
+        });
+
+
+    </script>
+}

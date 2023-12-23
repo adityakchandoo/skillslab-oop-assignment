@@ -8,49 +8,16 @@ using System.Web;
 using System.Web.Mvc;
 using WebApp.Helpers;
 
-namespace WebApp.Controllers.Manager
+namespace WebApp.Controllers
 {
-    [ManagerSession]
-    [RoutePrefix("Manager")]
-    public class TrainingController : Controller
+
+    public partial class TrainingController : Controller
     {
-        private readonly ITrainingService _trainingService;
-        private readonly IUserService _userService;
-        private readonly IUserTrainingEnrollmentService _userTrainingEnrollmentService;
-        public TrainingController(ITrainingService trainingService, IUserService userService, IUserTrainingEnrollmentService userTrainingEnrollmentService)
-        {
-            _trainingService = trainingService;
-            _userService = userService;
-            _userTrainingEnrollmentService = userTrainingEnrollmentService;
-        }
-
-        // GET: Training
-        public ActionResult Index()
-        {
-            return View();
-        }
-
-        [Route("AllTrainings")]
-        public ActionResult AllTrainings()
-        {
-            ViewBag.Trainings = _trainingService.GetAllTrainingDetails();
-            return View("~/Views/Manager/AllTrainings.cshtml");
-        }
-
-        [Route("Training/{trainingId}")]
-        public ActionResult Training(int trainingId)
-        {
-            ViewBag.Training = _trainingService.GetTraining(trainingId);
-            ViewBag.Contents = _trainingService.GetTrainingWithContents(trainingId);
-
-            return View("~/Views/Manager/Training.cshtml");
-        }
-
-        [Route("TrainingRequests")]
-        public ActionResult TrainingRequests()
+        [AuthorizePermission("training.viewrequests")]
+        public ActionResult ViewRequests()
         {
             // TODO: User Session
-            //string UserId = 1;
+            //int UserId = 4;
             int UserId = (int)this.Session["UserId"];
 
 
@@ -59,19 +26,20 @@ namespace WebApp.Controllers.Manager
             return View("~/Views/Manager/TrainingRequests.cshtml");
         }
 
-        [Route("TrainingProcess/{targetUserId}/{targetTrainingId}")]
-        public ActionResult TrainingProcess(int targetUserId, int targetTrainingId)
+        [AuthorizePermission("training.processrequests")]
+        [Route("Training/ProcessRequest/{UserId}/{TrainingId}")]
+        public ActionResult ProcessRequest(int UserId, int TrainingId)
         {
-            ViewBag.User = _userService.GetUser(targetUserId);
-            ViewBag.Training = _trainingService.GetTraining(targetTrainingId);
-            ViewBag.Attachments = _userTrainingEnrollmentService.GetUserTrainingEnrollmentInfo(targetUserId, targetTrainingId);
+            ViewBag.User = _userService.GetUser(UserId);
+            ViewBag.Training = _trainingService.GetTraining(TrainingId);
+            ViewBag.Attachments = _userTrainingEnrollmentService.GetUserTrainingEnrollmentInfo(UserId, TrainingId);
 
             return View("~/Views/Manager/TrainingProcess.cshtml");
         }
 
+        [AuthorizePermission("training.processrequests")]
         [HttpPost]
-        [Route("TrainingRequestsAction")]
-        public ActionResult TrainingRequestsAction(int targetUserId, int targetTrainingId, bool approve)
+        public ActionResult ProcessRequestAction(int targetUserId, int targetTrainingId, bool approve)
         {
             try
             {

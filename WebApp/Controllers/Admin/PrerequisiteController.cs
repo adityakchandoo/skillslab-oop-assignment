@@ -8,10 +8,8 @@ using System.Web;
 using System.Web.Mvc;
 using WebApp.Helpers;
 
-namespace WebApp.Controllers.Admin
+namespace WebApp.Controllers
 {
-    [AdminSession]
-    [RoutePrefix("Admin")]
     public class PrerequisiteController : Controller
     {
         private readonly IPrerequisiteService _prerequisiteService;
@@ -20,23 +18,18 @@ namespace WebApp.Controllers.Admin
             _prerequisiteService = prerequisiteService;
         }
 
-        [Route("Prerequisites")]
-        public ActionResult Index()
+        [AuthorizePermission("prerequisite.view")]
+        public ActionResult ViewAll()
         {
             ViewBag.Prerequisites = _prerequisiteService.GetAllPrerequisites();
 
             return View("~/Views/Admin/Prerequisites.cshtml");
         }
 
-        [Route("AddPrerequisite")]
-        public ActionResult AddDepartment(PrerequisiteDTO prerequisite)
+        [AuthorizePermission("prerequisite.add")]
+        [HttpPost]
+        public ActionResult AddPost(PrerequisiteDTO prerequisite)
         {
-            if (!ModelState.IsValid)
-            {
-                Response.StatusCode = 400;
-                return Json(ModelState);
-            }
-
             try
             {
                 Prerequisite prerequisite_db = new Prerequisite()

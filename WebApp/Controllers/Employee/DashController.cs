@@ -5,16 +5,12 @@ using System.Web;
 using System.Web.Mvc;
 using WebApp.Helpers;
 
-namespace WebApp.Controllers.Employee
+namespace WebApp.Controllers
 {
-    [EmployeeSession]
-    [RoutePrefix("Employee")]
-    public class EmployeeController : Controller
+    public partial class DashController : Controller
     {
-
-        [Route("")]
-        // GET: Home
-        public ActionResult Index()
+        [AuthorizePermission("employee.dash")]
+        public ActionResult EmployeeDash()
         {
             return View("~/Views/Employee/Dashboard.cshtml");
         }

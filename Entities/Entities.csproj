@@ -43,9 +43,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="DbCustom\AppUserDetails.cs" />
+    <Compile Include="DbCustom\UserRoleAssigned.cs" />
+    <Compile Include="DbCustom\AppUserRole.cs" />
+    <Compile Include="DbCustom\AppUsersInlineRoles.cs" />
     <Compile Include="DbCustom\PrerequisiteDetails.cs" />
-    <Compile Include="DbCustom\TrainingDetails.cs" />
+    <Compile Include="DbCustom\TrainingStatus.cs" />
+    <Compile Include="DbCustom\TrainingEnrollCount.cs" />
     <Compile Include="DbCustom\UserTraining.cs" />
     <Compile Include="DbModels\AppUsers.cs" />
     <Compile Include="DbModels\Department.cs" />
@@ -64,7 +67,10 @@
     <Compile Include="DTO\TrainingWithContentDTO.cs" />
     <Compile Include="DTO\NotificationDTO.cs" />
     <Compile Include="DTO\PrerequisiteDTO.cs" />
+    <Compile Include="DTO\UpdatePasswordDTO.cs" />
+    <Compile Include="DTO\UpdateProfileDTO.cs" />
     <Compile Include="DTO\UploadFileStore.cs" />
+    <Compile Include="Enums\IsActive.cs" />
     <Compile Include="FormDTO\AddTrainingContentDTO.cs" />
     <Compile Include="FormDTO\RegEnrollFormDTO.cs" />
     <Compile Include="Enums\EnrollStatusEnum.cs" />
@@ -75,7 +81,6 @@
     <Compile Include="FormDTO\RegisterFormDTO.cs" />
     <Compile Include="FormDTO\AddTrainingFormDTO.cs" />
     <Compile Include="FormDTO\UserLoginFormDTO.cs" />
-    <Compile Include="Other\NotIdentity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

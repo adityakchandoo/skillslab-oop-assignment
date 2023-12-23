@@ -75,6 +75,7 @@ namespace WebApp
             container.RegisterType<IDepartmentService, DepartmentService>(new PerRequestLifetimeManager());
             container.RegisterType<IPrerequisiteService, PrerequisiteService>(new PerRequestLifetimeManager());
             container.RegisterType<IUserTrainingEnrollmentService, UserTrainingEnrollmentService>(new PerRequestLifetimeManager());
+            container.RegisterType<IUserRoleService, UserRoleService>(new PerRequestLifetimeManager());
             
             
             container.RegisterType<IStorageService, AmazonS3Service>(new PerRequestLifetimeManager());

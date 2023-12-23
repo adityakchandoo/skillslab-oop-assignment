@@ -1,0 +1,90 @@
+﻿
+@{
+    ViewBag.Title = "Training Dashboard";
+    ViewBag.PageTag = "train-my";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>@ViewBag.Title</h1>
+                </div>
+                <div class="col-sm-6">
+                    <select id="querySelect" class="form-control" style="width: 15rem;float: right;">
+                        <option value="my"@(Request.QueryString["q"] == "my" ? " selected":"");>My Training</option>
+                        <option value="approved" @(Request.QueryString["q"] == "approved" ? " selected" : "")>Approved</option>
+                        <option value="pending"@(Request.QueryString["q"] == "pending" ? " selected":"")>Pending</option>
+                        <option value="all"@(Request.QueryString["q"] == "all" ? " selected":"")>All</option>
+                    </select>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+
+            <div class="row">
+
+                @foreach (var Training in ViewBag.Trainings)
+                {                    
+                    var color = "card-success";
+
+                    if (Training.EnrollmentStatus == 0) { color = "card-primary"; }
+                    if (Training.EnrollmentStatus == (int)Entities.Enums.EnrollStatusEnum.Pending) { color = "card-warning"; }
+                    if (Training.EnrollmentStatus == (int)Entities.Enums.EnrollStatusEnum.Rejected) { color = "card-danger"; }
+
+                    <div class="col-md-3">
+                        <div class="card card-outline @color">
+                            <div class="card-header">
+                                <h3 class="card-title">@Training.Name</h3>
+
+                                <!-- /.card-tools -->
+                            </div>
+                            <!-- /.card-header -->
+                            <div class="card-body" style="display: block;">
+                                @Training.Description
+                            </div>
+                            <!-- /.card-body -->
+                            <div class="card-footer" style="display: block;">
+                                @if (color == "card-success")
+                                {
+                                    <a href="/Training/View/@Training.TrainingId" role="button" class="btn btn-primary float-right">View</a>
+                                }
+                                else if (color == "card-primary")
+                                {
+                                    <a href="/Training/Apply/@Training.TrainingId" role="button" class="btn btn-primary float-right">Apply</a>
+                                }
+                                else if (color == "card-warning")
+                                {
+                                    <a href="#" role="button" class="btn btn-primary float-right disabled">Applied</a>
+                                }
+                            </div>
+                        </div>
+                        <!-- /.card -->
+                    </div>
+                    <!-- /.col -->
+                }
+
+
+            </div>
+
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('querySelect').addEventListener('change', function() {
+            var selectedValue = this.value;
+            if (selectedValue) {
+                window.location.search = 'q=' + encodeURIComponent(selectedValue);
+            }
+        });
+    </script>
+}

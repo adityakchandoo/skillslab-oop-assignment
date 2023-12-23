@@ -5,11 +5,11 @@ using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using WebApp.Helpers;
 using WebGrease.Activities;
 
 namespace WebApp.Controllers
 {
-    [RoutePrefix("File")]
     public class FileController : Controller
     {
         private readonly IStorageService _storageService;
@@ -18,9 +18,9 @@ namespace WebApp.Controllers
             _storageService = storageService;
         }
 
-        // GET: File
-        [Route("{id}/{name}")]
-        public ActionResult Index(string id, string name)
+        [AuthorizePermission("file.download")]
+        [Route("File/{id}/{name}")]
+        public ActionResult FileView(string id, string name)
         {
             try
             {

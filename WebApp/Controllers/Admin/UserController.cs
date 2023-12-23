@@ -1,4 +1,5 @@
 ﻿using BusinessLayer.Services.Interfaces;
+using Entities.DbCustom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,41 +7,33 @@ using System.Web;
 using System.Web.Mvc;
 using WebApp.Helpers;
 
-namespace WebApp.Controllers.Admin
+namespace WebApp.Controllers
 {
-    [AdminSession]
-    [RoutePrefix("Admin")]
-    public class UserController : Controller
+    public partial class UserController : Controller
     {
-        IUserService _userService;
-        public UserController(IUserService userService)
-        {
-            _userService = userService;
-        }
-
         // GET: User
-        [Route("ViewAdmins")]
-        public ActionResult ViewAdmins()
+        [AuthorizePermission("user.viewall")]
+        public ActionResult ViewAll()
         {
-            ViewBag.Title = "Admins";
-            ViewBag.Users = _userService.GetAllUsersByType(Entities.Enums.UserRoleEnum.Admin);
-            return View("~/Views/Admin/UserTableView.cshtml");
+            ViewBag.Title = "Manage All Users";
+            ViewBag.Users = _userService.GetAllUsersWithInlineRoles();
+            return View("~/Views/Admin/AllUserWithRoles.cshtml");
         }
 
-        [Route("ViewManagers")]
-        public ActionResult ViewManagers()
+        public ActionResult GetUserRoles(int id)
         {
-            ViewBag.Title = "Managers";
-            ViewBag.Users = _userService.GetAllUsersByType(Entities.Enums.UserRoleEnum.Manager);
-            return View("~/Views/Admin/UserTableView.cshtml");
+            return Json(_userRoleService.GetUserRolesAssigned(id), JsonRequestBehavior.AllowGet);
         }
 
-        [Route("ViewEmployees")]
-        public ActionResult ViewEmployees()
+        [HttpPost]
+        [Route("User/EditUserRole/{id}")]
+        public ActionResult EditUserRoles(int id, List<UserRoleAssigned> newUserRolesAssigned)
         {
-            ViewBag.Title = "Employees";
-            ViewBag.Users = _userService.GetAllUsersByType(Entities.Enums.UserRoleEnum.Employee);
-            return View("~/Views/Admin/UserTableView.cshtml");
+            _userRoleService.EditUserRoles(id, newUserRolesAssigned.ToArray());
+
+            return Json(new { Ok = "ok" }, JsonRequestBehavior.AllowGet);
         }
+
+
     }
 }

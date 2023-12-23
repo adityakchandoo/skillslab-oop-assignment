@@ -1,0 +1,208 @@
+﻿
+@{
+    ViewBag.Title = "MyProfile";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>@ViewBag.Title</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">General Form</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                <!-- left column -->
+                <div class="col-md-6">
+                    <!-- general form elements -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">User Details</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <form id="profileForm" method="post">
+                            <div class="card-body">
+
+                                <div class="form-group">
+                                    <label for="UserName">Username</label>
+                                    <input type="text" class="form-control" id="UserName" name="UserName" value="@ViewBag.User.UserName">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="Email">Email</label>
+                                    <input type="text" class="form-control" id="Email" name="Email" value="@ViewBag.User.Email">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="MobileNumber">Mobile Number</label>
+                                    <input type="text" class="form-control" id="MobileNumber" name="MobileNumber" value="@ViewBag.User.MobileNumber">
+                                </div>
+
+                            </div>
+                            <!-- /.card-body -->
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Update Info</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <!-- Form Element sizes -->
+                    <div class="card card-primary">
+                        <div class="card-header">
+                            <h3 class="card-title">Password</h3>
+                        </div>
+                        <!-- /.card-header -->
+                        <!-- form start -->
+                        <form id="passForm" method="post">
+                            <div class="card-body">
+
+                                <div class="form-group">
+                                    <label for="OldPassword">Enter Old Password</label>
+                                    <input type="text" class="form-control" id="OldPassword" name="OldPassword" placeholder="Enter Old Password">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="NewPassword">Enter New Password</label>
+                                    <input type="text" class="form-control" id="NewPassword" name="NewPassword" placeholder="Enter New Password">
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="ConfirmNewPassword">Confirm New Password</label>
+                                    <input type="text" class="form-control" id="ConfirmNewPassword" name="ConfirmNewPassword" placeholder="Confirm New Password">
+                                </div>
+
+                            </div>
+                            <!-- /.card-body -->
+
+                            <div class="card-footer">
+                                <button type="submit" class="btn btn-primary">Change Password</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+@section Scripts {
+    <script type="text/javascript">
+        $("#profileForm").validate({
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            errorPlacement: function (error, element) {
+                error.insertAfter(element);
+                element.next().addClass("invalid-feedback")
+            },
+            errorElement: 'div',
+
+            rules: {
+                Username: {
+                    required: true,
+                    remote: {
+                        url: "/User/UsernameCheck",
+                        type: "post"
+                    }
+                },
+                Email: {
+                    required: true,
+                    remote: {
+                        url: "/User/EmailCheck",
+                        type: "post"
+                    }
+                },
+                MobileNumber: { required: true }
+            },
+            messages: {
+                Username: {
+                    remote: "Username already in use!"
+                },
+                Email: {
+                    remote: "Email already in use!"
+                }
+            },
+            submitHandler: handleProfile
+        });
+
+        $("#passForm").validate({
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            errorPlacement: function (error, element) {
+                error.insertAfter(element);
+                element.next().addClass("invalid-feedback")
+            },
+            errorElement: 'div',
+
+            rules: {
+                
+                OldPassword: { required: true },
+                NewPassword: { required: true },
+                ConfirmPassword: { required: true }
+            },
+            submitHandler: handlePass
+        });
+
+
+        function handleProfile() {
+            let form_data = $("#profileForm").serialize();
+            $.ajax({
+                url: "/user/UpdateProfile",
+                type: "POST",
+                data: form_data
+            }).done(function (response) {
+                console.log(response);
+
+                Swal.fire({
+                    title: "Updated",
+                    icon: "success",
+                    timer: 2000
+                }).then((result) => {
+                    //$("#profileForm").trigger("reset");
+                });
+
+            }).fail(function () {
+                alert("Please Contact Admin");
+            });
+        }
+
+
+        function handlePass() {
+            let form_data = $("#passForm").serialize();
+            $.ajax({
+                url: "/user/UpdatePassword",
+                type: "POST",
+                data: form_data
+            }).done(function (response) {
+                console.log(response);
+
+                Swal.fire({
+                    title: "Updated",
+                    icon: "success",
+                    timer: 2000
+                }).then((result) => {
+                     //$("#passForm").trigger("reset");
+                });
+
+            }).fail(function () {
+                alert("Please Contact Admin");
+            });
+        }
+    </script>
+}

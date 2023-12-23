@@ -4,9 +4,11 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Entities.Other
+namespace Entities.Enums
 {
-    public sealed class NotIdentity : Attribute
+    public enum IsActive
     {
+        No = 0,
+        Yes = 1
     }
 }

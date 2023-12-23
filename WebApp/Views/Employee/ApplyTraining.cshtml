@@ -2,7 +2,7 @@
 @{
     ViewBag.Title = "train-apply";
     ViewBag.PageTag = "Apply for Training";
-    Layout = "~/Views/Shared/_EmployeeLayout.cshtml";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <div class="content-wrapper">
@@ -140,7 +140,7 @@
             });
 
             $.ajax({
-                url: '/Employee/ApplyTrainingPost', // replace with your server endpoint
+                url: '/Training/ApplyPost', // replace with your server endpoint
                 type: 'POST',
                 data: formData,
                 contentType: false,

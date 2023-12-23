@@ -14,7 +14,7 @@ namespace WebApp.Helpers
             {
                 filterContext.Result = new ViewResult
                 {
-                    ViewName = "~/Views/Shared/GenericErrorPage.cshtml"
+                    ViewName = "~/Views/Other/GenericErrorPage.cshtml"
                 };
 
                 filterContext.ExceptionHandled = true;

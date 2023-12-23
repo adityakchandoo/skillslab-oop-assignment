@@ -8,10 +8,10 @@ using System.Threading.Tasks;
 
 namespace Entities.DbCustom
 {
-    public class AppUserDetails : AppUser
+    public class UserRoleAssigned
     {
-        public UserRoleEnum Role { get; set; }
+        public int RoleId { get; set; }
         public string RoleName { get; set; }
-        public int ManagerId { get; set; }
+        public int IsAssigned { get; set; }
     }
 }

@@ -10,33 +10,54 @@ using Entities.Enums;
 using Entities.FormDTO;
 using WebApp.Helpers;
 
-namespace WebApp.Controllers.Employee
+namespace WebApp.Controllers
 {
-    [EmployeeSession]
-    [RoutePrefix("Employee")]
-    public class TrainingController : Controller
+    public partial class TrainingController : Controller
     {
-        private readonly ITrainingService _trainingService;
-        private readonly IUserTrainingEnrollmentService _userTrainingEnrollmentService;
-        private readonly IUserService _userService;
-        private readonly IPrerequisiteService _prerequisiteService;
-
-        public TrainingController(
-            ITrainingService trainingService, 
-            IUserTrainingEnrollmentService userTrainingEnrollmentService, 
-            IUserService userService, 
-            IPrerequisiteService prerequisiteService)
+        [AuthorizePermission("training.dash")]
+        public ActionResult ViewDash()
         {
-            _trainingService = trainingService;
-            _userTrainingEnrollmentService = userTrainingEnrollmentService;
-            _userService = userService;
-            _prerequisiteService = prerequisiteService;
+            // TODO: User Session
+            //int UserId = 10;
+            int UserId = (int)this.Session["UserId"];
+
+            try
+            {
+                if (Request.QueryString["q"] == "my")
+                {
+                    ViewBag.Trainings = _trainingService.GetTrainingEnrolledByUser(UserId);
+                }
+                else if (Request.QueryString["q"] == "all")
+                {
+                    ViewBag.Trainings = _trainingService.GetAllTraining(UserId);
+                }
+                else if (Request.QueryString["q"] == "approved")
+                {
+                    ViewBag.Trainings = _trainingService.GetTrainingEnrolledByUser(UserId, EnrollStatusEnum.Approved);
+                }
+                else if (Request.QueryString["q"] == "pending")
+                {
+                    ViewBag.Trainings = _trainingService.GetTrainingEnrolledByUser(UserId, EnrollStatusEnum.Pending);
+                }
+                else
+                {
+                    // Same as my
+                    ViewBag.Trainings = _trainingService.GetTrainingEnrolledByUser(UserId);
+                }
+
+                return View("~/Views/Employee/TrainingCardView.cshtml");
+            }
+            catch (Exception ex)
+            {
+                Response.StatusCode = 400;
+                ViewBag.Error = ex.Message;
+                return View("~/Views/Other/GlobalErrorDisplayPage.cshtml");
+            }
+
         }
 
-
-        // GET: Training
-        [Route("MyTrainings")]
-        public ActionResult MyTrainings()
+        [AuthorizePermission("training.apply")]
+        public ActionResult Apply(int id)
         {
             // TODO: User Session
             //string UserId = 1;
@@ -44,68 +65,7 @@ namespace WebApp.Controllers.Employee
 
             try
             {
-
-                ViewBag.Trainings = _trainingService.GetTrainingEnrolledByUser(UserId);
-
-                return View("~/Views/Employee/MyTrainings.cshtml");
-            }
-            catch (Exception ex)
-            {
-                Response.StatusCode = 400;
-                ViewBag.Error = ex.Message;
-                return View("~/Views/Shared/GlobalErrorDisplayPage.cshtml");
-            }
-
-        }
-
-        [Route("Training/{trainingId}")]
-        public ActionResult Training(int trainingId)
-        {
-            try
-            {
-                ViewBag.Training = _trainingService.GetTraining(trainingId);
-                ViewBag.Contents = _trainingService.GetTrainingWithContents(trainingId);
-
-                return View("~/Views/Employee/Training.cshtml");
-
-            }
-            catch (Exception ex)
-            {
-                Response.StatusCode = 400;
-                ViewBag.Error = ex.Message;
-                return View("~/Views/Shared/GlobalErrorDisplayPage.cshtml");
-            }
-
-        }
-
-        [Route("SearchTrainings")]
-        public ActionResult SearchTrainings()
-        {
-            try
-            {
-                ViewBag.Trainings = _trainingService.GetAllTraining();
-
-                return View("~/Views/Employee/SearchTrainings.cshtml");
-
-            }
-            catch (Exception ex)
-            {
-                Response.StatusCode = 400;
-                ViewBag.Error = ex.Message;
-                return View("~/Views/Shared/GlobalErrorDisplayPage.cshtml");
-            }
-        }
-
-        [Route("ApplyTraining/{trainingId}")]
-        public ActionResult ApplyTraining(int trainingId)
-        {
-            // TODO: User Session
-            //string UserId = 1;
-            int UserId = (int)this.Session["UserId"];
-
-            try
-            {
-                var enrollement = _userTrainingEnrollmentService.GetUserTrainingEnrollment(UserId, trainingId);
+                var enrollement = _userTrainingEnrollmentService.GetUserTrainingEnrollment(UserId, id);
 
                 if (enrollement != null && enrollement.Status == EnrollStatusEnum.Pending)
                 {
@@ -113,9 +73,9 @@ namespace WebApp.Controllers.Employee
                     return Content("Already Applied!");
                 }
             
-                ViewBag.trainingId = trainingId;
-                ViewBag.Training = _trainingService.GetTraining(trainingId);
-                ViewBag.Prerequisites = _prerequisiteService.GetPrerequisitesByTraining(trainingId);
+                ViewBag.trainingId = id;
+                ViewBag.Training = _trainingService.GetTraining(id);
+                ViewBag.Prerequisites = _prerequisiteService.GetPrerequisitesByTraining(id);
 
                 return View("~/Views/Employee/ApplyTraining.cshtml");
             }
@@ -126,9 +86,9 @@ namespace WebApp.Controllers.Employee
             }
         }
 
-        [Route("ApplyTrainingPost")]
+        [AuthorizePermission("training.apply")]
         [HttpPost]
-        public ActionResult ApplyTrainingPost(int trainingId)
+        public ActionResult ApplyPost(int trainingId)
         {
             // TODO: User Session
             //string UserId = 1;

@@ -107,7 +107,7 @@
 
                 $.ajax({
                     type: "POST",
-                    url: "/Admin/AddDepartment", // Change this to your server script
+                    url: "/Department/AddPost", // Change this to your server script
                     data: $("#myForm").serialize()
                 }).done(function (response) {
                     Swal.fire({

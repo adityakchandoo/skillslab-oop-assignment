@@ -9,54 +9,61 @@ using Entities.Enums;
 using Entities.FormDTO;
 using WebApp.Helpers;
 
-namespace WebApp.Controllers.Admin
+namespace WebApp.Controllers
 {
-    [AdminSession]
-    [RoutePrefix("Admin")]
-    public class TrainingController : Controller
+    public partial class TrainingController : Controller
     {
         private readonly ITrainingService _trainingService;
+        private readonly IUserTrainingEnrollmentService _userTrainingEnrollmentService;
+        private readonly IUserService _userService;
+        private readonly IPrerequisiteService _prerequisiteService;
         private readonly IDepartmentService _departmentService;
-        private readonly IPrerequisiteService _prerequisitService;
 
-        public TrainingController(ITrainingService trainingService, IDepartmentService departmentService, IPrerequisiteService prerequisitService)
+        public TrainingController(
+            ITrainingService trainingService,
+            IUserTrainingEnrollmentService userTrainingEnrollmentService,
+            IUserService userService,
+            IPrerequisiteService prerequisiteService,
+            IDepartmentService departmentService)
         {
             _trainingService = trainingService;
+            _userTrainingEnrollmentService = userTrainingEnrollmentService;
+            _userService = userService;
+            _prerequisiteService = prerequisiteService;
             _departmentService = departmentService;
-            _prerequisitService = prerequisitService;
         }
 
 
         // GET: Training
-        [Route("ViewTrainings")]
-        public ActionResult ViewTrainings()
+        [AuthorizePermission("training.viewall")]
+        public ActionResult ViewAll()
         {
-            ViewBag.Trainings = _trainingService.GetAllTrainingDetails();
+            ViewBag.Trainings = _trainingService.GetAllTrainingWithEnrollCount();
 
-            return View("~/Views/Admin/ViewTrainings.cshtml");
+            return View("~/Views/Admin/ViewTrainingTable.cshtml");
         }
 
-        [Route("Training/{trainingId}")]
-        public ActionResult Training(int trainingId)
+        [AuthorizePermission("training.viewone")]
+        public ActionResult View(int id)
         {
-            ViewBag.Training = _trainingService.GetTraining(trainingId);
-            ViewBag.Contents = _trainingService.GetTrainingWithContents(trainingId);
+            ViewBag.Training = _trainingService.GetTraining(id);
+            ViewBag.Contents = _trainingService.GetTrainingWithContents(id);
 
-            return View("~/Views/Admin/AdminTraining.cshtml");
+            return View("~/Views/Shared/Training.cshtml");
         }
 
-        [Route("AddTraining")]
-        public ActionResult AddTraining()
+        [AuthorizePermission("training.add")]
+        public ActionResult Add()
         {
             ViewBag.Departments = _departmentService.GetAllDepartments();
-            ViewBag.Prerequisites = _prerequisitService.GetAllPrerequisites();
+            ViewBag.Prerequisites = _prerequisiteService.GetAllPrerequisites();
 
             return View("~/Views/Admin/AddTraining.cshtml");
         }
 
-        [Route("AddTrainingPost")]
+        [AuthorizePermission("training.add")]
         [HttpPost]
-        public ActionResult AddTrainingPost(AddTrainingFormDTO training)
+        public ActionResult AddPost(AddTrainingFormDTO training)
         {
             try
             {
@@ -72,16 +79,16 @@ namespace WebApp.Controllers.Admin
             }
         }
 
-        [Route("AddTrainingContent/{trainingId}")]
-        public ActionResult AddTrainingContent(int trainingId)
+        [AuthorizePermission("training.addcontent")]
+        public ActionResult AddContent(int id)
         {
-            ViewBag.trainingId = trainingId;
+            ViewBag.trainingId = id;
             return View("~/Views/Admin/AddTrainingContent.cshtml");
         }
 
-        [Route("AddTrainingContentPost")]
+        [AuthorizePermission("training.addcontent")]
         [HttpPost]
-        public ActionResult AddTrainingContentPost(AddTrainingContentDTO addTrainingContentDTO)
+        public ActionResult AddContentPost(AddTrainingContentDTO addTrainingContentDTO)
         {
             try
             {

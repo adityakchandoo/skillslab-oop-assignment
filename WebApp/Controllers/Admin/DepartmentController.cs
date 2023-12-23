@@ -9,10 +9,8 @@ using System.Web.Mvc;
 using System.Xml.Linq;
 using WebApp.Helpers;
 
-namespace WebApp.Controllers.Admin
+namespace WebApp.Controllers
 {
-    [AdminSession]
-    [RoutePrefix("Admin")]
     public class DepartmentController : Controller
     {
         private readonly IDepartmentService _dapartmentService;
@@ -21,8 +19,8 @@ namespace WebApp.Controllers.Admin
             _dapartmentService = dapartmentService;
         }
 
-        [Route("Departments")]
-        public ActionResult Index()
+        [AuthorizePermission("department.view")]
+        public ActionResult ViewAll()
         {
 
             ViewBag.Departments = _dapartmentService.GetAllDepartments();
@@ -30,14 +28,10 @@ namespace WebApp.Controllers.Admin
             return View("~/Views/Admin/Departments.cshtml");
         }
 
-        [Route("AddDepartment")]
-        public ActionResult AddDepartment(DepartmentDTO department)
+        [AuthorizePermission("department.add")]
+        [HttpPost]
+        public ActionResult AddPost(DepartmentDTO department)
         {
-            if (!ModelState.IsValid)
-            {
-                Response.StatusCode = 400;
-                return Json(ModelState);
-            }
 
             try
             {

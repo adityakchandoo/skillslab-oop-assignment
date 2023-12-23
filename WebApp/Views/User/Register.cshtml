@@ -61,7 +61,7 @@
     <div class="col-md-6">
         <label for="Department" class="form-label">Department</label>
         <select class="form-select" id="DepartmentId" name="DepartmentId" aria-label="Default select example">
-            <option value="-1">None</option>
+            <option value="">Select Department</option>
             @foreach (var Department in ViewBag.Departments)
             {
                 <option value="@Department.DepartmentId">@Department.Name</option>
@@ -126,8 +126,14 @@
                 }
             },
             messages: {
-                UserId: {
+                Username: {
                     remote: "Username already in use!"
+                },
+                Email: {
+                    remote: "Email already in use!"
+                },
+                NIC: {
+                    remote: "NIC already in use!"
                 }
             },
             submitHandler: handlePost

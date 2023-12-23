@@ -8,6 +8,7 @@ using Entities.Enums;
 using Entities.FormDTO;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace BusinessLayer.Services
@@ -46,27 +47,40 @@ namespace BusinessLayer.Services
             }
 
             AuthenticateResponse authenticateResponse = new AuthenticateResponse();
-            AppUserDetails appUser = _appUserRepo.GetUserByUsername(userLoginFormDTO.Username);
+            AppUser appUser = _appUserRepo.GetUserByUsername(userLoginFormDTO.Username);
 
             if (appUser == null)
             {
                 authenticateResponse.IsLoginSuccessful = false;
+                authenticateResponse.Error = "Invalid User/Pass";
                 return authenticateResponse;
             }
 
-            if (PasswordHasher.VerifySHA256Hash(userLoginFormDTO.Password, appUser.Password))
-            {
-                authenticateResponse.IsLoginSuccessful = true;
-                authenticateResponse.RedirectPath = "/" + appUser.RoleName;
-                authenticateResponse.AppUser = appUser;
-            }
-            else
+            if (appUser.Status != UserStatusEnum.Registered)
             {
                 authenticateResponse.IsLoginSuccessful = false;
+                authenticateResponse.Error = "User not comfirmed";
+                return authenticateResponse;
             }
+
+            if (PasswordHasher.VerifySHA256Hash(userLoginFormDTO.Password, appUser.Password) == false)
+            {
+                authenticateResponse.IsLoginSuccessful = false;
+                authenticateResponse.Error = "Invalid User/Pass";
+                
+            }            
+
+            // Beyound the point login is successful
+            authenticateResponse.IsLoginSuccessful = true;
+            authenticateResponse.AppUser = appUser;
 
             return authenticateResponse;
 
+        }
+
+        public IEnumerable<AppUserRole> GetRolesByUserId(int UserId)
+        {
+            return _appUserRepo.GetRolesByUserId(UserId);
         }
 
         public void Register(RegisterFormDTO registerFormDTO)
@@ -91,7 +105,7 @@ namespace BusinessLayer.Services
 
             // Validate Email
             var emailRegex = new Regex("/^(([^<>()[\\]\\\\.,;:\\s@\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/");
-            if (emailRegex.IsMatch(registerFormDTO.NIC))
+            if (emailRegex.IsMatch(registerFormDTO.Email))
             {
                 throw new ArgumentException("Enter a valid Email");
             }
@@ -163,6 +177,11 @@ namespace BusinessLayer.Services
             throw new NotImplementedException();
         }
 
+        public IEnumerable<AppUsersInlineRoles> GetAllUsersWithInlineRoles()
+        {
+            return _appUserRepo.GetAllUsersWithInlineRoles();
+        }
+
         public bool IsUsernameExists(string value)
         {
             return _appUserRepo.IsRecordExists("UserName", value);
@@ -193,6 +212,60 @@ namespace BusinessLayer.Services
             return _appUserRepo.GetAllUsersByManagerAndStatus(UserId, userStatusEnum);
         }
 
+        public void UpdateProfile(int UserId, UpdateProfileDTO updateProfileDTO)
+        {
+            if (
+                string.IsNullOrEmpty(updateProfileDTO.UserName) ||
+                string.IsNullOrEmpty(updateProfileDTO.Email) ||
+                string.IsNullOrEmpty(updateProfileDTO.Email)
+                )
+            {
+                throw new ArgumentNullException(nameof(updateProfileDTO));
+            }
+
+            // Validate Email
+            var emailRegex = new Regex("/^(([^<>()[\\]\\\\.,;:\\s@\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/");
+            if (emailRegex.IsMatch(updateProfileDTO.Email))
+            {
+                throw new ArgumentException("Enter a valid Email");
+            }
+
+            AppUser user = _appUserRepo.GetByPK(UserId);
+
+            user.UserName = updateProfileDTO.UserName;
+            user.Email = updateProfileDTO.Email;
+            user.MobileNumber = updateProfileDTO.MobileNumber;
+
+            _appUserRepo.Update(user);
+        }
+
+        public void UpdatePassword(int UserId, UpdatePasswordDTO updatePasswordDTO)
+        {
+            if (
+                string.IsNullOrEmpty(updatePasswordDTO.OldPassword) ||
+                string.IsNullOrEmpty(updatePasswordDTO.NewPassword) ||
+                string.IsNullOrEmpty(updatePasswordDTO.ConfirmNewPassword)
+                )
+            {
+                throw new ArgumentNullException(nameof(updatePasswordDTO));
+            }
+
+            if (!updatePasswordDTO.NewPassword.Equals(updatePasswordDTO.ConfirmNewPassword))
+            {
+                throw new ArgumentException("Confirm pass is not same");
+            }
+
+            AppUser user = _appUserRepo.GetByPK(UserId);
+
+            if (PasswordHasher.VerifySHA256Hash(updatePasswordDTO.OldPassword, user.Password) == false)
+            {
+                throw new ArgumentException("Current pass is not correct");
+            }
+
+            user.Password = PasswordHasher.GenerateSHA256Hash(updatePasswordDTO.NewPassword);
+
+            _appUserRepo.Update(user);
+        }
         public void ProcessNewUser(int UserId, bool isApprove)
         {
             AppUser user = _appUserRepo.GetByPK(UserId);
@@ -205,6 +278,11 @@ namespace BusinessLayer.Services
 
             _notificationService.NotifyUserRegistrationProcess(user.Email, managerName, isApprove);
 
+        }
+
+        public bool CheckPermission(int UserId, string permission)
+        {
+            return _appUserRepo.CheckPermission(UserId, permission);
         }
     }
 }

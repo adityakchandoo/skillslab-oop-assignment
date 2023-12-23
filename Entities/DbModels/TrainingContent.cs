@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Entities.Enums;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -15,6 +16,7 @@ namespace Entities.DbModels
         public string Name { get; set; }
         public string Description { get; set; }
         public DateTime PostDate { get; set; } = DateTime.Now;
+        public IsActive IsActive { get; set; } = IsActive.Yes;
 
     }
 

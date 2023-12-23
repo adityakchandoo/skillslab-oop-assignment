@@ -59,7 +59,7 @@
 
                 <div class="col-md-6">
                     <!-- Form Element sizes -->
-                    <div class="card card-success">
+                    <div class="card card-primary">
                         <div class="card-header">
                             <h3 class="card-title">Upload Files</h3>
                         </div>
@@ -133,7 +133,7 @@
             });
 
             $.ajax({
-                url: '/Admin/AddTrainingContentPost', // replace with your server endpoint
+                url: '/Training/AddContentPost', // replace with your server endpoint
                 type: 'POST',
                 data: formData,
                 contentType: false,
@@ -162,7 +162,7 @@
                         showConfirmButton: false,
                         timer: 2000
                     }).then(() => {
-                        history.back();
+                        window.location.href = "/Training/View/" + trainingId;
                     });
                 },
                 error: function (response) {

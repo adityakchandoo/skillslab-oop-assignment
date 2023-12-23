@@ -5,15 +5,13 @@ using System.Web;
 using System.Web.Mvc;
 using WebApp.Helpers;
 
-namespace WebApp.Controllers.Admin
+namespace WebApp.Controllers
 {
-    [AdminSession]
-    [RoutePrefix("Admin")]
-    public class AdminController : Controller
+    public partial class DashController : Controller
     {
-        [Route("")]
         // GET: Home
-        public ActionResult Index()
+        [AuthorizePermission("admin.dash")]
+        public ActionResult AdminDash()
         {
             return View("~/Views/Admin/Dashboard.cshtml");
         }

@@ -16,7 +16,10 @@
                     <h1>@ViewBag.Training.Name</h1>
                 </div>
                 <div class="col-sm-6">
-                    <a href="/Admin/AddTrainingContent/@ViewBag.Training.TrainingId" role="button" class="btn btn-primary float-right">Add Content</a>
+                    @if ((int)this.Session["Role"] == (int)Entities.Enums.UserRoleEnum.Admin)
+                    {
+                        <a href="/Training/AddContent/@ViewBag.Training.TrainingId" role="button" class="btn btn-primary float-right">Add Content</a>
+                    }
                 </div>
             </div>
         </div><!-- /.container-fluid -->

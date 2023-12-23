@@ -30,6 +30,11 @@
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="/User/SelectRole" id="logout-btn">
+                        <i class="fas fa-sign-out-alt"></i> Select Role
+                    </a>
+                </li>
 
                 <li class="nav-item">
                     <a class="nav-link" href="/User/Logout" id="logout-btn">
@@ -59,92 +64,20 @@
                     </div>
                 </div>
 
+                @if (WebApp.Helpers.SessionHelpers.IsUser(Entities.Enums.UserRoleEnum.Admin))
+                {
+                    @Html.Partial("_SidebarAdmin")
+                }
 
-                <!-- Sidebar Menu -->
-                <nav class="mt-2">
-                    <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                @if (WebApp.Helpers.SessionHelpers.IsUser(Entities.Enums.UserRoleEnum.Manager))
+                {
+                    @Html.Partial("_SidebarManager")
+                }
 
-                        <li class="nav-item">
-                            <a href="/Admin" class="nav-link @(@ViewBag.PageTag.Equals("dash") ? "active":"")">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>
-                                    Dashboard
-                                </p>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/Admin/ViewTrainings" class="nav-link @(@ViewBag.PageTag.Equals("train-view") ? "active":"")">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>
-                                    Training
-                                </p>
-                            </a>
-                        </li>
-
-
-                        <li class="nav-item @(@ViewBag.PageTag.StartsWith("other-") ? "menu-open":"menu-close")">
-                            <a href="#" class="nav-link">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>
-                                    Other
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="/Admin/Prerequisites" class="nav-link @(@ViewBag.PageTag.Equals("other-prerequisites") ? "active":"")">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Prequisites</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/Admin/Departments" class="nav-link @(@ViewBag.PageTag.Equals("other-departments") ? "active":"")">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Department</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item menu-close">
-                            <a href="#" class="nav-link @(@ViewBag.PageTag.StartsWith("users-") ? "menu-open":"menu-close")">
-                                <i class="nav-icon fas fa-tachometer-alt"></i>
-                                <p>
-                                    Users
-                                    <i class="right fas fa-angle-left"></i>
-                                </p>
-                            </a>
-                            <ul class="nav nav-treeview">
-                                <li class="nav-item">
-                                    <a href="/Admin/ViewAdmins" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Admin</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/Admin/ViewManagers" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Manager</p>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="/Admin/ViewEmployees" class="nav-link">
-                                        <i class="far fa-circle nav-icon"></i>
-                                        <p>Employee</p>
-                                    </a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li class="nav-item">
-                            <a href="/Admin/Profile" class="nav-link">
-                                <i class="nav-icon fas fa-th"></i>
-                                <p>
-                                    Profile
-                                </p>
-                            </a>
-                        </li>
-                    </ul>
-                </nav>
-                <!-- /.sidebar-menu -->
+                @if (WebApp.Helpers.SessionHelpers.IsUser(Entities.Enums.UserRoleEnum.Employee))
+                {
+                    @Html.Partial("_SidebarEmployee")
+                }
             </div>
             <!-- /.sidebar -->
         </aside>

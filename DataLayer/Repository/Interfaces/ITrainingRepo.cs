@@ -13,9 +13,11 @@ namespace DataLayer.Repository.Interfaces
 {
     public interface ITrainingRepo : IDataAccessLayer<Training>
     {
-        IEnumerable<TrainingDetails> GetAllTraining();
-        IEnumerable<Training> GetTrainingEnrolledByUser(int UserId);
         int CreateTrainingReturningID(Training training);
+        IEnumerable<TrainingStatus> GetAllTraining(int UserId);
+        IEnumerable<TrainingEnrollCount> GetAllTrainingWithEnrollCount();
+        IEnumerable<TrainingStatus> GetTrainingEnrolledByUser(int UserId, EnrollStatusEnum status);
+        IEnumerable<TrainingStatus> GetTrainingEnrolledByUser(int UserId);
         IEnumerable<UserTraining> GetUserTrainingByStatusAndManagerId(EnrollStatusEnum enrollStatusEnum, int UserId);
     }
 }

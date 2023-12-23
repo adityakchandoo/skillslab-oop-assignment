@@ -10,8 +10,8 @@ namespace Entities.DTO
 {
     public class AuthenticateResponse
     {
-        public bool IsLoginSuccessful;
-        public string RedirectPath { get; set; }
-        public AppUserDetails AppUser { get; set; }
+        public bool IsLoginSuccessful { get; set; }
+        public string Error { get; set; }
+        public AppUser AppUser { get; set; }
     }
 }

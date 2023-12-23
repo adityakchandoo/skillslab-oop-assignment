@@ -9,37 +9,23 @@ using System.Web;
 using System.Web.Mvc;
 using WebApp.Helpers;
 
-namespace WebApp.Controllers.Manager
+namespace WebApp.Controllers
 {
-    [ManagerSession]
-    [RoutePrefix("Manager")]
-    public class UserController : Controller
+    public partial class UserController : Controller
     {
-        IUserService _userService;
-        public UserController(IUserService userService)
+        [AuthorizePermission("user.viewallemployee")]
+        public ActionResult ViewAllEmployee()
         {
-            _userService = userService;
-        }
-
-        // GET: User
-        public ActionResult Index()
-        {
-            return View();
-        }
-
-        [Route("AllEmployees")]
-        public ActionResult AllEmployees()
-        {
-            ViewBag.Title = "All Employees";
+            ViewBag.Title = "Employees";
             ViewBag.Users = _userService.GetAllUsersByType(Entities.Enums.UserRoleEnum.Employee);
             return View("~/Views/Manager/UserTableView.cshtml");
         }
 
-        [Route("MyEmployees")]
-        public ActionResult MyEmployees()
+        [AuthorizePermission("user.viewsubordinates")]
+        public ActionResult ViewSubordinates()
         {
             // TODO: User Session
-            //string UserId = 1;
+            //int UserId = 4;
             int UserId = (int)this.Session["UserId"];
 
 
@@ -48,11 +34,11 @@ namespace WebApp.Controllers.Manager
             return View("~/Views/Manager/UserTableView.cshtml");
         }
 
-        [Route("PendingEmployees")]
-        public ActionResult PendingEmployees()
+        [AuthorizePermission("user.viewpendingsubordinates")]
+        public ActionResult ViewPendingSubordinates()
         {
             // TODO: User Session
-            //string UserId = 1;
+            //int UserId = 4;
             int UserId = (int)this.Session["UserId"];
 
 
@@ -61,9 +47,9 @@ namespace WebApp.Controllers.Manager
             return View("~/Views/Manager/PendingEmployees.cshtml");
         }
 
-        [Route("PendingEmployeeAction")]
+        [AuthorizePermission("user.viewpendingsubordinates")]
         [HttpPost]
-        public ActionResult PendingEmployeeAction(int userId, bool approve)
+        public ActionResult PendingSubordinateAction(int userId, bool approve)
         {
             try
             {

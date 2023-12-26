@@ -7,6 +7,7 @@ using Entities.DTO;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,22 +16,13 @@ namespace DataLayer.Repository
 {
     public class PrerequisiteRepo : DataAccessLayer<Prerequisite>, IPrerequisiteRepo
     {
-        private readonly IDbConnection _conn;
+        private readonly SqlConnection _conn;
         public PrerequisiteRepo(IDbContext dbContext) : base(dbContext)
         {
             _conn = dbContext.GetConn();
         }
-        //public IEnumerable<PrerequisiteDetails> GetPrerequisitesByTraining2(int training)
-        //{
-        //    var sql = @"SELECT Prerequisite.*, TrainingPrerequisite.TrainingPrerequisiteId FROM Prerequisite INNER JOIN TrainingPrerequisite ON Prerequisite.PrerequisiteId = TrainingPrerequisite.PrerequisiteId WHERE TrainingPrerequisite.TrainingId = @TrainingId";
-            
-        //    var param = new Dictionary<string, object>();
-        //    param.Add("TrainingId", training);
 
-        //    return base.GetMany(sql, param);
-        //}
-
-        public IEnumerable<PrerequisiteDetails> GetPrerequisitesByTraining(int training)
+        public async Task<IEnumerable<PrerequisiteDetails>> GetPrerequisitesByTrainingAsync(int training)
         {
             var prerequisiteDetails = new List<PrerequisiteDetails>();
 
@@ -38,13 +30,11 @@ namespace DataLayer.Repository
 
             try
             {
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
+                    cmd.Parameters.AddWithValue("@TrainingId", training);
 
-                    DbHelper.AddParameterWithValue(cmd, "@TrainingId", training);
-
-                    using (IDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
                         while (reader.Read())
                         {

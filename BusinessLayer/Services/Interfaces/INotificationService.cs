@@ -9,9 +9,9 @@ namespace BusinessLayer.Services.Interfaces
 {
     public interface INotificationService
     {
-        void NotifyUserRegistration(string managerMail, string employeeName);
-        void NotifyUserRegistrationProcess(string employeeMail, string managerName, bool isApproved);
-        void NotifyTrainingRequest(string managerMail, string employeeName, string trainingName);
-        void NotifyTrainingRequestProcess(string employeeMail, string trainingName, bool isApproved);
+        Task NotifyUserRegistrationAsync(string managerMail, string employeeName);
+        Task NotifyUserRegistrationProcessAsync(string employeeMail, string managerName, bool isApproved);
+        Task NotifyTrainingRequestAsync(string managerMail, string employeeName, string trainingName);
+        Task NotifyTrainingRequestProcessAsync(string employeeMail, string trainingName, bool isApproved);
     }
 }

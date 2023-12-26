@@ -10,6 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace BusinessLayer.Services
 {
@@ -27,12 +28,12 @@ namespace BusinessLayer.Services
             _notificationService = notificationService;
         }
 
-        public AppUser GetUser(int UserId)
+        public async Task<AppUser> GetUserAsync(int UserId)
         {
-            return _appUserRepo.GetByPK(UserId);
+            return await _appUserRepo.GetByPKAsync(UserId);
         }
 
-        public AuthenticateResponse AuthenticateUser(UserLoginFormDTO userLoginFormDTO)
+        public async Task<AuthenticateResponse> AuthenticateUserAsync(UserLoginFormDTO userLoginFormDTO)
         {
             // Validate Username
             if (string.IsNullOrEmpty(userLoginFormDTO.Username))
@@ -47,7 +48,7 @@ namespace BusinessLayer.Services
             }
 
             AuthenticateResponse authenticateResponse = new AuthenticateResponse();
-            AppUser appUser = _appUserRepo.GetUserByUsername(userLoginFormDTO.Username);
+            AppUser appUser = await _appUserRepo.GetUserByUsernameAsync(userLoginFormDTO.Username);
 
             if (appUser == null)
             {
@@ -78,12 +79,12 @@ namespace BusinessLayer.Services
 
         }
 
-        public IEnumerable<AppUserRole> GetRolesByUserId(int UserId)
+        public async Task<IEnumerable<AppUserRole>> GetRolesByUserIdAsync(int UserId)
         {
-            return _appUserRepo.GetRolesByUserId(UserId);
+            return await _appUserRepo.GetRolesByUserIdAsync(UserId);
         }
 
-        public void Register(RegisterFormDTO registerFormDTO)
+        public async Task RegisterAsync(RegisterFormDTO registerFormDTO)
         {
             // Validate UserId
             if (string.IsNullOrEmpty(registerFormDTO.UserName))
@@ -149,19 +150,19 @@ namespace BusinessLayer.Services
                     Status = UserStatusEnum.Pending
                 };
 
-                var InsertedId = _appUserRepo.CreateUserReturningID(db_user);
+                var InsertedId = await _appUserRepo.CreateUserReturningIDAsync(db_user);
 
 
-                _userManagerRepo.Insert(new UserManager() { UserId = InsertedId, ManagerId = registerFormDTO.ManagerId });
+                await _userManagerRepo.Insert(new UserManager() { UserId = InsertedId, ManagerId = registerFormDTO.ManagerId });
 
-                _userRoleRepo.Insert(new UserRole() { UserId = InsertedId, RoleId = (int)UserRoleEnum.Employee });
+                await _userRoleRepo.Insert(new UserRole() { UserId = InsertedId, RoleId = (int)UserRoleEnum.Employee });
 
 
-                var managerEmail = _appUserRepo.GetByPK(registerFormDTO.ManagerId).Email;
+                var managerEmail = (await _appUserRepo.GetByPKAsync(registerFormDTO.ManagerId)).Email;
 
                 var employeeName = registerFormDTO.FirstName + " " + registerFormDTO.LastName;
 
-                _notificationService.NotifyUserRegistration(managerEmail, employeeName);
+                await _notificationService.NotifyUserRegistrationAsync(managerEmail, employeeName);
 
             } catch (Exception ex)
             {
@@ -172,47 +173,47 @@ namespace BusinessLayer.Services
 
         }
 
-        public IEnumerable<AppUser> ExportSelectedEmployees()
+        public Task<IEnumerable<AppUser>> ExportSelectedEmployeesAsync()
         {
             throw new NotImplementedException();
         }
 
-        public IEnumerable<AppUsersInlineRoles> GetAllUsersWithInlineRoles()
+        public async Task<IEnumerable<AppUsersInlineRoles>> GetAllUsersWithInlineRolesAsync()
         {
-            return _appUserRepo.GetAllUsersWithInlineRoles();
+            return await _appUserRepo.GetAllUsersWithInlineRolesAsync();
         }
 
-        public bool IsUsernameExists(string value)
+        public async Task<bool> IsUsernameExistsAsync(string value)
         {
-            return _appUserRepo.IsRecordExists("UserName", value);
+            return await _appUserRepo.IsRecordExistsAsync("UserName", value);
         }
 
-        public bool IsNICExists(string value)
+        public async Task<bool> IsNICExistsAsync(string value)
         {
-            return _appUserRepo.IsRecordExists("NIC", value);
+            return await _appUserRepo.IsRecordExistsAsync("NIC", value);
         }
 
-        public bool IsEmailExists(string value)
+        public async Task<bool> IsEmailExistsAsync(string value)
         {
-            return _appUserRepo.IsRecordExists("Email", value);
+            return await _appUserRepo.IsRecordExistsAsync("Email", value);
         }
 
-        public IEnumerable<AppUser> GetAllUsersByType(UserRoleEnum userRoleEnum)
+        public async Task<IEnumerable<AppUser>> GetAllUsersByTypeAsync(UserRoleEnum userRoleEnum)
         {
-            return _appUserRepo.GetAllUsersByRole(userRoleEnum);
+            return await _appUserRepo.GetAllUsersByRoleAsync(userRoleEnum);
         }
 
-        public IEnumerable<AppUser> GetUsersByManager(int UserId)
+        public async Task<IEnumerable<AppUser>> GetUsersByManagerAsync(int UserId)
         {
-            return _appUserRepo.GetAllUsersByManager(UserId);
+            return await _appUserRepo.GetAllUsersByManagerAsync(UserId);
         }
 
-        public IEnumerable<AppUser> GetUsersByManagerAndStatus(int UserId, UserStatusEnum userStatusEnum)
+        public async Task<IEnumerable<AppUser>> GetUsersByManagerAndStatusAsync(int UserId, UserStatusEnum userStatusEnum)
         {
-            return _appUserRepo.GetAllUsersByManagerAndStatus(UserId, userStatusEnum);
+            return await _appUserRepo.GetAllUsersByManagerAndStatusAsync(UserId, userStatusEnum);
         }
 
-        public void UpdateProfile(int UserId, UpdateProfileDTO updateProfileDTO)
+        public async Task UpdateProfileAsync(int UserId, UpdateProfileDTO updateProfileDTO)
         {
             if (
                 string.IsNullOrEmpty(updateProfileDTO.UserName) ||
@@ -230,16 +231,16 @@ namespace BusinessLayer.Services
                 throw new ArgumentException("Enter a valid Email");
             }
 
-            AppUser user = _appUserRepo.GetByPK(UserId);
+            AppUser user = await _appUserRepo.GetByPKAsync(UserId);
 
             user.UserName = updateProfileDTO.UserName;
             user.Email = updateProfileDTO.Email;
             user.MobileNumber = updateProfileDTO.MobileNumber;
 
-            _appUserRepo.Update(user);
+            await _appUserRepo.Update(user);
         }
 
-        public void UpdatePassword(int UserId, UpdatePasswordDTO updatePasswordDTO)
+        public async Task UpdatePasswordAsync(int UserId, UpdatePasswordDTO updatePasswordDTO)
         {
             if (
                 string.IsNullOrEmpty(updatePasswordDTO.OldPassword) ||
@@ -255,7 +256,7 @@ namespace BusinessLayer.Services
                 throw new ArgumentException("Confirm pass is not same");
             }
 
-            AppUser user = _appUserRepo.GetByPK(UserId);
+            AppUser user = await _appUserRepo.GetByPKAsync(UserId);
 
             if (PasswordHasher.VerifySHA256Hash(updatePasswordDTO.OldPassword, user.Password) == false)
             {
@@ -264,25 +265,25 @@ namespace BusinessLayer.Services
 
             user.Password = PasswordHasher.GenerateSHA256Hash(updatePasswordDTO.NewPassword);
 
-            _appUserRepo.Update(user);
+            await _appUserRepo.Update(user);
         }
-        public void ProcessNewUser(int UserId, bool isApprove)
+        public async Task ProcessNewUserAsync(int UserId, bool isApprove)
         {
-            AppUser user = _appUserRepo.GetByPK(UserId);
-            AppUser userManger = _appUserRepo.GetUserManager(UserId);
+            AppUser user = await _appUserRepo.GetByPKAsync(UserId);
+            AppUser userManger = await _appUserRepo.GetUserManagerAsync(UserId);
             user.Status = isApprove ? UserStatusEnum.Registered : UserStatusEnum.Banned;
 
-            _appUserRepo.Update(user);
+            await _appUserRepo.Update(user);
 
             var managerName = userManger.FirstName + " " + userManger.LastName;
 
-            _notificationService.NotifyUserRegistrationProcess(user.Email, managerName, isApprove);
+            _ = _notificationService.NotifyUserRegistrationProcessAsync(user.Email, managerName, isApprove);
 
         }
 
-        public bool CheckPermission(int UserId, string permission)
+        public async Task<bool> CheckPermissionAsync(int UserId, string permission)
         {
-            return _appUserRepo.CheckPermission(UserId, permission);
+            return await _appUserRepo.CheckPermissionAsync(UserId, permission);
         }
     }
 }

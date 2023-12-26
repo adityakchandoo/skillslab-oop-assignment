@@ -32,55 +32,55 @@ namespace BusinessLayer.Services
             _userTrainingEnrollmentRepo = userTrainingEnrollmentRepo;
         }
 
-        public void CreateUserTrainingEnrollment(UserTrainingEnrollment userTrainingEnrollment)
+        public async Task CreateUserTrainingEnrollmentAsync(UserTrainingEnrollment userTrainingEnrollment)
         {
-            _userTrainingEnrollmentRepo.Insert(userTrainingEnrollment);
+            await _userTrainingEnrollmentRepo.Insert(userTrainingEnrollment);
         }
 
-        public void DeleteUserTrainingEnrollment(int userTrainingEnrollmentId)
+        public async Task DeleteUserTrainingEnrollmentAsync(int userTrainingEnrollmentId)
         {
-            _userTrainingEnrollmentRepo.Delete(new UserTrainingEnrollment() { UserTrainingEnrollmentId = userTrainingEnrollmentId });
+            await _userTrainingEnrollmentRepo.Delete(new UserTrainingEnrollment() { UserTrainingEnrollmentId = userTrainingEnrollmentId });
         }
 
-        public IEnumerable<UserTrainingEnrollment> GetAllUserTrainingEnrollments()
+        public async Task<IEnumerable<UserTrainingEnrollment>> GetAllUserTrainingEnrollmentsAsync()
         {
-            return _userTrainingEnrollmentRepo.GetMany();
+            return await _userTrainingEnrollmentRepo.GetMany();
         }
 
-        public UserTrainingEnrollment GetUserTrainingEnrollment(int userTrainingEnrollmentId)
+        public async Task<UserTrainingEnrollment> GetUserTrainingEnrollmentAsync(int userTrainingEnrollmentId)
         {
-            return _userTrainingEnrollmentRepo.GetByPK(userTrainingEnrollmentId);
+            return await _userTrainingEnrollmentRepo.GetByPKAsync(userTrainingEnrollmentId);
 
         }
 
-        public void UpdateUserTrainingEnrollment(UserTrainingEnrollment userTrainingEnrollment)
+        public async Task UpdateUserTrainingEnrollmentAsync(UserTrainingEnrollment userTrainingEnrollment)
         {
-            _userTrainingEnrollmentRepo.Update(userTrainingEnrollment);
+            await _userTrainingEnrollmentRepo.Update(userTrainingEnrollment);
         }
 
-        public UserTrainingEnrollment GetUserTrainingEnrollment(int userId, int trainingId)
+        public async Task<UserTrainingEnrollment> GetUserTrainingEnrollmentAsync(int userId, int trainingId)
         {
-            return _userTrainingEnrollmentRepo.GetUserTrainingEnrollment(userId, trainingId);
+            return await _userTrainingEnrollmentRepo.GetUserTrainingEnrollmentAsync(userId, trainingId);
         }
 
-        public IEnumerable<TrainingEnrollmentDetails> GetUserTrainingEnrollmentInfo(int userId, int trainingId)
+        public async Task<IEnumerable<TrainingEnrollmentDetails>> GetUserTrainingEnrollmentInfoAsync(int userId, int trainingId)
         {
-            return _userTrainingEnrollmentRepo.GetUserTrainingEnrollmentInfo(userId, trainingId);
+            return await _userTrainingEnrollmentRepo.GetUserTrainingEnrollmentInfoAsync(userId, trainingId);
         }
 
-        public void ProcessTrainingRequest(int targetUserId, int targetTrainingId, bool isApproved)
+        public async Task ProcessTrainingRequestAsync(int targetUserId, int targetTrainingId, bool isApproved)
         {
-            var userEnrollment = _userTrainingEnrollmentRepo.GetUserTrainingEnrollment(targetUserId, targetTrainingId);
+            var userEnrollment = await _userTrainingEnrollmentRepo.GetUserTrainingEnrollmentAsync(targetUserId, targetTrainingId);
 
             userEnrollment.Status = isApproved ? EnrollStatusEnum.Approved : EnrollStatusEnum.Rejected;
-            userEnrollment.EnrolledDate = DateTime.Now; 
+            userEnrollment.EnrolledDate = DateTime.Now;
 
-            _userTrainingEnrollmentRepo.Update(userEnrollment);
+            await _userTrainingEnrollmentRepo.Update(userEnrollment);
 
-            var user = _appUserRepo.GetByPK(targetUserId);
-            var training = _trainingRepo.GetByPK(targetTrainingId);
+            var user = await _appUserRepo.GetByPKAsync(targetUserId);
+            var training = await _trainingRepo.GetByPKAsync(targetTrainingId);
 
-            _notificationService.NotifyTrainingRequestProcess(user.Email, training.Name, isApproved);
+            _ = _notificationService.NotifyTrainingRequestProcessAsync(user.Email, training.Name, isApproved);
 
         }
     }

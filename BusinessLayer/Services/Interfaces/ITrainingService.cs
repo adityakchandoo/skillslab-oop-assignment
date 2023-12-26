@@ -13,23 +13,23 @@ namespace BusinessLayer.Services.Interfaces
 {
     public interface ITrainingService
     {
-        Training GetTraining(int id);
-        void AddTraining(Training training);
-        void EditTraining(Training training);
-        void DeleteTraining(int id);
+        Task<Training> GetTrainingAsync(int id);
+        Task AddTrainingAsync(Training training);
+        Task EditTrainingAsync(Training training);
+        Task DeleteTrainingAsync(int id);
 
 
-        IEnumerable<TrainingEnrollCount> GetAllTrainingWithEnrollCount();
-        IEnumerable<TrainingStatus> GetAllTraining(int UserId);
-        IEnumerable<TrainingStatus> GetTrainingEnrolledByUser(int UserId, EnrollStatusEnum status);
-        IEnumerable<TrainingStatus> GetTrainingEnrolledByUser(int UserId);
-        IEnumerable<UserTraining> GetTrainingPendingForManager(int UserId);
+        Task<IEnumerable<TrainingEnrollCount>> GetAllTrainingWithEnrollCountAsync();
+        Task<IEnumerable<TrainingStatus>> GetAllTrainingAsync(int UserId);
+        Task<IEnumerable<TrainingStatus>> GetTrainingEnrolledByUserAsync(int UserId, EnrollStatusEnum status);
+        Task<IEnumerable<TrainingStatus>> GetTrainingEnrolledByUserAsync(int UserId);
+        Task<IEnumerable<UserTraining>> GetTrainingPendingForManagerAsync(int UserId);
 
 
-        void AddTrainingWithTrainingPrerequisite(AddTrainingFormDTO training);
-        void ApplyTraining(int UserId, int trainingId, List<UploadFileStore> uploadFileStore);
-        IEnumerable<TrainingWithContentDTO> GetTrainingWithContents(int trainingId);
-        void SaveTrainingWithContents(AddTrainingContentDTO addTrainingContentDTO);
+        Task AddTrainingWithTrainingPrerequisiteAsync(AddTrainingFormDTO training);
+        Task ApplyTrainingAsync(int UserId, int trainingId, List<UploadFileStore> uploadFileStore);
+        Task<IEnumerable<TrainingWithContentDTO>> GetTrainingWithContentsAsync(int trainingId);
+        Task SaveTrainingWithContentsAsync(AddTrainingContentDTO addTrainingContentDTO);
 
     }
 }

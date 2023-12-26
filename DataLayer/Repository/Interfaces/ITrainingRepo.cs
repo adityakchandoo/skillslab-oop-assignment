@@ -13,11 +13,11 @@ namespace DataLayer.Repository.Interfaces
 {
     public interface ITrainingRepo : IDataAccessLayer<Training>
     {
-        int CreateTrainingReturningID(Training training);
-        IEnumerable<TrainingStatus> GetAllTraining(int UserId);
-        IEnumerable<TrainingEnrollCount> GetAllTrainingWithEnrollCount();
-        IEnumerable<TrainingStatus> GetTrainingEnrolledByUser(int UserId, EnrollStatusEnum status);
-        IEnumerable<TrainingStatus> GetTrainingEnrolledByUser(int UserId);
-        IEnumerable<UserTraining> GetUserTrainingByStatusAndManagerId(EnrollStatusEnum enrollStatusEnum, int UserId);
+        Task<int> CreateTrainingReturningIDAsync(Training training);
+        Task<IEnumerable<TrainingStatus>> GetAllTrainingAsync(int UserId);
+        Task<IEnumerable<TrainingEnrollCount>> GetAllTrainingWithEnrollCountAsync();
+        Task<IEnumerable<TrainingStatus>> GetTrainingEnrolledByUserAsync(int UserId, EnrollStatusEnum status);
+        Task<IEnumerable<TrainingStatus>> GetTrainingEnrolledByUserAsync(int UserId);
+        Task<IEnumerable<UserTraining>> GetUserTrainingByStatusAndManagerIdAsync(EnrollStatusEnum enrollStatusEnum, int UserId);
     }
 }

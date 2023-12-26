@@ -17,14 +17,15 @@ namespace BusinessLayer.Services
             _userRoleRepo = userRoleRepo;
         }
 
-        public IEnumerable<UserRoleAssigned> GetUserRolesAssigned(int UserId)
+        public async Task<IEnumerable<UserRoleAssigned>> GetUserRolesAssignedAsync(int UserId)
         {
-            return _userRoleRepo.GetUserRolesAssigned(UserId);
+            return await _userRoleRepo.GetUserRolesAssignedAsync(UserId);
         }
 
-        public void EditUserRoles(int UserId, UserRoleAssigned[] userRolesAssigned)
+        public async Task EditUserRolesAsync(int UserId, UserRoleAssigned[] userRolesAssigned)
         {
-            UserRoleAssigned[] oldUserRolesAssigned = _userRoleRepo.GetUserRolesAssigned(UserId)
+
+            UserRoleAssigned[] oldUserRolesAssigned = (await _userRoleRepo.GetUserRolesAssignedAsync(UserId))
                                                                    .OrderBy(k => k.RoleId)
                                                                    .ToArray();
 
@@ -34,7 +35,7 @@ namespace BusinessLayer.Services
             {
                 if (oldUserRolesAssigned[i].IsAssigned == 0 && newUserRolesAssigned[i].IsAssigned == 1)
                 {
-                    _userRoleRepo.Insert(new Entities.DbModels.UserRole()
+                    await _userRoleRepo.Insert(new Entities.DbModels.UserRole()
                     {
                         UserId = UserId,
                         RoleId = oldUserRolesAssigned[i].RoleId,
@@ -42,7 +43,7 @@ namespace BusinessLayer.Services
                 }
                 else if (oldUserRolesAssigned[i].IsAssigned == 1 && newUserRolesAssigned[i].IsAssigned == 0)
                 {
-                    _userRoleRepo.DeleteUserRole(UserId, oldUserRolesAssigned[i].RoleId);
+                    await _userRoleRepo.DeleteUserRoleAsync(UserId, oldUserRolesAssigned[i].RoleId);
                 }
             }
 

@@ -10,6 +10,6 @@ namespace DataLayer.Repository.Interfaces
 {
     public interface ITrainingContentRepo : IDataAccessLayer<TrainingContent>
     {
-        int CreateTrainingContentReturningID(TrainingContent trainingContent);
+        Task<int> CreateTrainingContentReturningIDAsync(TrainingContent trainingContent);
     }
 }

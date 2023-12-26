@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using Entities.DbCustom;
 using System.Linq;
 using Entities.DbModels;
+using System.Threading.Tasks;
 
 namespace WebApp.Controllers
 {
@@ -36,11 +37,11 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult Authenticate(UserLoginFormDTO form)
+        public async Task<ActionResult> Authenticate(UserLoginFormDTO form)
         {
             try
             {
-                AuthenticateResponse authResponse = _userService.AuthenticateUser(form);
+                AuthenticateResponse authResponse = await _userService.AuthenticateUserAsync(form);
 
                 if (!authResponse.IsLoginSuccessful)
                 {
@@ -62,12 +63,12 @@ namespace WebApp.Controllers
 
         }
 
-        public ActionResult SelectRole()
+        public async Task<ActionResult> SelectRole()
         {
             if (this.Session["UserId"] == null)
                 return RedirectToAction("Login");
 
-            IEnumerable<AppUserRole> userRoles = _userService.GetRolesByUserId((int)this.Session["UserId"]);
+            IEnumerable<AppUserRole> userRoles = await _userService.GetRolesByUserIdAsync((int)this.Session["UserId"]);
 
             if (userRoles.Count() == 1)
             {
@@ -94,19 +95,19 @@ namespace WebApp.Controllers
             return new RedirectResult("~/User/Login");
         }
 
-        public ActionResult Register()
+        public async Task<ActionResult> Register()
         {
-            ViewBag.Managers = _userService.GetAllUsersByType(UserRoleEnum.Manager);
-            ViewBag.Departments = _departmentService.GetAllDepartments();
+            ViewBag.Managers = await _userService.GetAllUsersByTypeAsync(UserRoleEnum.Manager);
+            ViewBag.Departments = await _departmentService.GetAllDepartmentsAsync();
             return View();
         }
 
         [HttpPost]
-        public ActionResult RegisterPost(RegisterFormDTO form)
+        public async Task<ActionResult> RegisterPost(RegisterFormDTO form)
         {
             try
             {
-                _userService.Register(form);
+                await _userService.RegisterAsync(form);
                 return Json(new { status = "ok" });
             }
 
@@ -119,40 +120,43 @@ namespace WebApp.Controllers
         }
 
         [HttpPost]
-        public ActionResult UsernameCheck(string Username)
+        public async Task<ActionResult> UsernameCheck(string Username)
         {
-            return Content((!_userService.IsUsernameExists(Username)).ToString().ToLower());
+            bool result = await _userService.IsUsernameExistsAsync(Username);
+            return Content((!result).ToString().ToLower());
         }
 
         [HttpPost]
-        public ActionResult EmailCheck(string Email)
+        public async Task<ActionResult> EmailCheck(string Email)
         {
-            return Content((!_userService.IsEmailExists(Email)).ToString().ToLower());
+            bool result = await _userService.IsEmailExistsAsync(Email);
+            return Content((!result).ToString().ToLower());
         }
 
         [HttpPost]
-        public ActionResult NicCheck(string NIC)
+        public async Task<ActionResult> NicCheck(string NIC)
         {
-            return Content((!_userService.IsNICExists(NIC)).ToString().ToLower());
+            bool result = await _userService.IsNICExistsAsync(NIC);
+            return Content((!result).ToString().ToLower());
         }
 
 
         [AuthorizePermission("user.profile")]
-        public ActionResult MyProfile()
+        public async Task<ActionResult> MyProfile()
         {
-            ViewBag.User = _userService.GetUser((int)this.Session["UserId"]);
+            ViewBag.User = await _userService.GetUserAsync((int)this.Session["UserId"]);
             return View();
         }
 
         [AuthorizePermission("user.profile")]
         [HttpPost]
-        public ActionResult UpdateProfile(UpdateProfileDTO updateProfileDTO)
+        public async Task<ActionResult> UpdateProfile(UpdateProfileDTO updateProfileDTO)
         {
             
 
             try
             {
-                _userService.UpdateProfile(
+                await _userService.UpdateProfileAsync(
                     (int)this.Session["UserId"],
                     updateProfileDTO
                 );
@@ -169,9 +173,9 @@ namespace WebApp.Controllers
 
         [AuthorizePermission("user.profile")]
         [HttpPost]
-        public ActionResult UpdatePassword(UpdatePasswordDTO updatePasswordDTO)
+        public async Task<ActionResult> UpdatePassword(UpdatePasswordDTO updatePasswordDTO)
         {
-            _userService.UpdatePassword(
+            await _userService.UpdatePasswordAsync(
                     (int)this.Session["UserId"],
                     updatePasswordDTO
                 );

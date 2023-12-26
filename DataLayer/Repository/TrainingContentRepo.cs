@@ -4,6 +4,7 @@ using Entities.DbModels;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,13 +13,13 @@ namespace DataLayer.Repository
 {
     public class TrainingContentRepo : DataAccessLayer<TrainingContent>, ITrainingContentRepo
     {
-        private readonly IDbConnection _conn;
+        private readonly SqlConnection _conn;
         public TrainingContentRepo(IDbContext dbContext) : base(dbContext)
         {
             _conn = dbContext.GetConn();
         }
 
-        public int CreateTrainingContentReturningID(TrainingContent trainingContent)
+        public async Task<int> CreateTrainingContentReturningIDAsync(TrainingContent trainingContent)
         {
             try
             {
@@ -27,16 +28,14 @@ namespace DataLayer.Repository
                                VALUES (@TrainingId, @Name, @Description, @PostDate)";
 
 
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
+                    cmd.Parameters.AddWithValue("@TrainingId", trainingContent.TrainingId);
+                    cmd.Parameters.AddWithValue("@Name", trainingContent.Name);
+                    cmd.Parameters.AddWithValue("@Description", trainingContent.Description);
+                    cmd.Parameters.AddWithValue("@PostDate", trainingContent.PostDate);
 
-                    DbHelper.AddParameterWithValue(cmd, "@TrainingId", trainingContent.TrainingId);
-                    DbHelper.AddParameterWithValue(cmd, "@Name", trainingContent.Name);
-                    DbHelper.AddParameterWithValue(cmd, "@Description", trainingContent.Description);
-                    DbHelper.AddParameterWithValue(cmd, "@PostDate", trainingContent.PostDate);
-
-                    return (int)cmd.ExecuteScalar();
+                    return (int)(await cmd.ExecuteScalarAsync());
                 }
 
             }

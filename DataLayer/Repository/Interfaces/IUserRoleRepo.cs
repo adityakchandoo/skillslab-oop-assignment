@@ -11,7 +11,7 @@ namespace DataLayer.Repository.Interfaces
 {
     public interface IUserRoleRepo : IDataAccessLayer<UserRole>
     {
-        IEnumerable<UserRoleAssigned> GetUserRolesAssigned(int UserId);
-        void DeleteUserRole(int UserId, int RoleId);
+        Task<IEnumerable<UserRoleAssigned>> GetUserRolesAssignedAsync(int UserId);
+        Task DeleteUserRoleAsync(int UserId, int RoleId);
     }
 }

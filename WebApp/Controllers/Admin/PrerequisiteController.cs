@@ -4,6 +4,7 @@ using Entities.FormDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using WebApp.Helpers;
@@ -19,16 +20,16 @@ namespace WebApp.Controllers
         }
 
         [AuthorizePermission("prerequisite.view")]
-        public ActionResult ViewAll()
+        public async Task<ActionResult> ViewAll()
         {
-            ViewBag.Prerequisites = _prerequisiteService.GetAllPrerequisites();
+            ViewBag.Prerequisites = await _prerequisiteService.GetAllPrerequisitesAsync();
 
             return View("~/Views/Admin/Prerequisites.cshtml");
         }
 
         [AuthorizePermission("prerequisite.add")]
         [HttpPost]
-        public ActionResult AddPost(PrerequisiteDTO prerequisite)
+        public async Task<ActionResult> AddPost(PrerequisiteDTO prerequisite)
         {
             try
             {
@@ -39,7 +40,7 @@ namespace WebApp.Controllers
 
                 };
 
-                _prerequisiteService.AddPrerequisite(prerequisite_db);
+                await _prerequisiteService.AddPrerequisiteAsync(prerequisite_db);
 
                 return Json(new { status = "ok" });
 

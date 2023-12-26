@@ -6,6 +6,7 @@ using Entities.DTO;
 using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,13 +15,13 @@ namespace DataLayer.Repository
 {
     public class UserTrainingEnrollmentRepo : DataAccessLayer<UserTrainingEnrollment>, IUserTrainingEnrollmentRepo
     {
-        private readonly IDbConnection _conn;
+        private readonly SqlConnection _conn;
         public UserTrainingEnrollmentRepo(IDbContext dbContext) : base(dbContext)
         {
             _conn = dbContext.GetConn();
         }
 
-        public int CreateUserTrainingEnrollmentReturningID(UserTrainingEnrollment userTrainingEnrollment)
+        public async Task<int> CreateUserTrainingEnrollmentReturningIDAsync(UserTrainingEnrollment userTrainingEnrollment)
         {
             try
             {
@@ -30,16 +31,14 @@ namespace DataLayer.Repository
                                VALUES (@UserId, @TrainingId, @ApplyDate, @Status)";
 
 
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
+                    cmd.Parameters.AddWithValue("@UserId", userTrainingEnrollment.UserId);
+                    cmd.Parameters.AddWithValue("@TrainingId", userTrainingEnrollment.TrainingId);
+                    cmd.Parameters.AddWithValue("@ApplyDate", userTrainingEnrollment.ApplyDate);
+                    cmd.Parameters.AddWithValue("@Status", userTrainingEnrollment.Status);
 
-                    DbHelper.AddParameterWithValue(cmd, "@UserId", userTrainingEnrollment.UserId);
-                    DbHelper.AddParameterWithValue(cmd, "@TrainingId", userTrainingEnrollment.TrainingId);
-                    DbHelper.AddParameterWithValue(cmd, "@ApplyDate", userTrainingEnrollment.ApplyDate);
-                    DbHelper.AddParameterWithValue(cmd, "@Status", userTrainingEnrollment.Status);
-
-                    return (int)cmd.ExecuteScalar();
+                    return (int)(await cmd.ExecuteScalarAsync());
                 }
 
             } catch (Exception ex)
@@ -49,23 +48,23 @@ namespace DataLayer.Repository
 
         }
 
-        public UserTrainingEnrollment GetUserTrainingEnrollment(int targetUserId, int targetTrainingId)
+        public async Task<UserTrainingEnrollment> GetUserTrainingEnrollmentAsync(int targetUserId, int targetTrainingId)
         {
-            var userEnrollment = base.GetMany(
+            var userEnrollment = await base.GetMany(
                 "SELECT * FROM UserTrainingEnrollment WHERE UserId = @UserId AND TrainingId = @TrainingId",
                 new Dictionary<string, object>() { { "UserId", targetUserId }, { "TrainingId", targetTrainingId } }
                 );
 
-            if (userEnrollment.Count == 1)
-                return userEnrollment[0];
-            else if (userEnrollment.Count == 0)
+            if (userEnrollment.Count() == 1)
+                return userEnrollment.First();
+            else if (userEnrollment.Count() == 0)
                 return null;
             else
                 throw new Exception("UserTrainingEnrollment Record Error");
             
         }
 
-        public IEnumerable<TrainingEnrollmentDetails> GetUserTrainingEnrollmentInfo(int userId, int trainingId)
+        public async Task<IEnumerable<TrainingEnrollmentDetails>> GetUserTrainingEnrollmentInfoAsync(int userId, int trainingId)
         {
             var trainingEnrollmentDetails = new List<TrainingEnrollmentDetails>();
 
@@ -90,15 +89,12 @@ namespace DataLayer.Repository
 
             try
             {
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
+                    cmd.Parameters.AddWithValue("@UserId", userId);
+                    cmd.Parameters.AddWithValue("@TrainingId", trainingId);
 
-                    DbHelper.AddParameterWithValue(cmd, "@UserId", userId);
-                    DbHelper.AddParameterWithValue(cmd, "@TrainingId", trainingId);
-
-
-                    using (IDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
                         while (reader.Read())
                         {

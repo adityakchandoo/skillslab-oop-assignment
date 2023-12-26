@@ -16,11 +16,11 @@ namespace DataLayer
         public SqlServer(string connectionString)
         {
             connection = new SqlConnection(connectionString);
-            connection.Open();
+            connection.OpenAsync();
 
         }
 
-        public IDbConnection GetConn()
+        public SqlConnection GetConn()
         {
             return connection;
         }

@@ -42,51 +42,48 @@ namespace BusinessLayer.Services
 
         }
 
-        public Training GetTraining(int id)
+        public async Task<Training> GetTrainingAsync(int id)
         {
-            var train = _trainingRepo.GetByPK(id);
-
-
-            return _trainingRepo.GetByPK(id);
+            return await _trainingRepo.GetByPKAsync(id);
         }
-        public void AddTraining(Training training)
+        public async Task AddTrainingAsync(Training training)
         {
-            _trainingRepo.Insert(training);
+            await _trainingRepo.Insert(training);
         }
-        public void EditTraining(Training training)
+        public async Task EditTrainingAsync(Training training)
         {
-            _trainingRepo.Update(training);
+            await _trainingRepo.Update(training);
         }
-        public void DeleteTraining(int id)
+        public async Task DeleteTrainingAsync(int id)
         {
-            _trainingRepo.Delete(new Training() { TrainingId = id });
+            await _trainingRepo.Delete(new Training() { TrainingId = id });
         }
 
 
-        public IEnumerable<TrainingEnrollCount> GetAllTrainingWithEnrollCount()
+        public async Task<IEnumerable<TrainingEnrollCount>> GetAllTrainingWithEnrollCountAsync()
         {
-            return _trainingRepo.GetAllTrainingWithEnrollCount();
+            return await _trainingRepo.GetAllTrainingWithEnrollCountAsync();
         }
-        public IEnumerable<TrainingStatus> GetAllTraining(int UserId)
+        public async Task<IEnumerable<TrainingStatus>> GetAllTrainingAsync(int UserId)
         {
-            return _trainingRepo.GetAllTraining(UserId);
+            return await _trainingRepo.GetAllTrainingAsync(UserId);
         }
-        public IEnumerable<TrainingStatus> GetTrainingEnrolledByUser(int UserId, EnrollStatusEnum status)
+        public async Task<IEnumerable<TrainingStatus>> GetTrainingEnrolledByUserAsync(int UserId, EnrollStatusEnum status)
         {
-            return _trainingRepo.GetTrainingEnrolledByUser(UserId,status);
-        }
-
-        public IEnumerable<TrainingStatus> GetTrainingEnrolledByUser(int UserId)
-        {
-            return _trainingRepo.GetTrainingEnrolledByUser(UserId);
-        }
-        public IEnumerable<UserTraining> GetTrainingPendingForManager(int UserId)
-        {
-            return _trainingRepo.GetUserTrainingByStatusAndManagerId(EnrollStatusEnum.Pending, UserId);
+            return await _trainingRepo.GetTrainingEnrolledByUserAsync(UserId,status);
         }
 
+        public async Task<IEnumerable<TrainingStatus>> GetTrainingEnrolledByUserAsync(int UserId)
+        {
+            return await _trainingRepo.GetTrainingEnrolledByUserAsync(UserId);
+        }
+        public async Task<IEnumerable<UserTraining>> GetTrainingPendingForManagerAsync(int UserId)
+        {
+            return await _trainingRepo.GetUserTrainingByStatusAndManagerIdAsync(EnrollStatusEnum.Pending, UserId);
+        }
 
-        public void AddTrainingWithTrainingPrerequisite(AddTrainingFormDTO training)
+
+        public async Task AddTrainingWithTrainingPrerequisiteAsync(AddTrainingFormDTO training)
         {
             // TODO: To Combine sql statements
 
@@ -99,7 +96,7 @@ namespace BusinessLayer.Services
                 PreferedDepartmentId = training.PriorityDepartmentId
             };
 
-            int insertedId = _trainingRepo.CreateTrainingReturningID(dbTraining);
+            int insertedId = await _trainingRepo.CreateTrainingReturningIDAsync(dbTraining);
 
             TrainingPrerequisite dbTrainingPrerequisite = new TrainingPrerequisite()
             {
@@ -109,15 +106,15 @@ namespace BusinessLayer.Services
             foreach (int id in training.Prerequisites)
             {
                 dbTrainingPrerequisite.PrerequisiteId = id;
-                _trainingPrerequisiteRepo.Insert(dbTrainingPrerequisite);
+                await _trainingPrerequisiteRepo.Insert(dbTrainingPrerequisite);
             }
         }
-        public void ApplyTraining(int UserId, int trainingId, List<UploadFileStore> uploadFileStore)
+        public async Task ApplyTrainingAsync(int UserId, int trainingId, List<UploadFileStore> uploadFileStore)
         {
             // TODO: To Combine sql statements
 
-            AppUser currentUser = _appUserRepo.GetByPK(UserId);
-            AppUser currentUserManager = _appUserRepo.GetUserManager(UserId);
+            AppUser currentUser = await _appUserRepo.GetByPKAsync(UserId);
+            AppUser currentUserManager = await _appUserRepo.GetUserManagerAsync(UserId);
 
             UserTrainingEnrollment enrollment = new UserTrainingEnrollment()
             {
@@ -126,15 +123,15 @@ namespace BusinessLayer.Services
                 Status = EnrollStatusEnum.Pending
             };
 
-            int InsertedId = _userTrainingEnrollmentRepo.CreateUserTrainingEnrollmentReturningID(enrollment);
+            int InsertedId = await _userTrainingEnrollmentRepo.CreateUserTrainingEnrollmentReturningIDAsync(enrollment);
 
             foreach (var File in uploadFileStore)
             {
                 var genFileSystemName = Guid.NewGuid();
 
-                _storageService.Put(File.FileContent, genFileSystemName.ToString());
+                _ = _storageService.Put(File.FileContent, genFileSystemName.ToString());
 
-                _enrollmentPrerequisiteAttachmentRepo.Insert(
+                await _enrollmentPrerequisiteAttachmentRepo.Insert(
                     new EnrollmentPrerequisiteAttachment() { 
                         EnrollmentId = InsertedId,
                         TrainingPrerequisiteId = File.FileId,
@@ -143,35 +140,35 @@ namespace BusinessLayer.Services
                     });
             }
 
-            var training = _trainingRepo.GetByPK(trainingId);
+            var training = await _trainingRepo.GetByPKAsync(trainingId);
 
             var employeeName = currentUser.FirstName + " " + currentUser.LastName;
 
-            _notificationService.NotifyTrainingRequest(currentUserManager.Email, employeeName, training.Name);
+            _ = _notificationService.NotifyTrainingRequestAsync(currentUserManager.Email, employeeName, training.Name);
         }
-        public IEnumerable<TrainingWithContentDTO> GetTrainingWithContents(int trainingId)
+        public async Task<IEnumerable<TrainingWithContentDTO>> GetTrainingWithContentsAsync(int trainingId)
         {
             var result = new List<TrainingWithContentDTO>();
             
-            var trainingContents = _trainingContentRepo.GetMany("SELECT * FROM TrainingContent WHERE TrainingId = @TrainingId;",
+            var trainingContents = await _trainingContentRepo.GetMany("SELECT * FROM TrainingContent WHERE TrainingId = @TrainingId;",
                                          new Dictionary<string, object> { { "TrainingId", trainingId } });
 
             foreach (var item in trainingContents)
             {
-                var attachments = _trainingContentAttachmentRepo.GetMany("SELECT * FROM TrainingContentAttachment WHERE TrainingContentId = @TrainingContentId;",
+                var attachments = await _trainingContentAttachmentRepo.GetMany("SELECT * FROM TrainingContentAttachment WHERE TrainingContentId = @TrainingContentId;",
                                          new Dictionary<string, object> { { "TrainingContentId", item.TrainingContentId } });
 
                 result.Add(
                     new TrainingWithContentDTO()
                     {
                         TrainingContent = item,
-                        TrainingContentAttachments = attachments
+                        TrainingContentAttachments = attachments.ToList()
                     });
 
             }
             return result;
         }
-        public void SaveTrainingWithContents(AddTrainingContentDTO addTrainingContentDTO)
+        public async Task SaveTrainingWithContentsAsync(AddTrainingContentDTO addTrainingContentDTO)
         {
             var trainingContent = new TrainingContent()
             {
@@ -180,7 +177,7 @@ namespace BusinessLayer.Services
                 Description = addTrainingContentDTO.Description
             };
 
-            var InsertedId = _trainingContentRepo.CreateTrainingContentReturningID(trainingContent);
+            var InsertedId = await _trainingContentRepo.CreateTrainingContentReturningIDAsync(trainingContent);
 
             if (addTrainingContentDTO.Files == null)
                 return;
@@ -189,9 +186,9 @@ namespace BusinessLayer.Services
             {
                 var genFileSystemName = Guid.NewGuid();
 
-                _storageService.Put(File.InputStream, genFileSystemName.ToString());
+                _ = _storageService.Put(File.InputStream, genFileSystemName.ToString());
 
-                _trainingContentAttachmentRepo.Insert(new TrainingContentAttachment()
+                await _trainingContentAttachmentRepo.Insert(new TrainingContentAttachment()
                 {
                     TrainingContentId = InsertedId,
                     OriginalFilename = File.FileName,

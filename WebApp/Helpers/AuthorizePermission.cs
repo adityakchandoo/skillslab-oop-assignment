@@ -1,12 +1,8 @@
-﻿using BusinessLayer.Services;
-using BusinessLayer.Services.Interfaces;
+﻿using BusinessLayer.Services.Interfaces;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Web;
+using System.Threading.Tasks;
 using System.Web.Mvc;
-using System.Web.UI.WebControls;
 using Unity;
 
 namespace WebApp.Helpers
@@ -45,9 +41,14 @@ namespace WebApp.Helpers
                 return;
             }
 
-            bool IsAuthorised = _userService.CheckPermission(
+            //bool IsAuthorised = _userService.CheckPermissionAsync(
+            //    (int)filterContext.HttpContext.Session["UserId"],
+            //    _feature).GetAwaiter().GetResult();
+
+            bool IsAuthorised = Task.Run(() => _userService.CheckPermissionAsync(
                 (int)filterContext.HttpContext.Session["UserId"],
-                _feature);
+                _feature)).Result;
+
 
             if (IsAuthorised == false)
             {

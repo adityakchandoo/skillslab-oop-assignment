@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.Common;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,13 +15,13 @@ namespace DataLayer.Repository
 {
     public class UserRoleRepo : DataAccessLayer<UserRole>, IUserRoleRepo
     {
-        private readonly IDbConnection _conn;
+        private readonly SqlConnection _conn;
         public UserRoleRepo(IDbContext dbContext) : base(dbContext)
         {
             _conn = dbContext.GetConn();
         }
 
-        public IEnumerable<UserRoleAssigned> GetUserRolesAssigned(int UserId)
+        public async Task<IEnumerable<UserRoleAssigned>> GetUserRolesAssignedAsync(int UserId)
         {
             List<UserRoleAssigned> results = new List<UserRoleAssigned>();
 
@@ -40,12 +41,11 @@ namespace DataLayer.Repository
 
             try
             {
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
-                    DbHelper.AddParameterWithValue(cmd, "@UserId", UserId);
+                    cmd.Parameters.AddWithValue("@UserId", UserId);
 
-                    using (IDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
                         while (reader.Read())
                         {
@@ -64,21 +64,18 @@ namespace DataLayer.Repository
             return results;
         }
 
-        public void DeleteUserRole(int UserId, int RoleId)
+        public async Task DeleteUserRoleAsync(int UserId, int RoleId)
         {
             try
             {
                 string sql = @"DELETE FROM UserRole WHERE UserId = @UserId AND RoleId = @RoleId;";
 
-
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
+                    cmd.Parameters.AddWithValue("@UserId", UserId);
+                    cmd.Parameters.AddWithValue("@RoleId", RoleId);
 
-                    DbHelper.AddParameterWithValue(cmd, "@UserId", UserId);
-                    DbHelper.AddParameterWithValue(cmd, "@RoleId", RoleId);
-
-                    cmd.ExecuteScalar();
+                    await cmd.ExecuteScalarAsync();
                 }
 
             }

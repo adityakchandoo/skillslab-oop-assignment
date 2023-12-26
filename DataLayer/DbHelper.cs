@@ -9,14 +9,6 @@ namespace DataLayer
 {
     internal static class DbHelper
     {
-        public static void AddParameterWithValue(this IDbCommand command, string parameterName, object parameterValue)
-        {
-            var parameter = command.CreateParameter();
-            parameter.ParameterName = parameterName;
-            parameter.Value = parameterValue;
-            command.Parameters.Add(parameter);
-        }
-
         public static T ConvertToObject<T>(this IDataReader rd) where T : class, new()
         {
             Type type = typeof(T);

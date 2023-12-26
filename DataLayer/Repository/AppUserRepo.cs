@@ -8,29 +8,55 @@ using Entities.Enums;
 using DataLayer;
 using Entities.DbCustom;
 using System.Runtime.Remoting.Messaging;
+using System.Data.SqlClient;
+using System.Collections;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace DataLayer.Repository
 {
     public class AppUserRepo : DataAccessLayer<AppUser>, IAppUserRepo
     {
-        private readonly IDbConnection _conn;
+        private readonly SqlConnection _conn;
         public AppUserRepo(IDbContext dbContext) : base(dbContext)
         {
             _conn = dbContext.GetConn();
         }
+        public Task<IEnumerable<AppUser>> GetAllUsersByRoleAsync(UserRoleEnum userRoleEnum)
+        {
+            return base.GetMany(
+                "SELECT * FROM [dbo].[AppUser] INNER JOIN UserRole ON UserRole.UserId = AppUser.UserId WHERE RoleId = @RoleId;",
+                new Dictionary<string, object>() { { "@RoleId", (int)userRoleEnum } }
+            );
+        }
 
-        public AppUser GetUserByUsername(string username)
+        public Task<IEnumerable<AppUser>> GetAllUsersByManagerAsync(int ManagerId)
+        {
+            return base.GetMany(
+                "SELECT * FROM [dbo].[AppUser] INNER JOIN UserManager ON AppUser.UserId = UserManager.UserId WHERE UserManager.ManagerId = @ManagerId;",
+                new Dictionary<string, object>() { { "@ManagerId", ManagerId } }
+            );
+        }
+
+        public Task<IEnumerable<AppUser>> GetAllUsersByManagerAndStatusAsync(int ManagerId, UserStatusEnum userStatusEnum)
+        {
+            return base.GetMany(
+                "SELECT * FROM [dbo].[AppUser] INNER JOIN UserManager ON AppUser.UserId = UserManager.UserId WHERE UserManager.ManagerId = @ManagerId AND AppUser.Status = @Status;",
+                new Dictionary<string, object>() { { "@ManagerId", ManagerId }, { "@Status", (int)userStatusEnum } }
+            );
+        }
+
+        public async Task<AppUser> GetUserByUsernameAsync(string username)
         {
             try
             {
                 string sql = @" SELECT * FROM AppUser WHERE Username = @Username;";
 
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
-                    DbHelper.AddParameterWithValue(cmd, "@Username", username);
+                    cmd.Parameters.AddWithValue("@Username", username);
 
-                    using (IDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
                         while (reader.Read())
                         {
@@ -43,19 +69,18 @@ namespace DataLayer.Repository
             catch (Exception ex) { throw ex; }
         }
 
-        public IEnumerable<AppUserRole> GetRolesByUserId(int UserId)
+        public async Task<IEnumerable<AppUserRole>> GetRolesByUserIdAsync(int UserId)
         {
             List<AppUserRole> results = new List<AppUserRole>();
             try
             {
                 string sql = @"SELECT r.RoleId, r.Name AS RoleName FROM UserRole ur INNER JOIN Role r ON ur.RoleId = r.RoleId WHERE ur.UserId = @UserId;";
 
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
-                    DbHelper.AddParameterWithValue(cmd, "@UserId", UserId);
+                    cmd.Parameters.AddWithValue("@UserId", UserId);
 
-                    using (IDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
                         while (reader.Read())
                         {
@@ -67,7 +92,7 @@ namespace DataLayer.Repository
             }
             catch (Exception ex) { throw ex; }
         }
-        public IEnumerable<AppUsersInlineRoles> GetAllUsersWithInlineRoles()
+        public async Task<IEnumerable<AppUsersInlineRoles>> GetAllUsersWithInlineRolesAsync()
         {
             List<AppUsersInlineRoles> results = new List<AppUsersInlineRoles>();
 
@@ -76,11 +101,9 @@ namespace DataLayer.Repository
 
             try
             {
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
-
-                    using (IDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
                         while (reader.Read())
                         {
@@ -99,20 +122,18 @@ namespace DataLayer.Repository
             return results;
         }
 
-        public bool IsRecordExists(string column, string value)
+        public async Task<bool> IsRecordExistsAsync(string column, string value)
         {
             try
             {
                 // var column is coming from service layer not from user input
                 string sql = $"SELECT COALESCE((SELECT 1 FROM AppUser WHERE {column} = @value), 0);";
 
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
-                    DbHelper.AddParameterWithValue(cmd, "@column", column);
-                    DbHelper.AddParameterWithValue(cmd, "@value", value);
+                    cmd.Parameters.AddWithValue("@value", value);
 
-                    var result = (int)cmd.ExecuteScalar() == 1 ? true : false;
+                    var result = (int)(await cmd.ExecuteScalarAsync()) == 1 ? true : false;
 
                     return result;
                 }
@@ -120,9 +141,9 @@ namespace DataLayer.Repository
             catch (Exception ex) { throw ex; }
         }
 
-        public AppUser GetUserManager(int UserId)
+        public async Task<AppUser> GetUserManagerAsync(int UserId)
         {
-            var user = base.GetMany(
+            var user = await base.GetMany(
                 @"  SELECT 
                         Manager.* 
                     FROM 
@@ -134,18 +155,18 @@ namespace DataLayer.Repository
                     WHERE 
                         AU.UserId = @UserId;
                     ",
-                new Dictionary<string, object>() { { "UserId", UserId } }
+                new Dictionary<string, object>() { { "@UserId", UserId } }
             );
 
-            if (user.Count > 0)
+            if (user.Count() > 0)
             {
-                return user[0];
+                return user.First();
             }
 
             return null;
         }
 
-        public int CreateUserReturningID(AppUser appUser)
+        public async Task<int> CreateUserReturningIDAsync(AppUser appUser)
         {
             try
             {
@@ -154,66 +175,40 @@ namespace DataLayer.Repository
                                VALUES (@UserName, @Password, @FirstName, @LastName, @Email, @DOB, @NIC, @MobileNumber, @CreatedOn, @Status, @DepartmentId)";
 
 
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
+                    cmd.Parameters.AddWithValue("@UserName", appUser.UserName);
+                    cmd.Parameters.AddWithValue("@Password", appUser.Password);
+                    cmd.Parameters.AddWithValue("@FirstName", appUser.FirstName);
+                    cmd.Parameters.AddWithValue("@LastName", appUser.LastName);
+                    cmd.Parameters.AddWithValue("@Email", appUser.Email);
+                    cmd.Parameters.AddWithValue("@DOB", appUser.DOB);
+                    cmd.Parameters.AddWithValue("@NIC", appUser.NIC);
+                    cmd.Parameters.AddWithValue("@MobileNumber", appUser.MobileNumber);
+                    cmd.Parameters.AddWithValue("@CreatedOn", appUser.CreatedOn);
+                    cmd.Parameters.AddWithValue("@Status", appUser.Status);
+                    cmd.Parameters.AddWithValue("@DepartmentId", appUser.DepartmentId);
 
-                    DbHelper.AddParameterWithValue(cmd, "@UserName", appUser.UserName);
-                    DbHelper.AddParameterWithValue(cmd, "@Password", appUser.Password);
-                    DbHelper.AddParameterWithValue(cmd, "@FirstName", appUser.FirstName);
-                    DbHelper.AddParameterWithValue(cmd, "@LastName", appUser.LastName);
-                    DbHelper.AddParameterWithValue(cmd, "@Email", appUser.Email);
-                    DbHelper.AddParameterWithValue(cmd, "@DOB", appUser.DOB);
-                    DbHelper.AddParameterWithValue(cmd, "@NIC", appUser.NIC);
-                    DbHelper.AddParameterWithValue(cmd, "@MobileNumber", appUser.MobileNumber);
-                    DbHelper.AddParameterWithValue(cmd, "@CreatedOn", appUser.CreatedOn);
-                    DbHelper.AddParameterWithValue(cmd, "@Status", appUser.Status);
-                    DbHelper.AddParameterWithValue(cmd, "@DepartmentId", appUser.DepartmentId);
-
-                    return (int)cmd.ExecuteScalar();
+                    return (int)(await cmd.ExecuteScalarAsync());
                 }
 
             }
             catch (Exception ex) { throw ex; }
         }
 
-        public IEnumerable<AppUser> GetAllUsersByRole(UserRoleEnum userRoleEnum)
-        {
-            return base.GetMany(
-                "SELECT * FROM [dbo].[AppUser] INNER JOIN UserRole ON UserRole.UserId = AppUser.UserId WHERE RoleId = @RoleId;",
-                new Dictionary<string, object>() { { "RoleId", (int)userRoleEnum } }
-            );
-        }
 
-        public IEnumerable<AppUser> GetAllUsersByManager(int ManagerId)
-        {
-            return base.GetMany(
-                "SELECT * FROM [dbo].[AppUser] INNER JOIN UserManager ON AppUser.UserId = UserManager.UserId WHERE UserManager.ManagerId = @ManagerId;",
-                new Dictionary<string, object>() { { "ManagerId", ManagerId } }
-            );
-        }
-
-        public IEnumerable<AppUser> GetAllUsersByManagerAndStatus(int ManagerId, UserStatusEnum userStatusEnum)
-        {
-            return base.GetMany(
-                "SELECT * FROM [dbo].[AppUser] INNER JOIN UserManager ON AppUser.UserId = UserManager.UserId WHERE UserManager.ManagerId = @ManagerId AND AppUser.Status = @Status;",
-                new Dictionary<string, object>() { { "ManagerId", ManagerId }, { "Status", (int)userStatusEnum } }
-            );
-        }
-
-        public bool CheckPermission(int UserId, string permission)
+        public async Task<bool> CheckPermissionAsync(int UserId, string permission)
         {
             try
             {
                 string sql = $"EXEC CheckUserPermission @UserId = @UserID, @Permission = @Permission";
 
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
-                    DbHelper.AddParameterWithValue(cmd, "@UserID", UserId);
-                    DbHelper.AddParameterWithValue(cmd, "@Permission", permission);
+                    cmd.Parameters.AddWithValue("@UserID", UserId);
+                    cmd.Parameters.AddWithValue("@Permission", permission);
 
-                    var result = (int)cmd.ExecuteScalar() == 1 ? true : false;
+                    var result = (int)(await cmd.ExecuteScalarAsync()) == 1 ? true : false;
 
                     return result;
                 }

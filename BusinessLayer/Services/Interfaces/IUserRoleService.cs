@@ -9,7 +9,7 @@ namespace BusinessLayer.Services.Interfaces
 {
     public interface IUserRoleService
     {
-        IEnumerable<UserRoleAssigned> GetUserRolesAssigned(int UserId);
-        void EditUserRoles(int UserId, UserRoleAssigned[] userRolesAssigned);
+        Task<IEnumerable<UserRoleAssigned>> GetUserRolesAssignedAsync(int UserId);
+        Task EditUserRolesAsync(int UserId, UserRoleAssigned[] userRolesAssigned);
     }
 }

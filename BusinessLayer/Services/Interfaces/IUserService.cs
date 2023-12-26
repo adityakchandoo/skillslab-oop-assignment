@@ -13,21 +13,21 @@ namespace BusinessLayer.Services.Interfaces
 {
     public interface IUserService
     {
-        AppUser GetUser(int UserId);
-        AuthenticateResponse AuthenticateUser(UserLoginFormDTO form);
-        void Register(RegisterFormDTO reg);
-        IEnumerable<AppUser> GetAllUsersByType(UserRoleEnum userRoleEnum);
-        IEnumerable<AppUser> ExportSelectedEmployees();
-        IEnumerable<AppUsersInlineRoles> GetAllUsersWithInlineRoles();
-        IEnumerable<AppUserRole> GetRolesByUserId(int UserId);
-        bool IsUsernameExists(string value);
-        bool IsNICExists(string value);
-        bool IsEmailExists(string value);
-        IEnumerable<AppUser> GetUsersByManager(int UserId);
-        IEnumerable<AppUser> GetUsersByManagerAndStatus(int UserId, UserStatusEnum userStatusEnum);
-        void UpdateProfile(int UserId, UpdateProfileDTO updateProfileDTO);
-        void UpdatePassword(int UserId, UpdatePasswordDTO updatePasswordDTO);
-        void ProcessNewUser(int userId, bool approve);
-        bool CheckPermission(int UserId, string permission);
+        Task<AppUser> GetUserAsync(int UserId);
+        Task<AuthenticateResponse> AuthenticateUserAsync(UserLoginFormDTO form);
+        Task RegisterAsync(RegisterFormDTO reg);
+        Task<IEnumerable<AppUser>> GetAllUsersByTypeAsync(UserRoleEnum userRoleEnum);
+        Task<IEnumerable<AppUser>> ExportSelectedEmployeesAsync();
+        Task<IEnumerable<AppUsersInlineRoles>> GetAllUsersWithInlineRolesAsync();
+        Task<IEnumerable<AppUserRole>> GetRolesByUserIdAsync(int UserId);
+        Task<bool> IsUsernameExistsAsync(string value);
+        Task<bool> IsNICExistsAsync(string value);
+        Task<bool> IsEmailExistsAsync(string value);
+        Task<IEnumerable<AppUser>> GetUsersByManagerAsync(int UserId);
+        Task<IEnumerable<AppUser>> GetUsersByManagerAndStatusAsync(int UserId, UserStatusEnum userStatusEnum);
+        Task UpdateProfileAsync(int UserId, UpdateProfileDTO updateProfileDTO);
+        Task UpdatePasswordAsync(int UserId, UpdatePasswordDTO updatePasswordDTO);
+        Task ProcessNewUserAsync(int userId, bool approve);
+        Task<bool> CheckPermissionAsync(int UserId, string permission);
     }
 }

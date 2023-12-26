@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using BusinessLayer.Services.Interfaces;
@@ -36,38 +37,38 @@ namespace WebApp.Controllers
 
         // GET: Training
         [AuthorizePermission("training.viewall")]
-        public ActionResult ViewAll()
+        public async Task<ActionResult> ViewAll()
         {
-            ViewBag.Trainings = _trainingService.GetAllTrainingWithEnrollCount();
+            ViewBag.Trainings = await _trainingService.GetAllTrainingWithEnrollCountAsync();
 
             return View("~/Views/Admin/ViewTrainingTable.cshtml");
         }
 
         [AuthorizePermission("training.viewone")]
-        public ActionResult View(int id)
+        public async Task<ActionResult> View(int id)
         {
-            ViewBag.Training = _trainingService.GetTraining(id);
-            ViewBag.Contents = _trainingService.GetTrainingWithContents(id);
+            ViewBag.Training = await _trainingService.GetTrainingAsync(id);
+            ViewBag.Contents = await _trainingService.GetTrainingWithContentsAsync(id);
 
             return View("~/Views/Shared/Training.cshtml");
         }
 
         [AuthorizePermission("training.add")]
-        public ActionResult Add()
+        public async Task<ActionResult> Add()
         {
-            ViewBag.Departments = _departmentService.GetAllDepartments();
-            ViewBag.Prerequisites = _prerequisiteService.GetAllPrerequisites();
+            ViewBag.Departments = await _departmentService.GetAllDepartmentsAsync();
+            ViewBag.Prerequisites = await _prerequisiteService.GetAllPrerequisitesAsync();
 
             return View("~/Views/Admin/AddTraining.cshtml");
         }
 
         [AuthorizePermission("training.add")]
         [HttpPost]
-        public ActionResult AddPost(AddTrainingFormDTO training)
+        public async Task<ActionResult> AddPost(AddTrainingFormDTO training)
         {
             try
             {
-                _trainingService.AddTrainingWithTrainingPrerequisite(training);
+                await _trainingService.AddTrainingWithTrainingPrerequisiteAsync(training);
 
                 return Json(new { status = "ok" });
 
@@ -92,7 +93,7 @@ namespace WebApp.Controllers
         {
             try
             {
-                _trainingService.SaveTrainingWithContents(addTrainingContentDTO);
+                _trainingService.SaveTrainingWithContentsAsync(addTrainingContentDTO);
 
                 return Json(new { status = "ok" });
 

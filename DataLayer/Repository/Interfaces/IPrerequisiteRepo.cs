@@ -11,6 +11,6 @@ namespace DataLayer.Repository.Interfaces
 {
     public interface IPrerequisiteRepo : IDataAccessLayer<Prerequisite>
     {
-        IEnumerable<PrerequisiteDetails> GetPrerequisitesByTraining(int training);
+        Task<IEnumerable<PrerequisiteDetails>> GetPrerequisitesByTrainingAsync(int training);
     }
 }

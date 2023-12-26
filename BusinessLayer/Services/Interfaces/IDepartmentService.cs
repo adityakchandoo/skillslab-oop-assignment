@@ -10,10 +10,10 @@ namespace BusinessLayer.Services.Interfaces
     public interface IDepartmentService
     {
 
-        Department GetDepartment(int departmentId);
-        IEnumerable<Department> GetAllDepartments();
-        void AddDepartment(Department department);
-        void DeleteDepartment(int departmentId);
-        void UpdateDepartment(Department department);
+        Task<Department> GetDepartmentAsync(int departmentId);
+        Task<IEnumerable<Department>> GetAllDepartmentsAsync();
+        Task AddDepartmentAsync(Department department);
+        Task DeleteDepartmentAsync(int departmentId);
+        Task UpdateDepartmentAsync(Department department);
     }
 }

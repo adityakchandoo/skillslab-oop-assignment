@@ -10,13 +10,13 @@ namespace BusinessLayer.Services.Interfaces
 {
     public interface IUserTrainingEnrollmentService
     {
-        void CreateUserTrainingEnrollment(UserTrainingEnrollment userTrainingEnrollment);
-        void DeleteUserTrainingEnrollment(int userTrainingEnrollmentId);
-        IEnumerable<UserTrainingEnrollment> GetAllUserTrainingEnrollments();
-        UserTrainingEnrollment GetUserTrainingEnrollment(int userTrainingEnrollmentId);
-        UserTrainingEnrollment GetUserTrainingEnrollment(int userId, int trainingId);
-        void UpdateUserTrainingEnrollment(UserTrainingEnrollment userTrainingEnrollment);
-        IEnumerable<TrainingEnrollmentDetails> GetUserTrainingEnrollmentInfo(int userId, int trainingId);
-        void ProcessTrainingRequest(int targetUserId, int targetTrainingId, bool approve);
+        Task CreateUserTrainingEnrollmentAsync(UserTrainingEnrollment userTrainingEnrollment);
+        Task DeleteUserTrainingEnrollmentAsync(int userTrainingEnrollmentId);
+        Task<IEnumerable<UserTrainingEnrollment>> GetAllUserTrainingEnrollmentsAsync();
+        Task<UserTrainingEnrollment> GetUserTrainingEnrollmentAsync(int userTrainingEnrollmentId);
+        Task<UserTrainingEnrollment> GetUserTrainingEnrollmentAsync(int userId, int trainingId);
+        Task UpdateUserTrainingEnrollmentAsync(UserTrainingEnrollment userTrainingEnrollment);
+        Task<IEnumerable<TrainingEnrollmentDetails>> GetUserTrainingEnrollmentInfoAsync(int userId, int trainingId);
+        Task ProcessTrainingRequestAsync(int targetUserId, int targetTrainingId, bool approve);
     }
 }

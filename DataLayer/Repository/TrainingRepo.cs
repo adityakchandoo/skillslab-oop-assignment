@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
+using System.Data.SqlClient;
+using System.Threading.Tasks;
 using DataLayer;
 using DataLayer.Generic;
 using DataLayer.Repository.Interfaces;
@@ -13,13 +15,13 @@ namespace DataLayer.Repository
 {
     public class TrainingRepo : DataAccessLayer<Training>, ITrainingRepo
     {
-        private readonly IDbConnection _conn;
+        private readonly SqlConnection _conn;
         public TrainingRepo(IDbContext dbContext) : base(dbContext)
         {
             _conn = dbContext.GetConn();
         }
 
-        public int CreateTrainingReturningID(Training training)
+        public async Task<int> CreateTrainingReturningIDAsync(Training training)
         {
             try
             {
@@ -28,22 +30,20 @@ namespace DataLayer.Repository
                                VALUES (@Name, @Description, @MaxSeat, @Deadline, @PreferedDepartmentId)";
 
 
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
+                    cmd.Parameters.AddWithValue("@Name", training.Name);
+                    cmd.Parameters.AddWithValue("@Description", training.Description);
+                    cmd.Parameters.AddWithValue("@MaxSeat", training.MaxSeat);
+                    cmd.Parameters.AddWithValue("@Deadline", training.Deadline);
+                    cmd.Parameters.AddWithValue("@PreferedDepartmentId", training.PreferedDepartmentId == -1 ? DBNull.Value : (object)training.PreferedDepartmentId);
 
-                    DbHelper.AddParameterWithValue(cmd, "@Name", training.Name);
-                    DbHelper.AddParameterWithValue(cmd, "@Description", training.Description);
-                    DbHelper.AddParameterWithValue(cmd, "@MaxSeat", training.MaxSeat);
-                    DbHelper.AddParameterWithValue(cmd, "@Deadline", training.Deadline);
-                    DbHelper.AddParameterWithValue(cmd, "@PreferedDepartmentId", training.PreferedDepartmentId == -1 ? DBNull.Value : (object)training.PreferedDepartmentId);
-
-                    return (int)cmd.ExecuteScalar();
+                    return (int)(await cmd.ExecuteScalarAsync());
                 }
 
             } catch (Exception ex) { throw ex; }
         }
-        public IEnumerable<TrainingStatus> GetAllTraining(int UserId)
+        public async Task<IEnumerable<TrainingStatus>> GetAllTrainingAsync(int UserId)
         {
             List<TrainingStatus> results = new List<TrainingStatus>();
 
@@ -60,12 +60,11 @@ namespace DataLayer.Repository
 
             try
             {
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
-                    DbHelper.AddParameterWithValue(cmd, "@UserId", UserId);
+                    cmd.Parameters.AddWithValue("@UserId", UserId);
 
-                    using (IDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
                         while (reader.Read())
                         {
@@ -83,7 +82,7 @@ namespace DataLayer.Repository
 
             return results;
         }
-        public IEnumerable<TrainingStatus> GetTrainingEnrolledByUser(int UserId, EnrollStatusEnum status)
+        public async Task<IEnumerable<TrainingStatus>> GetTrainingEnrolledByUserAsync(int UserId, EnrollStatusEnum status)
         {
             List<TrainingStatus> results = new List<TrainingStatus>();
 
@@ -97,13 +96,12 @@ namespace DataLayer.Repository
                             WHERE UTE.UserId = @UserId AND UTE.Status = @Status;";
             try
             {
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
-                    DbHelper.AddParameterWithValue(cmd, "@UserId", UserId);
-                    DbHelper.AddParameterWithValue(cmd, "@Status", (int)status);
+                    cmd.Parameters.AddWithValue("@UserId", UserId);
+                    cmd.Parameters.AddWithValue("@Status", (int)status);
 
-                    using (IDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
                         while (reader.Read())
                         {
@@ -122,7 +120,7 @@ namespace DataLayer.Repository
             return results;
 
         }
-        public IEnumerable<TrainingStatus> GetTrainingEnrolledByUser(int UserId)
+        public async Task<IEnumerable<TrainingStatus>> GetTrainingEnrolledByUserAsync(int UserId)
         {
             List<TrainingStatus> results = new List<TrainingStatus>();
 
@@ -136,12 +134,11 @@ namespace DataLayer.Repository
                             WHERE UTE.UserId = @UserId;";
             try
             {
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
-                    DbHelper.AddParameterWithValue(cmd, "@UserId", UserId);
+                    cmd.Parameters.AddWithValue("@UserId", UserId);
 
-                    using (IDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
                         while (reader.Read())
                         {
@@ -160,7 +157,7 @@ namespace DataLayer.Repository
             return results;
 
         }
-        public IEnumerable<TrainingEnrollCount> GetAllTrainingWithEnrollCount()
+        public async Task<IEnumerable<TrainingEnrollCount>> GetAllTrainingWithEnrollCountAsync()
         {
             List<TrainingEnrollCount> results = new List<TrainingEnrollCount>();
 
@@ -171,17 +168,14 @@ namespace DataLayer.Repository
 
             try
             {
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
-
-                    using (IDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
                         while (reader.Read())
                         {
                             results.Add(DbHelper.ConvertToObject<TrainingEnrollCount>(reader));
-                        };                          
-                        
+                        };                  
                     }
                 }
             }
@@ -193,7 +187,7 @@ namespace DataLayer.Repository
 
             return results;
         }
-        public IEnumerable<UserTraining> GetUserTrainingByStatusAndManagerId(EnrollStatusEnum enrollStatusEnum, int UserId)
+        public async Task<IEnumerable<UserTraining>> GetUserTrainingByStatusAndManagerIdAsync(EnrollStatusEnum enrollStatusEnum, int UserId)
         {
             var pendingUserTraining = new List<UserTraining>();
 
@@ -216,15 +210,12 @@ namespace DataLayer.Repository
 
             try
             {
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
+                    cmd.Parameters.AddWithValue("@ManagerId", UserId);
+                    cmd.Parameters.AddWithValue("@EnrollStatusEnum", (int)enrollStatusEnum);
 
-                    DbHelper.AddParameterWithValue(cmd, "@ManagerId", UserId);
-                    DbHelper.AddParameterWithValue(cmd, "@EnrollStatusEnum", (int)enrollStatusEnum);
-
-
-                    using (IDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
                         while (reader.Read())
                         {

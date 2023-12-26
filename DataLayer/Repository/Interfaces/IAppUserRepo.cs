@@ -12,16 +12,16 @@ namespace DataLayer.Repository.Interfaces
 {
     public interface IAppUserRepo : IDataAccessLayer<AppUser>
     {
-        AppUser GetUserByUsername(string username);
-        IEnumerable<AppUserRole> GetRolesByUserId(int UserId);
-        IEnumerable<AppUsersInlineRoles> GetAllUsersWithInlineRoles();
-        bool IsRecordExists(string column, string value);
-        AppUser GetUserManager(int UserId);
-        int CreateUserReturningID(AppUser appUser);
-        bool CheckPermission(int UserId, string permission);
-        IEnumerable<AppUser> GetAllUsersByRole(UserRoleEnum userRoleEnum);
-        IEnumerable<AppUser> GetAllUsersByManager(int ManagerId);
-        IEnumerable<AppUser> GetAllUsersByManagerAndStatus(int ManagerId, UserStatusEnum userStatusEnum);
+        Task<AppUser> GetUserByUsernameAsync(string username);
+        Task<IEnumerable<AppUserRole>> GetRolesByUserIdAsync(int UserId);
+        Task<IEnumerable<AppUsersInlineRoles>> GetAllUsersWithInlineRolesAsync();
+        Task<bool> IsRecordExistsAsync(string column, string value);
+        Task<AppUser> GetUserManagerAsync(int UserId);
+        Task<int> CreateUserReturningIDAsync(AppUser appUser);
+        Task<bool> CheckPermissionAsync(int UserId, string permission);
+        Task<IEnumerable<AppUser>> GetAllUsersByRoleAsync(UserRoleEnum userRoleEnum);
+        Task<IEnumerable<AppUser>> GetAllUsersByManagerAsync(int ManagerId);
+        Task<IEnumerable<AppUser>> GetAllUsersByManagerAndStatusAsync(int ManagerId, UserStatusEnum userStatusEnum);
 
     }
 }

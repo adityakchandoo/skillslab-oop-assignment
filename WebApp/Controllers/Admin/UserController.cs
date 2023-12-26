@@ -3,6 +3,7 @@ using Entities.DbCustom;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using WebApp.Helpers;
@@ -13,23 +14,24 @@ namespace WebApp.Controllers
     {
         // GET: User
         [AuthorizePermission("user.viewall")]
-        public ActionResult ViewAll()
+        public async Task<ActionResult> ViewAll()
         {
             ViewBag.Title = "Manage All Users";
-            ViewBag.Users = _userService.GetAllUsersWithInlineRoles();
+            ViewBag.Users = await _userService.GetAllUsersWithInlineRolesAsync();
             return View("~/Views/Admin/AllUserWithRoles.cshtml");
         }
 
-        public ActionResult GetUserRoles(int id)
+        public async Task<ActionResult> GetUserRoles(int id)
         {
-            return Json(_userRoleService.GetUserRolesAssigned(id), JsonRequestBehavior.AllowGet);
+            // TODO: Check if used anyware
+            return Json((await _userRoleService.GetUserRolesAssignedAsync(id)), JsonRequestBehavior.AllowGet);
         }
 
         [HttpPost]
         [Route("User/EditUserRole/{id}")]
-        public ActionResult EditUserRoles(int id, List<UserRoleAssigned> newUserRolesAssigned)
+        public async Task<ActionResult> EditUserRoles(int id, List<UserRoleAssigned> newUserRolesAssigned)
         {
-            _userRoleService.EditUserRoles(id, newUserRolesAssigned.ToArray());
+            await _userRoleService.EditUserRolesAsync(id, newUserRolesAssigned.ToArray());
 
             return Json(new { Ok = "ok" }, JsonRequestBehavior.AllowGet);
         }

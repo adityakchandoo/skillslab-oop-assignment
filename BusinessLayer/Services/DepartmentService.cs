@@ -18,29 +18,29 @@ namespace BusinessLayer.Services
             _departmentRepo = departmentRepo;            
         }
 
-        public void AddDepartment(Department department)
+        public async Task AddDepartmentAsync(Department department)
         {
-            _departmentRepo.Insert(department);
+            await _departmentRepo.Insert(department);
         }
 
-        public void DeleteDepartment(int departmentId)
+        public async Task DeleteDepartmentAsync(int departmentId)
         {
-            _departmentRepo.Delete(new Department() { DepartmentId = departmentId } );
+            await _departmentRepo.Delete(new Department() { DepartmentId = departmentId } );
         }
 
-        public IEnumerable<Department> GetAllDepartments()
+        public async Task<IEnumerable<Department>> GetAllDepartmentsAsync()
         {
-            return _departmentRepo.GetMany();
+            return await _departmentRepo.GetMany();
         }
 
-        public Department GetDepartment(int departmentId)
+        public async Task<Department> GetDepartmentAsync(int departmentId)
         {
-            return _departmentRepo.GetByPK(departmentId);
+            return await _departmentRepo.GetByPKAsync(departmentId);
         }
 
-        public void UpdateDepartment(Department department)
+        public async Task UpdateDepartmentAsync(Department department)
         {
-            _departmentRepo.Update(department);
+            await _departmentRepo.Update(department);
         }
     }
 }

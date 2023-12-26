@@ -4,6 +4,7 @@ using Entities.FormDTO;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using System.Xml.Linq;
@@ -20,19 +21,18 @@ namespace WebApp.Controllers
         }
 
         [AuthorizePermission("department.view")]
-        public ActionResult ViewAll()
+        public async Task<ActionResult> ViewAll()
         {
 
-            ViewBag.Departments = _dapartmentService.GetAllDepartments();
+            ViewBag.Departments = await _dapartmentService.GetAllDepartmentsAsync();
 
             return View("~/Views/Admin/Departments.cshtml");
         }
 
         [AuthorizePermission("department.add")]
         [HttpPost]
-        public ActionResult AddPost(DepartmentDTO department)
+        public async Task<ActionResult> AddPost(DepartmentDTO department)
         {
-
             try
             {
                 Department department_db = new Department()
@@ -41,7 +41,7 @@ namespace WebApp.Controllers
                     Description = department.Description,
                 };
 
-                _dapartmentService.AddDepartment(department_db);
+                await _dapartmentService.AddDepartmentAsync(department_db);
 
                 return Json(new { status = "ok" });
 

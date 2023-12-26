@@ -1,40 +1,42 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace DataLayer.Generic
 {
     public class DataAccessLayer<T> : IDataAccessLayer<T>
     {
-        private readonly IDbConnection _conn;
+        private readonly SqlConnection _conn;
         public DataAccessLayer(IDbContext dbContext)
         {
             _conn = dbContext.GetConn();
         }
 
         // CRUDS Ops
-        public List<T> GetMany(string sql = "", Dictionary<string,object> parameters = null)
+        public async Task<IEnumerable<T>> GetMany(string sql = "", Dictionary<string,object> parameters = null)
         {
             var result = new List<T>();
 
             try
             {
                 sql = string.IsNullOrEmpty(sql) ? GenerateSelectQuery() : sql;
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
                     if (parameters != null && parameters.Any())
                     {
                         foreach (var p in parameters)
                         {
-                            AddParameterWithValue(cmd, p.Key, p.Value);
+                            cmd.Parameters.AddWithValue(p.Key, p.Value);
                         }
                     }
-                    using (IDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
                         while (reader.Read())
                         {
@@ -53,7 +55,7 @@ namespace DataLayer.Generic
             return result;
         }
 
-        public T GetByPK(object primaryKeyValue)
+        public async Task<T> GetByPKAsync(object primaryKeyValue)
         {
             T item = default(T);
             string primaryKeyName;
@@ -61,13 +63,11 @@ namespace DataLayer.Generic
 
             try
             {
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
+                    cmd.Parameters.AddWithValue(primaryKeyName, primaryKeyValue);
 
-                    AddParameterWithValue(cmd, primaryKeyName, primaryKeyValue);
-
-                    using (IDataReader reader = cmd.ExecuteReader())
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
                         while (reader.Read())
                         {
@@ -87,7 +87,7 @@ namespace DataLayer.Generic
             return item;
         }
 
-        public int Insert(T item)
+        public async Task<int> Insert(T item)
         {
             int rowAdded = -1;
 
@@ -95,16 +95,14 @@ namespace DataLayer.Generic
             {
                 string sql = GenerateInsertQuery(item);
                 Dictionary<string, object> parameters = GenerateSqlParameters(item);
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
-
                     foreach (var p in parameters)
                     {
-                        AddParameterWithValue(cmd, p.Key, p.Value);
+                        cmd.Parameters.AddWithValue(p.Key, p.Value);
                     }
 
-                    rowAdded = cmd.ExecuteNonQuery();
+                    rowAdded = await cmd.ExecuteNonQueryAsync();
                 }
             }
             catch (Exception ex)
@@ -115,7 +113,7 @@ namespace DataLayer.Generic
             return rowAdded;
         }
         
-        public int Update(T item)
+        public async Task<int> Update(T item)
         {
             int rowUpdated = -1;
             try
@@ -123,16 +121,14 @@ namespace DataLayer.Generic
                 string sql = GenerateUpdateQuery(item);
                 Dictionary<string, object> parameters = GenerateSqlParameters(item, true);
 
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
-
                     foreach (var p in parameters)
                     {
-                        AddParameterWithValue(cmd, p.Key, p.Value);
+                        cmd.Parameters.AddWithValue(p.Key, p.Value);
                     }
 
-                    rowUpdated = cmd.ExecuteNonQuery();
+                    rowUpdated = await cmd.ExecuteNonQueryAsync();
                 }
             }
             catch (Exception ex)
@@ -144,7 +140,7 @@ namespace DataLayer.Generic
             return rowUpdated;
         }
 
-        public int Delete(T item)
+        public async Task<int> Delete(T item)
         {
             int rowsDeleted = -1;
 
@@ -152,16 +148,14 @@ namespace DataLayer.Generic
             {
                 string sql = GenerateDeleteQuery();
                 Dictionary<string, object> parameters = GenerateSqlParameters(item, includePK: true);
-                using (IDbCommand cmd = _conn.CreateCommand())
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
                 {
-                    cmd.CommandText = sql;
-
                     foreach (var p in parameters)
                     {
-                        AddParameterWithValue(cmd, p.Key, p.Value);
+                        cmd.Parameters.AddWithValue(p.Key, p.Value);
                     }
 
-                    rowsDeleted = cmd.ExecuteNonQuery();
+                    rowsDeleted = await cmd.ExecuteNonQueryAsync();
                 }
             }
             catch (Exception ex)
@@ -326,13 +320,6 @@ namespace DataLayer.Generic
 
             string query = $"DELETE FROM {typeof(T).Name} WHERE {whereClause}";
             return query;
-        }
-        private void AddParameterWithValue(IDbCommand command, string parameterName, object parameterValue)
-        {
-            var parameter = command.CreateParameter();
-            parameter.ParameterName = "@"+parameterName;
-            parameter.Value = parameterValue;
-            command.Parameters.Add(parameter);
         }
     }
 }

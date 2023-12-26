@@ -19,34 +19,34 @@ namespace BusinessLayer.Services
             _prerequisiteRepo = prerequisiteRepo;
 
         }
-        public void AddPrerequisite(Prerequisite prerequisite)
+        public async Task AddPrerequisiteAsync(Prerequisite prerequisite)
         {
-            _prerequisiteRepo.Insert(prerequisite);
+            await _prerequisiteRepo.Insert(prerequisite);
         }
 
-        public void DeletePrerequisite(int prerequisiteId)
+        public async Task DeletePrerequisiteAsync(int prerequisiteId)
         {
-            _prerequisiteRepo.Delete(new Prerequisite() { PrerequisiteId = prerequisiteId });
+            await _prerequisiteRepo.Delete(new Prerequisite() { PrerequisiteId = prerequisiteId });
         }
 
-        public IEnumerable<Prerequisite> GetAllPrerequisites()
+        public async Task<IEnumerable<Prerequisite>> GetAllPrerequisitesAsync()
         {
-            return _prerequisiteRepo.GetMany();
+            return await _prerequisiteRepo.GetMany();
         }
 
-        public Prerequisite GetPrerequisite(int prerequisiteId)
+        public async Task<Prerequisite> GetPrerequisiteAsync(int prerequisiteId)
         {
-            return _prerequisiteRepo.GetByPK(prerequisiteId);
+            return await _prerequisiteRepo.GetByPKAsync(prerequisiteId);
         }
 
-        public IEnumerable<PrerequisiteDetails> GetPrerequisitesByTraining(int training)
+        public async Task<IEnumerable<PrerequisiteDetails>> GetPrerequisitesByTrainingAsync(int training)
         {
-            return _prerequisiteRepo.GetPrerequisitesByTraining(training);
+            return await _prerequisiteRepo.GetPrerequisitesByTrainingAsync(training);
         }
 
-        public void UpdatePrerequisite(Prerequisite prerequisite)
+        public async Task UpdatePrerequisiteAsync(Prerequisite prerequisite)
         {
-            _prerequisiteRepo.Update(prerequisite);
+            await _prerequisiteRepo.Update(prerequisite);
         }
     }
 }

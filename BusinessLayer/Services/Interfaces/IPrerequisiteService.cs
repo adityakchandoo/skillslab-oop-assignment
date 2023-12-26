@@ -10,11 +10,11 @@ namespace BusinessLayer.Services.Interfaces
 {
     public interface IPrerequisiteService
     {
-        Prerequisite GetPrerequisite(int prerequisiteId);
-        IEnumerable<Prerequisite> GetAllPrerequisites();
-        void AddPrerequisite(Prerequisite prerequisite);
-        void DeletePrerequisite(int prerequisiteId);
-        void UpdatePrerequisite(Prerequisite prerequisite);
-        IEnumerable<PrerequisiteDetails> GetPrerequisitesByTraining(int training);
+        Task<Prerequisite> GetPrerequisiteAsync(int prerequisiteId);
+        Task<IEnumerable<Prerequisite>> GetAllPrerequisitesAsync();
+        Task AddPrerequisiteAsync(Prerequisite prerequisite);
+        Task DeletePrerequisiteAsync(int prerequisiteId);
+        Task UpdatePrerequisiteAsync(Prerequisite prerequisite);
+        Task<IEnumerable<PrerequisiteDetails>> GetPrerequisitesByTrainingAsync(int training);
     }
 }

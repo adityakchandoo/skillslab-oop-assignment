@@ -24,7 +24,7 @@ namespace BusinessLayer.Services
             client = new AmazonS3Client(awsAccessKey, awsSecretKey, RegionEndpoint.USWest2);
         }
 
-        public Stream Get(string systemFileName)
+        public async Task<Stream> Get(string systemFileName)
         {
             GetObjectRequest request = new GetObjectRequest()
             {
@@ -32,12 +32,12 @@ namespace BusinessLayer.Services
                 Key = systemFileName
             };
 
-            GetObjectResponse response = client.GetObject(request);
+            GetObjectResponse response = await client.GetObjectAsync(request);
 
             return response.ResponseStream;
         }
 
-        public void Put(Stream stream, string systemFileName)
+        public async Task Put(Stream stream, string systemFileName)
         {
             PutObjectRequest request = new PutObjectRequest()
             {
@@ -46,7 +46,7 @@ namespace BusinessLayer.Services
                 Key = systemFileName
             };
 
-            PutObjectResponse response = client.PutObject(request);
+            PutObjectResponse response = await client.PutObjectAsync(request);
         }
     }
 }

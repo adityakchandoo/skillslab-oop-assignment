@@ -44,7 +44,7 @@ namespace BusinessLayer.Services
             }
         }
 
-        public void NotifyUserRegistration(string managerMail, string employeeName)
+        public async Task NotifyUserRegistrationAsync(string managerMail, string employeeName)
         {
 
             string subject = $"New Employee Registration - {employeeName}";
@@ -60,10 +60,10 @@ namespace BusinessLayer.Services
                 </html>
             ";
 
-            Send(managerMail, subject, htmlBody);
+            await Task.Run(() => Send(managerMail, subject, htmlBody));
         }
 
-        public void NotifyUserRegistrationProcess(string employeeMail, string managerName, bool isApproved)
+        public async Task NotifyUserRegistrationProcessAsync(string employeeMail, string managerName, bool isApproved)
         {
             string result = isApproved ? "Approved" : "Rejected";
             // build the message body
@@ -78,10 +78,10 @@ namespace BusinessLayer.Services
                 </html>
             ";
 
-            Send(employeeMail, subject, htmlBody);
+            await Task.Run(() => Send(employeeMail, subject, htmlBody));
         }
 
-        public void NotifyTrainingRequest(string managerMail, string employeeName, string trainingName)
+        public async Task NotifyTrainingRequestAsync(string managerMail, string employeeName, string trainingName)
         {
             string subject = $"New Training Request";
             string htmlBody = $@"
@@ -95,10 +95,10 @@ namespace BusinessLayer.Services
                 </html>
             ";
 
-            Send(managerMail, subject, htmlBody);
+            await Task.Run(() => Send(managerMail, subject, htmlBody));
         }
         
-        public void NotifyTrainingRequestProcess(string employeeMail, string trainingName, bool isApproved)
+        public async Task NotifyTrainingRequestProcessAsync(string employeeMail, string trainingName, bool isApproved)
         {
             string result = isApproved ? "Approved" : "Rejected";
 
@@ -113,7 +113,7 @@ namespace BusinessLayer.Services
                 </html>
             ";
 
-            Send(employeeMail, subject, htmlBody);
+            await Task.Run(() => Send(employeeMail, subject, htmlBody));
 
         }
 

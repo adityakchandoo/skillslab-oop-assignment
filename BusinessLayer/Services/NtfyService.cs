@@ -10,7 +10,7 @@ namespace BusinessLayer.Services
 {
     public class NtfyService : INotificationService
     {
-        private void Send(string body)
+        private async Task SendAsync(string body)
         {
             var url = "https://ntfy.sh/skillslab";
             var data = body;
@@ -20,7 +20,7 @@ namespace BusinessLayer.Services
             {
                 try
                 {
-                    var response = client.PostAsync(url, content).Result;
+                    var response = await client.PostAsync(url, content);
                 }
                 catch (AggregateException ex)
                 {
@@ -29,24 +29,24 @@ namespace BusinessLayer.Services
                 }
             }
         }
-        public void NotifyTrainingRequest(string managerMail, string employeeName, string trainingName)
+        public async Task NotifyTrainingRequestAsync(string managerMail, string employeeName, string trainingName)
         {
-            Send($@"NotifyTrainingRequest: {managerMail}, {employeeName}, {trainingName}");
+            await SendAsync($"NotifyTrainingRequest: {managerMail}, {employeeName}, {trainingName}");
         }
 
-        public void NotifyTrainingRequestProcess(string employeeMail, string trainingName, bool isApproved)
+        public async Task NotifyTrainingRequestProcessAsync(string employeeMail, string trainingName, bool isApproved)
         {
-            Send($@"NotifyTrainingRequestProcess: {employeeMail}, {trainingName}, {isApproved}");
+            await SendAsync($"NotifyTrainingRequestProcess: {employeeMail}, {trainingName}, {isApproved}");
         }
 
-        public void NotifyUserRegistration(string managerMail, string employeeName)
+        public async Task NotifyUserRegistrationAsync(string managerMail, string employeeName)
         {
-            Send($@"NotifyUserRegistration: {managerMail}, {employeeName}");
+            await SendAsync($"NotifyUserRegistration: {managerMail}, {employeeName}");
         }
 
-        public void NotifyUserRegistrationProcess(string employeeMail, string managerName, bool isApproved)
+        public async Task NotifyUserRegistrationProcessAsync(string employeeMail, string managerName, bool isApproved)
         {
-            Send($@"NotifyUserRegistrationProcess: {employeeMail}, {managerName}, {isApproved}");
+            await SendAsync($"NotifyUserRegistrationProcess: {employeeMail}, {managerName}, {isApproved}");
         }
     }
 }

@@ -11,8 +11,8 @@ namespace DataLayer.Repository.Interfaces
 {
     public interface IUserTrainingEnrollmentRepo : IDataAccessLayer<UserTrainingEnrollment>
     {
-        int CreateUserTrainingEnrollmentReturningID(UserTrainingEnrollment userTrainingEnrollment);
-        UserTrainingEnrollment GetUserTrainingEnrollment(int targetUserId, int targetTrainingId);
-        IEnumerable<TrainingEnrollmentDetails> GetUserTrainingEnrollmentInfo(int userId, int trainingId);
+        Task<int> CreateUserTrainingEnrollmentReturningIDAsync(UserTrainingEnrollment userTrainingEnrollment);
+        Task<UserTrainingEnrollment> GetUserTrainingEnrollmentAsync(int targetUserId, int targetTrainingId);
+        Task<IEnumerable<TrainingEnrollmentDetails>> GetUserTrainingEnrollmentInfoAsync(int userId, int trainingId);
     }
 }

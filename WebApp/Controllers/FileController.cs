@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using WebApp.Helpers;
@@ -20,11 +21,11 @@ namespace WebApp.Controllers
 
         [AuthorizePermission("file.download")]
         [Route("File/{id}/{name}")]
-        public ActionResult FileView(string id, string name)
+        public async Task<ActionResult> FileView(string id, string name)
         {
             try
             {
-                var fileStream = _storageService.Get(id);
+                var fileStream = await _storageService.Get(id);
                 Response.AppendHeader("Content-Disposition", "inline; filename=" + name);
 
                 string mimeType = System.Net.Mime.MediaTypeNames.Application.Octet; // default MIME type

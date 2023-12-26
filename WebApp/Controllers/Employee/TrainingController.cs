@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Threading.Tasks;
 using System.Web.Mvc;
 using BusinessLayer.Services;
 using BusinessLayer.Services.Interfaces;
@@ -15,7 +16,7 @@ namespace WebApp.Controllers
     public partial class TrainingController : Controller
     {
         [AuthorizePermission("training.dash")]
-        public ActionResult ViewDash()
+        public async Task<ActionResult> ViewDash()
         {
             // TODO: User Session
             //int UserId = 10;
@@ -25,24 +26,24 @@ namespace WebApp.Controllers
             {
                 if (Request.QueryString["q"] == "my")
                 {
-                    ViewBag.Trainings = _trainingService.GetTrainingEnrolledByUser(UserId);
+                    ViewBag.Trainings = await _trainingService.GetTrainingEnrolledByUserAsync(UserId);
                 }
                 else if (Request.QueryString["q"] == "all")
                 {
-                    ViewBag.Trainings = _trainingService.GetAllTraining(UserId);
+                    ViewBag.Trainings = await _trainingService.GetAllTrainingAsync(UserId);
                 }
                 else if (Request.QueryString["q"] == "approved")
                 {
-                    ViewBag.Trainings = _trainingService.GetTrainingEnrolledByUser(UserId, EnrollStatusEnum.Approved);
+                    ViewBag.Trainings = await _trainingService.GetTrainingEnrolledByUserAsync(UserId, EnrollStatusEnum.Approved);
                 }
                 else if (Request.QueryString["q"] == "pending")
                 {
-                    ViewBag.Trainings = _trainingService.GetTrainingEnrolledByUser(UserId, EnrollStatusEnum.Pending);
+                    ViewBag.Trainings = await _trainingService.GetTrainingEnrolledByUserAsync(UserId, EnrollStatusEnum.Pending);
                 }
                 else
                 {
                     // Same as my
-                    ViewBag.Trainings = _trainingService.GetTrainingEnrolledByUser(UserId);
+                    ViewBag.Trainings = await _trainingService.GetTrainingEnrolledByUserAsync(UserId);
                 }
 
                 return View("~/Views/Employee/TrainingCardView.cshtml");
@@ -57,7 +58,7 @@ namespace WebApp.Controllers
         }
 
         [AuthorizePermission("training.apply")]
-        public ActionResult Apply(int id)
+        public async Task<ActionResult> Apply(int id)
         {
             // TODO: User Session
             //string UserId = 1;
@@ -65,7 +66,7 @@ namespace WebApp.Controllers
 
             try
             {
-                var enrollement = _userTrainingEnrollmentService.GetUserTrainingEnrollment(UserId, id);
+                var enrollement = await _userTrainingEnrollmentService.GetUserTrainingEnrollmentAsync(UserId, id);
 
                 if (enrollement != null && enrollement.Status == EnrollStatusEnum.Pending)
                 {
@@ -74,8 +75,8 @@ namespace WebApp.Controllers
                 }
             
                 ViewBag.trainingId = id;
-                ViewBag.Training = _trainingService.GetTraining(id);
-                ViewBag.Prerequisites = _prerequisiteService.GetPrerequisitesByTraining(id);
+                ViewBag.Training = await _trainingService.GetTrainingAsync(id);
+                ViewBag.Prerequisites = await _prerequisiteService.GetPrerequisitesByTrainingAsync(id);
 
                 return View("~/Views/Employee/ApplyTraining.cshtml");
             }
@@ -88,7 +89,7 @@ namespace WebApp.Controllers
 
         [AuthorizePermission("training.apply")]
         [HttpPost]
-        public ActionResult ApplyPost(int trainingId)
+        public async Task<ActionResult> ApplyPost(int trainingId)
         {
             // TODO: User Session
             //string UserId = 1;
@@ -103,7 +104,7 @@ namespace WebApp.Controllers
                     uploadFiles.Add(new UploadFileStore() { FileId = int.Parse(key), FileName = Request.Files.Get(key).FileName, FileContent = Request.Files.Get(key).InputStream }); ;
                 }
 
-                _trainingService.ApplyTraining(UserId, trainingId, uploadFiles);
+                await _trainingService.ApplyTrainingAsync(UserId, trainingId, uploadFiles);
 
                 return Json(new { status = "ok" });
 

@@ -120,17 +120,32 @@
                 } else if (result.dismiss === Swal.DismissReason.cancel) {
                     // Logic for rejection
                     console.log('User Rejected');
-                    processTraining(false);
+                    showDeclineDialog()
                 }
             });
         }
 
+        function showDeclineDialog() {
+            Swal.fire({
+                title: 'Decline Training Request',
+                input: 'textarea',
+                inputLabel: 'Provide reason to the user why the requests has been canceled',
+                inputPlaceholder: 'Type your reason here...',
+                inputAttributes: {
+                    'aria-label': 'Type your reason here'
+                },
+                showCancelButton: true
+            }).then((result) => {
+                processTraining(false, result.value);
+            });
+        }
 
-        function processTraining(isApproved) {
+
+        function processTraining(isApproved, declineReason = "") {
             $.ajax({
                 type: "POST",
                 url: "/Training/ProcessRequestAction", // Change this to your server script
-                data: { targetUserId: userId, targetTrainingId: trainingId, approve: isApproved }
+                data: { targetUserId: userId, targetTrainingId: trainingId, approve: isApproved, declineReason: declineReason }
             }).done(function (response) {
                 console.log('Call Success');
                 location.reload();

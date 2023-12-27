@@ -52,18 +52,9 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> PendingSubordinateAction(int userId, bool approve)
         {
-            try
-            {
-                await _userService.ProcessNewUserAsync(userId, approve);
+            await _userService.ProcessNewUserAsync(userId, approve);
 
-                return Json(new { status = "ok" });
-
-            }
-            catch (Exception ex)
-            {
-                Response.StatusCode = 400;
-                return Json(new { Error = ex.Message });
-            }
+            return Json(new { status = "ok" });
 
         }
     }

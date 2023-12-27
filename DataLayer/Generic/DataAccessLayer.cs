@@ -1,8 +1,11 @@
-﻿using System;
+﻿using Entities;
+using Entities.AppLogger;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
+using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
@@ -13,9 +16,12 @@ namespace DataLayer.Generic
 {
     public class DataAccessLayer<T> : IDataAccessLayer<T>
     {
+        ILogger _logger;
         private readonly SqlConnection _conn;
-        public DataAccessLayer(IDbContext dbContext)
+
+        public DataAccessLayer(ILogger logger, IDbContext dbContext)
         {
+            _logger = logger;
             _conn = dbContext.GetConn();
         }
 
@@ -49,7 +55,8 @@ namespace DataLayer.Generic
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
                 throw;
             }
             return result;
@@ -80,7 +87,8 @@ namespace DataLayer.Generic
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
                 throw;
             }
 
@@ -107,7 +115,8 @@ namespace DataLayer.Generic
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
                 throw;
             }
             return rowAdded;
@@ -133,7 +142,8 @@ namespace DataLayer.Generic
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
                 throw;
             }
 
@@ -160,7 +170,8 @@ namespace DataLayer.Generic
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
                 throw;
             }
             return rowsDeleted;

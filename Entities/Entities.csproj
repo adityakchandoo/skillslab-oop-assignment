@@ -43,6 +43,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AppLogger\ILogger.cs" />
+    <Compile Include="AppLogger\Logger.cs" />
     <Compile Include="DbCustom\UserRoleAssigned.cs" />
     <Compile Include="DbCustom\AppUserRole.cs" />
     <Compile Include="DbCustom\AppUsersInlineRoles.cs" />
@@ -50,6 +52,7 @@
     <Compile Include="DbCustom\TrainingStatus.cs" />
     <Compile Include="DbCustom\TrainingEnrollCount.cs" />
     <Compile Include="DbCustom\UserTraining.cs" />
+    <Compile Include="DbErrorException.cs" />
     <Compile Include="DbModels\AppUsers.cs" />
     <Compile Include="DbModels\Department.cs" />
     <Compile Include="DbModels\EnrollmentPrerequisiteAttachment.cs" />

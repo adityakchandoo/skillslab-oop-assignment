@@ -12,6 +12,6 @@ namespace BusinessLayer.Services.Interfaces
         Task NotifyUserRegistrationAsync(string managerMail, string employeeName);
         Task NotifyUserRegistrationProcessAsync(string employeeMail, string managerName, bool isApproved);
         Task NotifyTrainingRequestAsync(string managerMail, string employeeName, string trainingName);
-        Task NotifyTrainingRequestProcessAsync(string employeeMail, string trainingName, bool isApproved);
+        Task NotifyTrainingRequestProcessAsync(string employeeMail, string trainingName, bool isApproved, string declineReason);
     }
 }

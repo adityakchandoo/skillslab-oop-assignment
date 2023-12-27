@@ -34,9 +34,9 @@ namespace BusinessLayer.Services
             await SendAsync($"NotifyTrainingRequest: {managerMail}, {employeeName}, {trainingName}");
         }
 
-        public async Task NotifyTrainingRequestProcessAsync(string employeeMail, string trainingName, bool isApproved)
+        public async Task NotifyTrainingRequestProcessAsync(string employeeMail, string trainingName, bool isApproved, string declineReason)
         {
-            await SendAsync($"NotifyTrainingRequestProcess: {employeeMail}, {trainingName}, {isApproved}");
+            await SendAsync($"NotifyTrainingRequestProcess: {employeeMail}, {trainingName}, {isApproved}, {declineReason}");
         }
 
         public async Task NotifyUserRegistrationAsync(string managerMail, string employeeName)

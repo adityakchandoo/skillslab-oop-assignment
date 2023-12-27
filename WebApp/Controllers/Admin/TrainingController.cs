@@ -66,18 +66,9 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> AddPost(AddTrainingFormDTO training)
         {
-            try
-            {
-                await _trainingService.AddTrainingWithTrainingPrerequisiteAsync(training);
+            await _trainingService.AddTrainingWithTrainingPrerequisiteAsync(training);
 
-                return Json(new { status = "ok" });
-
-            }
-            catch (Exception ex)
-            {
-                Response.StatusCode = 400;
-                return Json(new { Error = ex.Message });
-            }
+            return Json(new { status = "ok" });
         }
 
         [AuthorizePermission("training.addcontent")]
@@ -91,18 +82,9 @@ namespace WebApp.Controllers
         [HttpPost]
         public ActionResult AddContentPost(AddTrainingContentDTO addTrainingContentDTO)
         {
-            try
-            {
-                _trainingService.SaveTrainingWithContentsAsync(addTrainingContentDTO);
+            _trainingService.SaveTrainingWithContentsAsync(addTrainingContentDTO);
 
-                return Json(new { status = "ok" });
-
-            }
-            catch (Exception ex)
-            {
-                Response.StatusCode = 400;
-                return Json(new { Error = ex.Message });
-            }
+            return Json(new { status = "ok" });
         }
     }
 }

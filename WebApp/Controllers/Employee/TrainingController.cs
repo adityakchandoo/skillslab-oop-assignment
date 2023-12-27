@@ -22,38 +22,29 @@ namespace WebApp.Controllers
             //int UserId = 10;
             int UserId = (int)this.Session["UserId"];
 
-            try
+            if (Request.QueryString["q"] == "my")
             {
-                if (Request.QueryString["q"] == "my")
-                {
-                    ViewBag.Trainings = await _trainingService.GetTrainingEnrolledByUserAsync(UserId);
-                }
-                else if (Request.QueryString["q"] == "all")
-                {
-                    ViewBag.Trainings = await _trainingService.GetAllTrainingAsync(UserId);
-                }
-                else if (Request.QueryString["q"] == "approved")
-                {
-                    ViewBag.Trainings = await _trainingService.GetTrainingEnrolledByUserAsync(UserId, EnrollStatusEnum.Approved);
-                }
-                else if (Request.QueryString["q"] == "pending")
-                {
-                    ViewBag.Trainings = await _trainingService.GetTrainingEnrolledByUserAsync(UserId, EnrollStatusEnum.Pending);
-                }
-                else
-                {
-                    // Same as my
-                    ViewBag.Trainings = await _trainingService.GetTrainingEnrolledByUserAsync(UserId);
-                }
+                ViewBag.Trainings = await _trainingService.GetTrainingEnrolledByUserAsync(UserId);
+            }
+            else if (Request.QueryString["q"] == "all")
+            {
+                ViewBag.Trainings = await _trainingService.GetAllTrainingAsync(UserId);
+            }
+            else if (Request.QueryString["q"] == "approved")
+            {
+                ViewBag.Trainings = await _trainingService.GetTrainingEnrolledByUserAsync(UserId, EnrollStatusEnum.Approved);
+            }
+            else if (Request.QueryString["q"] == "pending")
+            {
+                ViewBag.Trainings = await _trainingService.GetTrainingEnrolledByUserAsync(UserId, EnrollStatusEnum.Pending);
+            }
+            else
+            {
+                // Same as my
+                ViewBag.Trainings = await _trainingService.GetTrainingEnrolledByUserAsync(UserId);
+            }
 
-                return View("~/Views/Employee/TrainingCardView.cshtml");
-            }
-            catch (Exception ex)
-            {
-                Response.StatusCode = 400;
-                ViewBag.Error = ex.Message;
-                return View("~/Views/Other/GlobalErrorDisplayPage.cshtml");
-            }
+            return View("~/Views/Employee/TrainingCardView.cshtml");
 
         }
 
@@ -64,27 +55,19 @@ namespace WebApp.Controllers
             //string UserId = 1;
             int UserId = (int)this.Session["UserId"];
 
-            try
-            {
-                var enrollement = await _userTrainingEnrollmentService.GetUserTrainingEnrollmentAsync(UserId, id);
+            var enrollement = await _userTrainingEnrollmentService.GetUserTrainingEnrollmentAsync(UserId, id);
 
-                if (enrollement != null && enrollement.Status == EnrollStatusEnum.Pending)
-                {
-                    Response.StatusCode = 400;
-                    return Content("Already Applied!");
-                }
-            
-                ViewBag.trainingId = id;
-                ViewBag.Training = await _trainingService.GetTrainingAsync(id);
-                ViewBag.Prerequisites = await _prerequisiteService.GetPrerequisitesByTrainingAsync(id);
-
-                return View("~/Views/Employee/ApplyTraining.cshtml");
-            }
-            catch (Exception ex)
+            if (enrollement != null && enrollement.Status == EnrollStatusEnum.Pending)
             {
                 Response.StatusCode = 400;
-                return Content("Error");
+                return Content("Already Applied!");
             }
+
+            ViewBag.trainingId = id;
+            ViewBag.Training = await _trainingService.GetTrainingAsync(id);
+            ViewBag.Prerequisites = await _prerequisiteService.GetPrerequisitesByTrainingAsync(id);
+
+            return View("~/Views/Employee/ApplyTraining.cshtml");
         }
 
         [AuthorizePermission("training.apply")]
@@ -97,23 +80,14 @@ namespace WebApp.Controllers
 
             List<UploadFileStore> uploadFiles = new List<UploadFileStore>();
 
-            try
+            foreach (string key in Request.Files.AllKeys)
             {
-                foreach (string key in Request.Files.AllKeys)
-                {
-                    uploadFiles.Add(new UploadFileStore() { FileId = int.Parse(key), FileName = Request.Files.Get(key).FileName, FileContent = Request.Files.Get(key).InputStream }); ;
-                }
-
-                await _trainingService.ApplyTrainingAsync(UserId, trainingId, uploadFiles);
-
-                return Json(new { status = "ok" });
-
+                uploadFiles.Add(new UploadFileStore() { FileId = int.Parse(key), FileName = Request.Files.Get(key).FileName, FileContent = Request.Files.Get(key).InputStream }); ;
             }
-            catch (Exception ex)
-            {
-                Response.StatusCode = 400;
-                return Json(new { Error = ex.Message });
-            }
+
+            await _trainingService.ApplyTrainingAsync(UserId, trainingId, uploadFiles);
+
+            return Json(new { status = "ok" });
         }
 
         

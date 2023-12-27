@@ -39,27 +39,18 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> Authenticate(UserLoginFormDTO form)
         {
-            try
+            AuthenticateResponse authResponse = await _userService.AuthenticateUserAsync(form);
+
+            if (!authResponse.IsLoginSuccessful)
             {
-                AuthenticateResponse authResponse = await _userService.AuthenticateUserAsync(form);
-
-                if (!authResponse.IsLoginSuccessful)
-                {
-                    Response.StatusCode = 400;
-                    return Json(new { authResponse.Error });
-                }                
-
-                this.Session["UserId"] = authResponse.AppUser.UserId;                
-                this.Session["Name"] = authResponse.AppUser.FirstName + " " + authResponse.AppUser.LastName;
-
-                return Json(new { status = "ok", redirectPath = "/User/SelectRole" });
-
+                Response.StatusCode = 400;
+                return Json(new { authResponse.Error });
             }
-            catch (Exception ex)
-            {
-                Response.StatusCode = (int)HttpStatusCode.BadRequest;
-                return Json(new { Error = ex.Message });
-            }
+
+            this.Session["UserId"] = authResponse.AppUser.UserId;
+            this.Session["Name"] = authResponse.AppUser.FirstName + " " + authResponse.AppUser.LastName;
+
+            return Json(new { status = "ok", redirectPath = "/User/SelectRole" });
 
         }
 
@@ -105,18 +96,8 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> RegisterPost(RegisterFormDTO form)
         {
-            try
-            {
-                await _userService.RegisterAsync(form);
-                return Json(new { status = "ok" });
-            }
-
-            catch (Exception ex)
-            {
-                Response.StatusCode = 400;
-                return Json(new { Error = ex.Message });
-            }
-
+            await _userService.RegisterAsync(form);
+            return Json(new { status = "ok" });
         }
 
         [HttpPost]
@@ -152,23 +133,11 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> UpdateProfile(UpdateProfileDTO updateProfileDTO)
         {
-            
-
-            try
-            {
-                await _userService.UpdateProfileAsync(
+            await _userService.UpdateProfileAsync(
                     (int)this.Session["UserId"],
                     updateProfileDTO
                 );
-                return Json(new { status = "ok" });
-            }
-
-            catch (Exception ex)
-            {
-                Response.StatusCode = 400;
-                return Json(new { Error = ex.Message });
-            }
-
+            return Json(new { status = "ok" });
         }
 
         [AuthorizePermission("user.profile")]
@@ -181,6 +150,13 @@ namespace WebApp.Controllers
                 );
 
             return Json(new { status = "ok" });
+        }
+
+        public ActionResult Zero()
+        {
+            var zero = 0;
+            var sdf = 3 / zero;
+            return Content("ok");
         }
 
     }

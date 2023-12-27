@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Other\CommonValidations.cs" />
     <Compile Include="PasswordHasher.cs" />
     <Compile Include="Services\AmazonS3Service.cs" />
     <Compile Include="Services\DepartmentService.cs" />
@@ -87,5 +88,6 @@
     <Analyzer Include="..\packages\AWSSDK.S3.3.7.304.5\analyzers\dotnet\cs\AWSSDK.S3.CodeAnalysis.dll" />
     <Analyzer Include="..\packages\AWSSDK.S3.3.7.304.5\analyzers\dotnet\cs\SharedAnalysisCode.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

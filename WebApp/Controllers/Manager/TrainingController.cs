@@ -40,21 +40,12 @@ namespace WebApp.Controllers
 
         [AuthorizePermission("training.processrequests")]
         [HttpPost]
-        public async Task<ActionResult> ProcessRequestAction(int targetUserId, int targetTrainingId, bool approve)
+        public async Task<ActionResult> ProcessRequestAction(int targetUserId, int targetTrainingId, bool approve, string declineReason)
         {
-            try
-            {
-                await _userTrainingEnrollmentService.ProcessTrainingRequestAsync(targetUserId, targetTrainingId, approve);
+            await _userTrainingEnrollmentService.ProcessTrainingRequestAsync(targetUserId, targetTrainingId, approve, declineReason);
 
-                return Json(new { status = "ok" });
+            return Json(new { status = "ok" });
 
-            }
-            catch (Exception ex)
-            {
-                Response.StatusCode = 400;
-                return Json(new { Error = ex.Message });
-            }
-            
         }
 
 

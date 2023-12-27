@@ -1,5 +1,7 @@
 ﻿using DataLayer.Generic;
 using DataLayer.Repository.Interfaces;
+using Entities;
+using Entities.AppLogger;
 using Entities.DbModels;
 using System;
 using System.Collections.Generic;
@@ -13,9 +15,11 @@ namespace DataLayer.Repository
 {
     public class TrainingContentRepo : DataAccessLayer<TrainingContent>, ITrainingContentRepo
     {
+        ILogger _logger;
         private readonly SqlConnection _conn;
-        public TrainingContentRepo(IDbContext dbContext) : base(dbContext)
+        public TrainingContentRepo(ILogger logger, IDbContext dbContext) : base(logger, dbContext)
         {
+            _logger = logger;
             _conn = dbContext.GetConn();
         }
 
@@ -39,7 +43,12 @@ namespace DataLayer.Repository
                 }
 
             }
-            catch (Exception ex) { throw ex; }
+            catch (Exception ex) 
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
         }
     }
 }

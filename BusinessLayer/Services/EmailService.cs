@@ -98,7 +98,7 @@ namespace BusinessLayer.Services
             await Task.Run(() => Send(managerMail, subject, htmlBody));
         }
         
-        public async Task NotifyTrainingRequestProcessAsync(string employeeMail, string trainingName, bool isApproved)
+        public async Task NotifyTrainingRequestProcessAsync(string employeeMail, string trainingName, bool isApproved, string declineReason)
         {
             string result = isApproved ? "Approved" : "Rejected";
 
@@ -109,6 +109,7 @@ namespace BusinessLayer.Services
                     <p>Hello, Your Manager has <strong>{result}</strong> your training request {trainingName} you.</p>
                     <br/>
                     <p>Please liaise with your manager for further information.</p>
+                    {declineReason}
                 </body>
                 </html>
             ";

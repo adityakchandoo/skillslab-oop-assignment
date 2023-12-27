@@ -1,6 +1,8 @@
 ﻿using DataLayer;
 using DataLayer.Generic;
 using DataLayer.Repository.Interfaces;
+using Entities;
+using Entities.AppLogger;
 using Entities.DbModels;
 using Entities.DTO;
 using System;
@@ -15,9 +17,11 @@ namespace DataLayer.Repository
 {
     public class UserTrainingEnrollmentRepo : DataAccessLayer<UserTrainingEnrollment>, IUserTrainingEnrollmentRepo
     {
+        ILogger _logger;
         private readonly SqlConnection _conn;
-        public UserTrainingEnrollmentRepo(IDbContext dbContext) : base(dbContext)
+        public UserTrainingEnrollmentRepo(ILogger logger, IDbContext dbContext) : base(logger, dbContext)
         {
+            _logger = logger;
             _conn = dbContext.GetConn();
         }
 
@@ -43,6 +47,8 @@ namespace DataLayer.Repository
 
             } catch (Exception ex)
             {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
                 throw;
             }
 
@@ -55,12 +61,10 @@ namespace DataLayer.Repository
                 new Dictionary<string, object>() { { "UserId", targetUserId }, { "TrainingId", targetTrainingId } }
                 );
 
-            if (userEnrollment.Count() == 1)
+            if (userEnrollment.Count() > 0)
                 return userEnrollment.First();
-            else if (userEnrollment.Count() == 0)
-                return null;
             else
-                throw new Exception("UserTrainingEnrollment Record Error");
+                return null;
             
         }
 
@@ -105,7 +109,12 @@ namespace DataLayer.Repository
                 return trainingEnrollmentDetails;
 
             }
-            catch (Exception ex) { throw ex; }
+            catch (Exception ex) 
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
         }
 
     }

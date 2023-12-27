@@ -6,6 +6,7 @@ using BusinessLayer.Services.Interfaces;
 using DataLayer;
 using DataLayer.Repository;
 using DataLayer.Repository.Interfaces;
+using Entities.AppLogger;
 using Unity;
 using Unity.AspNet.Mvc;
 using Unity.Injection;
@@ -80,6 +81,7 @@ namespace WebApp
             
             container.RegisterType<IStorageService, AmazonS3Service>(new PerRequestLifetimeManager());
             container.RegisterType<INotificationService, NtfyService>(new PerRequestLifetimeManager());
+            container.RegisterSingleton<ILogger, Logger>();
 
         }
     }

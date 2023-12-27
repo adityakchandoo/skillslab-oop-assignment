@@ -31,25 +31,16 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> AddPost(PrerequisiteDTO prerequisite)
         {
-            try
+            Prerequisite prerequisite_db = new Prerequisite()
             {
-                Prerequisite prerequisite_db = new Prerequisite()
-                {
-                    Name = prerequisite.Name,
-                    Description = prerequisite.Description
+                Name = prerequisite.Name,
+                Description = prerequisite.Description
 
-                };
+            };
 
-                await _prerequisiteService.AddPrerequisiteAsync(prerequisite_db);
+            await _prerequisiteService.AddPrerequisiteAsync(prerequisite_db);
 
-                return Json(new { status = "ok" });
-
-            }
-            catch (Exception ex)
-            {
-                Response.StatusCode = 400;
-                return Json(new { Error = ex.Message });
-            }
+            return Json(new { status = "ok" });
         }
     }
 }

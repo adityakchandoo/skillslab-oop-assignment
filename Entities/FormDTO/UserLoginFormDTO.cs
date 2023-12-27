@@ -9,9 +9,7 @@ namespace Entities.FormDTO
 {
     public class UserLoginFormDTO
     {
-        [Required(ErrorMessage = "Enter UserId")]
         public string Username { get; set; }
-        [Required(ErrorMessage = "Enter UserId")]
         public string Password { get; set; }
     }
 }

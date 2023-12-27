@@ -33,24 +33,15 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> AddPost(DepartmentDTO department)
         {
-            try
+            Department department_db = new Department()
             {
-                Department department_db = new Department()
-                {
-                    Name = department.Name,
-                    Description = department.Description,
-                };
+                Name = department.Name,
+                Description = department.Description,
+            };
 
-                await _dapartmentService.AddDepartmentAsync(department_db);
+            await _dapartmentService.AddDepartmentAsync(department_db);
 
-                return Json(new { status = "ok" });
-
-            }
-            catch (Exception ex)
-            {
-                Response.StatusCode = 400;
-                return Json(new { Error = ex.Message });
-            }
+            return Json(new { status = "ok" });
         }
     }
 }

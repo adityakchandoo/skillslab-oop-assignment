@@ -1,6 +1,9 @@
-﻿using BusinessLayer.Services.Interfaces;
+﻿using BusinessLayer.Other;
+using BusinessLayer.Services.Interfaces;
 using DataLayer.Repository;
 using DataLayer.Repository.Interfaces;
+using Entities;
+using Entities.AppLogger;
 using Entities.DbCustom;
 using Entities.DbModels;
 using Entities.DTO;
@@ -16,12 +19,14 @@ namespace BusinessLayer.Services
 {
     public class UserService : IUserService
     {
+        private ILogger _logger;
         private readonly IAppUserRepo _appUserRepo;
         private readonly IUserManagerRepo _userManagerRepo;
         private readonly IUserRoleRepo _userRoleRepo;
         private readonly INotificationService _notificationService;
-        public UserService(IAppUserRepo appUserRepo, IUserManagerRepo userManagerRepo, IUserRoleRepo userRoleRepo, INotificationService notificationService)
+        public UserService(ILogger logger, IAppUserRepo appUserRepo, IUserManagerRepo userManagerRepo, IUserRoleRepo userRoleRepo, INotificationService notificationService)
         {
+            _logger = logger;
             _appUserRepo = appUserRepo;
             _userManagerRepo = userManagerRepo;
             _userRoleRepo = userRoleRepo;
@@ -30,112 +35,159 @@ namespace BusinessLayer.Services
 
         public async Task<AppUser> GetUserAsync(int UserId)
         {
-            return await _appUserRepo.GetByPKAsync(UserId);
+            try
+            {
+                if (UserId <= 0)
+                {
+                    throw new ArgumentException("UserId must be a positive integer.");
+                }
+
+                return await _appUserRepo.GetByPKAsync(UserId);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw new ArgumentException("Validation Error");
+                throw;
+            }
         }
 
         public async Task<AuthenticateResponse> AuthenticateUserAsync(UserLoginFormDTO userLoginFormDTO)
         {
-            // Validate Username
-            if (string.IsNullOrEmpty(userLoginFormDTO.Username))
+            try
             {
-                throw new ArgumentException("Enter Username");
-            }
+                // Validate Username
+                if (string.IsNullOrEmpty(userLoginFormDTO.Username))
+                {
+                    throw new ArgumentNullException("Enter Username");
+                }
 
-            // Validate Password
-            if (string.IsNullOrEmpty(userLoginFormDTO.Password))
-            {
-                throw new ArgumentException("Enter Password");
-            }
+                // Validate Password
+                if (string.IsNullOrEmpty(userLoginFormDTO.Password))
+                {
+                    throw new ArgumentNullException("Enter Password");
+                }
 
-            AuthenticateResponse authenticateResponse = new AuthenticateResponse();
-            AppUser appUser = await _appUserRepo.GetUserByUsernameAsync(userLoginFormDTO.Username);
+                AuthenticateResponse authenticateResponse = new AuthenticateResponse();
+                AppUser appUser = await _appUserRepo.GetUserByUsernameAsync(userLoginFormDTO.Username);
 
-            if (appUser == null)
-            {
-                authenticateResponse.IsLoginSuccessful = false;
-                authenticateResponse.Error = "Invalid User/Pass";
-                return authenticateResponse;
-            }
+                if (appUser == null)
+                {
+                    authenticateResponse.IsLoginSuccessful = false;
+                    authenticateResponse.Error = "Invalid User/Pass";
+                    return authenticateResponse;
+                }
 
-            if (appUser.Status != UserStatusEnum.Registered)
-            {
-                authenticateResponse.IsLoginSuccessful = false;
-                authenticateResponse.Error = "User not comfirmed";
-                return authenticateResponse;
-            }
+                if (appUser.Status != UserStatusEnum.Registered)
+                {
+                    authenticateResponse.IsLoginSuccessful = false;
+                    authenticateResponse.Error = "User not comfirmed";
+                    return authenticateResponse;
+                }
 
-            if (PasswordHasher.VerifySHA256Hash(userLoginFormDTO.Password, appUser.Password) == false)
-            {
-                authenticateResponse.IsLoginSuccessful = false;
-                authenticateResponse.Error = "Invalid User/Pass";
+                if (PasswordHasher.VerifySHA256Hash(userLoginFormDTO.Password, appUser.Password) == false)
+                {
+                    authenticateResponse.IsLoginSuccessful = false;
+                    authenticateResponse.Error = "Invalid User/Pass";
                 
-            }            
+                }            
 
-            // Beyound the point login is successful
-            authenticateResponse.IsLoginSuccessful = true;
-            authenticateResponse.AppUser = appUser;
+                // Beyound the point login is successful
+                authenticateResponse.IsLoginSuccessful = true;
+                authenticateResponse.AppUser = appUser;
 
-            return authenticateResponse;
+                return authenticateResponse;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw ex;
+                throw;
+            }
 
         }
 
         public async Task<IEnumerable<AppUserRole>> GetRolesByUserIdAsync(int UserId)
         {
-            return await _appUserRepo.GetRolesByUserIdAsync(UserId);
+            try
+            {
+                if (UserId <= 0)
+                {
+                    throw new ArgumentException("UserId must be a positive integer.");
+                }
+
+                return await _appUserRepo.GetRolesByUserIdAsync(UserId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw ex;
+                throw;
+            }
         }
 
         public async Task RegisterAsync(RegisterFormDTO registerFormDTO)
-        {
-            // Validate UserId
-            if (string.IsNullOrEmpty(registerFormDTO.UserName))
-            {
-                throw new ArgumentException("Enter UserName");
-            }
-
-            // Validate FirstName
-            if (string.IsNullOrEmpty(registerFormDTO.FirstName))
-            {
-                throw new ArgumentException("Enter FirstName");
-            }
-
-            // Validate LastName
-            if (string.IsNullOrEmpty(registerFormDTO.LastName))
-            {
-                throw new ArgumentException("Enter LastName");
-            }
-
-            // Validate Email
-            var emailRegex = new Regex("/^(([^<>()[\\]\\\\.,;:\\s@\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/");
-            if (emailRegex.IsMatch(registerFormDTO.Email))
-            {
-                throw new ArgumentException("Enter a valid Email");
-            }
-
-            // Validate NIC
-            var nicRegex = new Regex("^.{1}[0-9]{6}.{7}$");
-            if (string.IsNullOrEmpty(registerFormDTO.NIC) || !nicRegex.IsMatch(registerFormDTO.NIC))
-            {
-                throw new ArgumentException("Invalid NIC");
-            }
-
-            // Validate MobileNumber
-            if (string.IsNullOrEmpty(registerFormDTO.MobileNumber))
-            {
-                throw new ArgumentException("Enter MobileNumber");
-            }
-
-            // Validate Password and Confirm Password
-            if (string.IsNullOrEmpty(registerFormDTO.Pass1))
-            {
-                throw new ArgumentException("Enter Password");
-            }
-            if (registerFormDTO.Pass1 != registerFormDTO.Pass2)
-            {
-                throw new ArgumentException("Confirm Pass Not Same");
-            }
-
+        { 
             try
             {
+                // Validate UserName
+                if (string.IsNullOrEmpty(registerFormDTO.UserName))
+                {
+                    throw new ArgumentException("Enter UserName");
+                }
+
+                // Validate FirstName
+                if (string.IsNullOrEmpty(registerFormDTO.FirstName))
+                {
+                    throw new ArgumentException("Enter FirstName");
+                }
+
+                // Validate LastName
+                if (string.IsNullOrEmpty(registerFormDTO.LastName))
+                {
+                    throw new ArgumentException("Enter LastName");
+                }
+
+                // Validate Email
+                if (CommonValidations.IsEmailValid(registerFormDTO.Email) == false)
+                {
+                    throw new ArgumentException("Enter a valid Email");
+                }
+
+                // Validate NIC
+                if (string.IsNullOrEmpty(registerFormDTO.NIC) || CommonValidations.IsNICValid(registerFormDTO.NIC) == false)
+                {
+                    throw new ArgumentException("Invalid NIC");
+                }
+
+                // Validate MobileNumber
+                if (string.IsNullOrEmpty(registerFormDTO.MobileNumber))
+                {
+                    throw new ArgumentException("Enter MobileNumber");
+                }
+
+                // Validate Password and Confirm Password
+                if (string.IsNullOrEmpty(registerFormDTO.Pass1))
+                {
+                    throw new ArgumentException("Enter Password");
+                }
+                if (registerFormDTO.Pass1 != registerFormDTO.Pass2)
+                {
+                    throw new ArgumentException("Confirm Pass Not Same");
+                }
+
+                if (CommonValidations.IsDOBValid(registerFormDTO.DOB) == false)
+                {
+                    throw new ArgumentException("User must be at least 16 years old.");
+                }
+
+                if (CommonValidations.IsPhoneNumberValid(registerFormDTO.MobileNumber) == false)
+                {
+                    throw new ArgumentException("Input must be 7 digits if it starts with 5, otherwise 6 digits.");
+                }
+
                 AppUser db_user = new AppUser
                 {
                     UserName = registerFormDTO.UserName,
@@ -166,6 +218,7 @@ namespace BusinessLayer.Services
 
             } catch (Exception ex)
             {
+                _logger.LogError(ex);
                 throw ex;
                 throw;
             }
@@ -185,59 +238,161 @@ namespace BusinessLayer.Services
 
         public async Task<bool> IsUsernameExistsAsync(string value)
         {
-            return await _appUserRepo.IsRecordExistsAsync("UserName", value);
+            try
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentNullException("Enter UserName");
+                }
+
+                return await _appUserRepo.IsRecordExistsAsync("UserName", value);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw ex;
+                throw;
+            }
         }
 
         public async Task<bool> IsNICExistsAsync(string value)
         {
-            return await _appUserRepo.IsRecordExistsAsync("NIC", value);
+            try
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentNullException("Enter NIC");
+                }
+
+                return await _appUserRepo.IsRecordExistsAsync("NIC", value);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw ex;
+                throw;
+            }
         }
 
         public async Task<bool> IsEmailExistsAsync(string value)
         {
-            return await _appUserRepo.IsRecordExistsAsync("Email", value);
+            try
+            {
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentNullException("Enter Valid Email");
+                }
+
+                return await _appUserRepo.IsRecordExistsAsync("Email", value);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw ex;
+                throw;
+            }
         }
 
         public async Task<IEnumerable<AppUser>> GetAllUsersByTypeAsync(UserRoleEnum userRoleEnum)
         {
-            return await _appUserRepo.GetAllUsersByRoleAsync(userRoleEnum);
+            try
+            {
+                return await _appUserRepo.GetAllUsersByRoleAsync(userRoleEnum);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw ex;
+                throw;
+            }
         }
 
         public async Task<IEnumerable<AppUser>> GetUsersByManagerAsync(int UserId)
         {
-            return await _appUserRepo.GetAllUsersByManagerAsync(UserId);
+            try
+            {
+                if (UserId <= 0)
+                {
+                    throw new ArgumentException("UserId must be a positive integer.");
+                }
+
+                return await _appUserRepo.GetAllUsersByManagerAsync(UserId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw ex;
+                throw;
+            }
         }
 
         public async Task<IEnumerable<AppUser>> GetUsersByManagerAndStatusAsync(int UserId, UserStatusEnum userStatusEnum)
         {
-            return await _appUserRepo.GetAllUsersByManagerAndStatusAsync(UserId, userStatusEnum);
+            try
+            {
+                if (UserId <= 0)
+                {
+                    throw new ArgumentException("UserId must be a positive integer.");
+                }
+
+                return await _appUserRepo.GetAllUsersByManagerAndStatusAsync(UserId, userStatusEnum);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw ex;
+                throw;
+            }
         }
 
         public async Task UpdateProfileAsync(int UserId, UpdateProfileDTO updateProfileDTO)
         {
-            if (
-                string.IsNullOrEmpty(updateProfileDTO.UserName) ||
-                string.IsNullOrEmpty(updateProfileDTO.Email) ||
-                string.IsNullOrEmpty(updateProfileDTO.Email)
+            try
+            {
+                if (UserId <= 0)
+                {
+                    throw new ArgumentException("UserId must be a positive integer.");
+                }
+
+                if (
+                    string.IsNullOrEmpty(updateProfileDTO.UserName) ||
+                    string.IsNullOrEmpty(updateProfileDTO.Email) ||
+                    string.IsNullOrEmpty(updateProfileDTO.MobileNumber)
                 )
+                {
+                    throw new ArgumentNullException(nameof(updateProfileDTO));
+                }
+
+                if (CommonValidations.IsPhoneNumberValid(updateProfileDTO.MobileNumber) == false)
+                {
+                    throw new ArgumentException("Input must be 7 digits if it starts with 5, otherwise 6 digits.");
+                }
+
+                // Validate Email
+                var emailRegex = new Regex("/^(([^<>()[\\]\\\\.,;:\\s@\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/");
+                if (emailRegex.IsMatch(updateProfileDTO.Email))
+                {
+                    throw new ArgumentException("Enter a valid Email");
+                }
+
+                AppUser user = await _appUserRepo.GetByPKAsync(UserId);
+
+                user.UserName = updateProfileDTO.UserName;
+                user.Email = updateProfileDTO.Email;
+                user.MobileNumber = updateProfileDTO.MobileNumber;
+
+                await _appUserRepo.Update(user);
+
+            }
+            catch (Exception ex)
             {
-                throw new ArgumentNullException(nameof(updateProfileDTO));
+                _logger.LogError(ex);
+                throw ex;
+                throw;
             }
 
-            // Validate Email
-            var emailRegex = new Regex("/^(([^<>()[\\]\\\\.,;:\\s@\"]+(\\.[^<>()[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$/");
-            if (emailRegex.IsMatch(updateProfileDTO.Email))
-            {
-                throw new ArgumentException("Enter a valid Email");
-            }
-
-            AppUser user = await _appUserRepo.GetByPKAsync(UserId);
-
-            user.UserName = updateProfileDTO.UserName;
-            user.Email = updateProfileDTO.Email;
-            user.MobileNumber = updateProfileDTO.MobileNumber;
-
-            await _appUserRepo.Update(user);
+            
         }
 
         public async Task UpdatePasswordAsync(int UserId, UpdatePasswordDTO updatePasswordDTO)
@@ -267,18 +422,33 @@ namespace BusinessLayer.Services
 
             await _appUserRepo.Update(user);
         }
+
         public async Task ProcessNewUserAsync(int UserId, bool isApprove)
         {
-            AppUser user = await _appUserRepo.GetByPKAsync(UserId);
-            AppUser userManger = await _appUserRepo.GetUserManagerAsync(UserId);
-            user.Status = isApprove ? UserStatusEnum.Registered : UserStatusEnum.Banned;
+            try
+            {
+                if (UserId <= 0)
+                {
+                    throw new ArgumentException("UserId must be a positive integer.");
+                }
 
-            await _appUserRepo.Update(user);
+                AppUser user = await _appUserRepo.GetByPKAsync(UserId);
+                AppUser userManger = await _appUserRepo.GetUserManagerAsync(UserId);
+                user.Status = isApprove ? UserStatusEnum.Registered : UserStatusEnum.Banned;
 
-            var managerName = userManger.FirstName + " " + userManger.LastName;
+                await _appUserRepo.Update(user);
 
-            _ = _notificationService.NotifyUserRegistrationProcessAsync(user.Email, managerName, isApprove);
+                var managerName = userManger.FirstName + " " + userManger.LastName;
 
+                _ = _notificationService.NotifyUserRegistrationProcessAsync(user.Email, managerName, isApprove);
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw ex;
+                throw;
+            }
         }
 
         public async Task<bool> CheckPermissionAsync(int UserId, string permission)

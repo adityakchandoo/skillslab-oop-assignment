@@ -17,6 +17,6 @@ namespace BusinessLayer.Services.Interfaces
         Task<UserTrainingEnrollment> GetUserTrainingEnrollmentAsync(int userId, int trainingId);
         Task UpdateUserTrainingEnrollmentAsync(UserTrainingEnrollment userTrainingEnrollment);
         Task<IEnumerable<TrainingEnrollmentDetails>> GetUserTrainingEnrollmentInfoAsync(int userId, int trainingId);
-        Task ProcessTrainingRequestAsync(int targetUserId, int targetTrainingId, bool approve);
+        Task ProcessTrainingRequestAsync(int targetUserId, int targetTrainingId, bool approve, string declineReason);
     }
 }

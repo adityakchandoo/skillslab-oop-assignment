@@ -68,19 +68,25 @@ namespace BusinessLayer.Services
             return await _userTrainingEnrollmentRepo.GetUserTrainingEnrollmentInfoAsync(userId, trainingId);
         }
 
-        public async Task ProcessTrainingRequestAsync(int targetUserId, int targetTrainingId, bool isApproved)
+        public async Task ProcessTrainingRequestAsync(int targetUserId, int targetTrainingId, bool isApproved, string declineReason)
         {
+            if (!isApproved && string.IsNullOrEmpty(declineReason))
+            {
+                throw new ArgumentNullException("Must Have decline reason, if not approved");
+            }
+
             var userEnrollment = await _userTrainingEnrollmentRepo.GetUserTrainingEnrollmentAsync(targetUserId, targetTrainingId);
 
             userEnrollment.Status = isApproved ? EnrollStatusEnum.Approved : EnrollStatusEnum.Rejected;
             userEnrollment.EnrolledDate = DateTime.Now;
+            userEnrollment.DeclineReason = string.IsNullOrEmpty(declineReason) ? null : declineReason;
 
             await _userTrainingEnrollmentRepo.Update(userEnrollment);
 
             var user = await _appUserRepo.GetByPKAsync(targetUserId);
             var training = await _trainingRepo.GetByPKAsync(targetTrainingId);
 
-            _ = _notificationService.NotifyTrainingRequestProcessAsync(user.Email, training.Name, isApproved);
+            _ = _notificationService.NotifyTrainingRequestProcessAsync(user.Email, training.Name, isApproved, declineReason);
 
         }
     }

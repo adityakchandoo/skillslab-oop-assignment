@@ -6,6 +6,8 @@ using System.Threading.Tasks;
 using DataLayer;
 using DataLayer.Generic;
 using DataLayer.Repository.Interfaces;
+using Entities;
+using Entities.AppLogger;
 using Entities.DbCustom;
 using Entities.DbModels;
 using Entities.DTO;
@@ -15,9 +17,11 @@ namespace DataLayer.Repository
 {
     public class TrainingRepo : DataAccessLayer<Training>, ITrainingRepo
     {
+        private ILogger _logger;
         private readonly SqlConnection _conn;
-        public TrainingRepo(IDbContext dbContext) : base(dbContext)
+        public TrainingRepo(ILogger logger, IDbContext dbContext) : base(logger, dbContext)
         {
+            _logger = logger;
             _conn = dbContext.GetConn();
         }
 
@@ -41,7 +45,12 @@ namespace DataLayer.Repository
                     return (int)(await cmd.ExecuteScalarAsync());
                 }
 
-            } catch (Exception ex) { throw ex; }
+            } catch (Exception ex) 
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
         }
         public async Task<IEnumerable<TrainingStatus>> GetAllTrainingAsync(int UserId)
         {
@@ -76,7 +85,8 @@ namespace DataLayer.Repository
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
                 throw;
             }
 
@@ -113,7 +123,8 @@ namespace DataLayer.Repository
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
                 throw;
             }
 
@@ -150,7 +161,8 @@ namespace DataLayer.Repository
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
                 throw;
             }
 
@@ -181,7 +193,8 @@ namespace DataLayer.Repository
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
                 throw;
             }
 
@@ -226,7 +239,12 @@ namespace DataLayer.Repository
                 return pendingUserTraining;
 
             }
-            catch (Exception ex) { throw ex; }
+            catch (Exception ex) 
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
 
         }
 

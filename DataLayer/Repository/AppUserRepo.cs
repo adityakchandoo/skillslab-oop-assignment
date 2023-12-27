@@ -12,14 +12,18 @@ using System.Data.SqlClient;
 using System.Collections;
 using System.Threading.Tasks;
 using System.Linq;
+using Entities.AppLogger;
+using Entities;
 
 namespace DataLayer.Repository
 {
     public class AppUserRepo : DataAccessLayer<AppUser>, IAppUserRepo
     {
+        ILogger _logger;
         private readonly SqlConnection _conn;
-        public AppUserRepo(IDbContext dbContext) : base(dbContext)
+        public AppUserRepo(ILogger logger, IDbContext dbContext) : base(logger, dbContext)
         {
+            _logger = logger;
             _conn = dbContext.GetConn();
         }
         public Task<IEnumerable<AppUser>> GetAllUsersByRoleAsync(UserRoleEnum userRoleEnum)
@@ -66,7 +70,12 @@ namespace DataLayer.Repository
                     return null;
                 }
             }
-            catch (Exception ex) { throw ex; }
+            catch (Exception ex) 
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
         }
 
         public async Task<IEnumerable<AppUserRole>> GetRolesByUserIdAsync(int UserId)
@@ -90,7 +99,12 @@ namespace DataLayer.Repository
                     return results;
                 }
             }
-            catch (Exception ex) { throw ex; }
+            catch (Exception ex) 
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
         }
         public async Task<IEnumerable<AppUsersInlineRoles>> GetAllUsersWithInlineRolesAsync()
         {
@@ -115,7 +129,8 @@ namespace DataLayer.Repository
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
                 throw;
             }
 
@@ -193,7 +208,12 @@ namespace DataLayer.Repository
                 }
 
             }
-            catch (Exception ex) { throw ex; }
+            catch (Exception ex) 
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
         }
 
 
@@ -213,7 +233,12 @@ namespace DataLayer.Repository
                     return result;
                 }
             }
-            catch (Exception ex) { throw ex; }
+            catch (Exception ex) 
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
         }
 
     }

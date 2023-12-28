@@ -17,8 +17,8 @@ namespace Entities.DbModels
         public DateTime ApplyDate { get; set; } = DateTime.Now;
         public DateTime? EnrolledDate { get; set; } = null;
         public string DeclineReason { get; set; }
-        public EnrollStatusEnum Status { get; set; }
-
+        public EnrollStatusEnum ManagerApprovalStatus { get; set; }
+        public EnrollStatusEnum EnrollStatus { get; set; }
     }
 
 }

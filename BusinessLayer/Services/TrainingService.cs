@@ -13,6 +13,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
+using BusinessLayer.Other;
+using System.IO;
 
 namespace BusinessLayer.Services
 {
@@ -120,7 +122,8 @@ namespace BusinessLayer.Services
             {
                 UserId = UserId,
                 TrainingId = trainingId,
-                Status = EnrollStatusEnum.Pending
+                ManagerApprovalStatus = EnrollStatusEnum.Pending,
+                EnrollStatus = EnrollStatusEnum.Pending
             };
 
             int InsertedId = await _userTrainingEnrollmentRepo.CreateUserTrainingEnrollmentReturningIDAsync(enrollment);
@@ -195,6 +198,18 @@ namespace BusinessLayer.Services
                     FileKey = genFileSystemName,
                 });
             }
+        }
+
+        public async Task<Stream> ExportSelectedEmployeesAsync(int trainingId)
+        {
+            IEnumerable<TrainingEmployeeDetails> employeeDetails = await _trainingRepo.GetAllTrainingEmployeeDetailsByTrainingId(trainingId);
+
+            string employeeDetailsCommaSeparated = CsvConvert.Convert(employeeDetails);
+
+            var byteArray = Encoding.UTF8.GetBytes(employeeDetailsCommaSeparated);
+            var stream = new MemoryStream(byteArray);
+
+            return stream;
         }
 
     }

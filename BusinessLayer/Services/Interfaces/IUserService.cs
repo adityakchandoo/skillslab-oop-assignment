@@ -17,7 +17,6 @@ namespace BusinessLayer.Services.Interfaces
         Task<AuthenticateResponse> AuthenticateUserAsync(UserLoginFormDTO form);
         Task RegisterAsync(RegisterFormDTO reg);
         Task<IEnumerable<AppUser>> GetAllUsersByTypeAsync(UserRoleEnum userRoleEnum);
-        Task<IEnumerable<AppUser>> ExportSelectedEmployeesAsync();
         Task<IEnumerable<AppUsersInlineRoles>> GetAllUsersWithInlineRolesAsync();
         Task<IEnumerable<AppUserRole>> GetRolesByUserIdAsync(int UserId);
         Task<bool> IsUsernameExistsAsync(string value);

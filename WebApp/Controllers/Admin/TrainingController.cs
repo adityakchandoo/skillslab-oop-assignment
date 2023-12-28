@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
@@ -85,6 +87,14 @@ namespace WebApp.Controllers
             _trainingService.SaveTrainingWithContentsAsync(addTrainingContentDTO);
 
             return Json(new { status = "ok" });
+        }
+
+        [AuthorizePermission("training.exportemp")]
+        public async Task<ActionResult> ExportEmployees(int trainingId)
+        {
+            Stream csv = await _trainingService.ExportSelectedEmployeesAsync(trainingId);
+
+            return File(csv, "text/csv", $"Exported_Employees{DateTime.Now.ToString("yyyyMMdd")}_{trainingId}.csv");
         }
     }
 }

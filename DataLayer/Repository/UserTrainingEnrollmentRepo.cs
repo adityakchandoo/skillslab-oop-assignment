@@ -30,9 +30,9 @@ namespace DataLayer.Repository
             try
             {
                 string sql = @"INSERT INTO [dbo].[UserTrainingEnrollment] 
-                               (UserId, TrainingId, ApplyDate, Status) 
+                               (UserId, TrainingId, ApplyDate, Status, EnrollStatus) 
                                OUTPUT Inserted.UserTrainingEnrollmentId 
-                               VALUES (@UserId, @TrainingId, @ApplyDate, @Status)";
+                               VALUES (@UserId, @TrainingId, @ApplyDate, @ManagerApprovalStatus, @EnrollStatus)";
 
 
                 using (SqlCommand cmd = new SqlCommand(sql, _conn))
@@ -40,7 +40,8 @@ namespace DataLayer.Repository
                     cmd.Parameters.AddWithValue("@UserId", userTrainingEnrollment.UserId);
                     cmd.Parameters.AddWithValue("@TrainingId", userTrainingEnrollment.TrainingId);
                     cmd.Parameters.AddWithValue("@ApplyDate", userTrainingEnrollment.ApplyDate);
-                    cmd.Parameters.AddWithValue("@Status", userTrainingEnrollment.Status);
+                    cmd.Parameters.AddWithValue("@ManagerApprovalStatus", userTrainingEnrollment.ManagerApprovalStatus);
+                    cmd.Parameters.AddWithValue("@EnrollStatus", userTrainingEnrollment.EnrollStatus);
 
                     return (int)(await cmd.ExecuteScalarAsync());
                 }

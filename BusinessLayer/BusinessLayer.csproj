@@ -49,6 +49,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Other\CommonValidations.cs" />
+    <Compile Include="Other\CsvConvert.cs" />
     <Compile Include="PasswordHasher.cs" />
     <Compile Include="Services\AmazonS3Service.cs" />
     <Compile Include="Services\DepartmentService.cs" />

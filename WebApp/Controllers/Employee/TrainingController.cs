@@ -57,7 +57,7 @@ namespace WebApp.Controllers
 
             var enrollement = await _userTrainingEnrollmentService.GetUserTrainingEnrollmentAsync(UserId, id);
 
-            if (enrollement != null && enrollement.Status == EnrollStatusEnum.Pending)
+            if (enrollement != null && (enrollement.EnrollStatus == EnrollStatusEnum.Pending || enrollement.ManagerApprovalStatus == EnrollStatusEnum.Pending))
             {
                 Response.StatusCode = 400;
                 return Content("Already Applied!");

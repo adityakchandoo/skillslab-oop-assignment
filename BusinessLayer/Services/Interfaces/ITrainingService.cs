@@ -5,6 +5,7 @@ using Entities.Enums;
 using Entities.FormDTO;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -30,6 +31,8 @@ namespace BusinessLayer.Services.Interfaces
         Task ApplyTrainingAsync(int UserId, int trainingId, List<UploadFileStore> uploadFileStore);
         Task<IEnumerable<TrainingWithContentDTO>> GetTrainingWithContentsAsync(int trainingId);
         Task SaveTrainingWithContentsAsync(AddTrainingContentDTO addTrainingContentDTO);
+
+        Task<Stream> ExportSelectedEmployeesAsync(int trainingId);
 
     }
 }

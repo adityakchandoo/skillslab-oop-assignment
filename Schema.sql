@@ -130,7 +130,7 @@ create table UserTrainingEnrollment (
 	ApplyDate					date     	     not null,
 	EnrolledDate				date     	     null,
 	DeclineReason				varchar(512)	 null,
-	ManagerStatus				tinyint     	 not null,
+	ManagerApprovalStatus		tinyint     	 not null,
 	EnrollStatus				tinyint     	 not null,
     constraint PK_UserTrainingEnrollment_UserTrainingEnrollmentId primary key (UserTrainingEnrollmentId),
 	constraint FK_UserTrainingEnrollment_UserId_AppUser_UserId foreign key (UserId)

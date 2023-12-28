@@ -248,5 +248,51 @@ namespace DataLayer.Repository
 
         }
 
+        public async Task<IEnumerable<TrainingEmployeeDetails>> GetAllTrainingEmployeeDetailsByTrainingId(int trainingId)
+        {
+            List<TrainingEmployeeDetails> results = new List<TrainingEmployeeDetails>();
+
+            string sql = @" SELECT 
+                                u.FirstName + ' ' + u.LastName AS EmployeeName,
+                                u.Email AS ContactEmail,
+                                u.MobileNumber AS ContactNumber,
+                                m.FirstName + ' ' + m.LastName AS ManagerName
+                            FROM 
+                                UserTrainingEnrollment ute
+                            INNER JOIN 
+                                AppUser u ON ute.UserId = u.UserId
+                            LEFT JOIN 
+                                UserManager um ON u.UserId = um.UserId
+                            LEFT JOIN 
+                                AppUser m ON um.ManagerId = m.UserId
+                            WHERE 
+                                ute.TrainingId = @TrainingId;";
+
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
+                {
+                    cmd.Parameters.AddWithValue("@TrainingId", trainingId);
+
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(DbHelper.ConvertToObject<TrainingEmployeeDetails>(reader));
+                        };
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
+
+            return results;
+
+        }
     }
 }

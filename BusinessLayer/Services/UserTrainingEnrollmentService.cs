@@ -77,7 +77,7 @@ namespace BusinessLayer.Services
 
             var userEnrollment = await _userTrainingEnrollmentRepo.GetUserTrainingEnrollmentAsync(targetUserId, targetTrainingId);
 
-            userEnrollment.Status = isApproved ? EnrollStatusEnum.Approved : EnrollStatusEnum.Rejected;
+            userEnrollment.ManagerApprovalStatus = isApproved ? EnrollStatusEnum.Approved : EnrollStatusEnum.Rejected;
             userEnrollment.EnrolledDate = DateTime.Now;
             userEnrollment.DeclineReason = string.IsNullOrEmpty(declineReason) ? null : declineReason;
 

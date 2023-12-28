@@ -32,6 +32,7 @@ INSERT INTO RolePermission (RoleId, Permission) VALUES
 (1, 'admin.dash'),
 (1, 'user.profile'),
 (1, 'file.download'),
+(1, 'training.exportemp'),
 (1, 'department.view'),
 (1, 'department.add'),
 (1, 'prerequisite.view'),

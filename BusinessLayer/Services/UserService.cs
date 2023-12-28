@@ -226,11 +226,6 @@ namespace BusinessLayer.Services
 
         }
 
-        public Task<IEnumerable<AppUser>> ExportSelectedEmployeesAsync()
-        {
-            throw new NotImplementedException();
-        }
-
         public async Task<IEnumerable<AppUsersInlineRoles>> GetAllUsersWithInlineRolesAsync()
         {
             return await _appUserRepo.GetAllUsersWithInlineRolesAsync();

@@ -16,6 +16,7 @@ namespace Entities.DbModels
         public string Description { get; set; }
         public int MaxSeat { get; set; }
         public DateTime Deadline { get; set; }
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
         public int? PreferedDepartmentId { get; set; }
         public IsActive IsActive { get; set; } = IsActive.Yes;
 

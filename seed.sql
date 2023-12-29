@@ -3,15 +3,14 @@ CREATE VIEW AllTrainingWithDepartmentName AS
 SELECT 
     T.TrainingId,
     D.Name AS DepartmentName,
-    COUNT(UTE.UserId) AS NumberOfEmployeesEnrolled
+    COUNT(UTE.UserId) AS NumberOfEmployeesApplied,
+	SUM(CASE WHEN UTE.ManagerApprovalStatus = 2 AND UTE.EnrollStatus = 2 THEN 1 ELSE 0 END) AS NumberOfEmployeesEnrolled
 FROM 
     Training T
 LEFT JOIN 
     UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId
 LEFT JOIN 
-    AppUser AU ON UTE.UserId = AU.UserId
-LEFT JOIN 
-    Department D ON AU.DepartmentId = D.DepartmentId
+    Department D ON T.PreferedDepartmentId = D.DepartmentId
 GROUP BY 
     T.TrainingId, D.Name;
 GO

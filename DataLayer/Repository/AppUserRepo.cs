@@ -168,7 +168,8 @@ namespace DataLayer.Repository
                     INNER JOIN 
                         AppUser Manager ON UM.ManagerId = Manager.UserId
                     WHERE 
-                        AU.UserId = @UserId;
+                        AU.UserId = @UserId
+                    ORDER BY UM.UserManagerId DESC;
                     ",
                 new Dictionary<string, object>() { { "@UserId", UserId } }
             );
@@ -228,7 +229,7 @@ namespace DataLayer.Repository
                     cmd.Parameters.AddWithValue("@UserID", UserId);
                     cmd.Parameters.AddWithValue("@Permission", permission);
 
-                    var result = (int)(await cmd.ExecuteScalarAsync()) == 1 ? true : false;
+                    var result =(int)await cmd.ExecuteScalarAsync() == 1 ? true : false;
 
                     return result;
                 }

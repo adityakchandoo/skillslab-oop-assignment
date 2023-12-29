@@ -16,7 +16,7 @@ namespace DataLayer
         public SqlServer(string connectionString)
         {
             connection = new SqlConnection(connectionString);
-            connection.OpenAsync();
+            connection.Open();
 
         }
 

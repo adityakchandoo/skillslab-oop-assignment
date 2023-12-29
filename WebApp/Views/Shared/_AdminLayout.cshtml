@@ -30,6 +30,15 @@
 
             <!-- Right navbar links -->
             <ul class="navbar-nav ml-auto">
+                @if (WebApp.Helpers.SessionHelpers.IsUser(Entities.Enums.UserRoleEnum.Admin))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link" onclick="processEnrollments()" href="#" id="logout-btn">
+                            <i class="fas fa-sign-out-alt"></i> Process Enrollments
+                        </a>
+                    </li>
+                }
+
                 <li class="nav-item">
                     <a class="nav-link" href="/User/SelectRole" id="logout-btn">
                         <i class="fas fa-sign-out-alt"></i> Select Role
@@ -37,7 +46,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a class="nav-link" href="/User/Logout" id="logout-btn">
+                    <a class="nav-link" href="/User/Logout" onclick="return confirm('Are you sure?')" id="logout-btn">
                         <i class="fas fa-sign-out-alt"></i> Logout
                     </a>
                 </li>
@@ -121,6 +130,38 @@
     <script src="~/Scripts/jquery.validate.additional-methods.js"></script>
 
     @RenderSection("scripts", required: false)
+
+    @if (WebApp.Helpers.SessionHelpers.IsUser(Entities.Enums.UserRoleEnum.Admin))
+    {
+        <script>
+
+            function processEnrollments() {
+
+                $.ajax({
+                    url: "/Training/AutoProcess",
+                    type: "GET",
+                }).done(function (response) {
+
+                    Swal.mixin({
+                        toast: true,
+                        position: 'top-end',
+                        showConfirmButton: false,
+                        timer: 3000
+                    }).fire({
+                        icon: 'success',
+                        title: 'Training Processing Started!'
+                    })
+
+                })
+            }
+
+
+
+
+
+
+        </script>
+    }
 
 </body>
 </html>

@@ -30,7 +30,7 @@ namespace DataLayer.Repository
             try
             {
                 string sql = @"INSERT INTO [dbo].[UserTrainingEnrollment] 
-                               (UserId, TrainingId, ApplyDate, Status, EnrollStatus) 
+                               (UserId, TrainingId, ApplyDate, ManagerApprovalStatus, EnrollStatus) 
                                OUTPUT Inserted.UserTrainingEnrollmentId 
                                VALUES (@UserId, @TrainingId, @ApplyDate, @ManagerApprovalStatus, @EnrollStatus)";
 

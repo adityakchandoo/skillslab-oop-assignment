@@ -52,131 +52,15 @@ namespace DataLayer.Repository
                 throw;
             }
         }
-        public async Task<IEnumerable<TrainingStatus>> GetAllTrainingAsync(int UserId)
-        {
-            List<TrainingStatus> results = new List<TrainingStatus>();
-
-            string sql = @"SELECT 
-                            T.*,
-                            CASE 
-                                WHEN UTE.UserId IS NULL THEN 0
-                                ELSE UTE.Status
-                            END AS EnrollmentStatus
-                            FROM 
-                              Training T
-                            LEFT JOIN 
-                              UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId AND UTE.UserId = @UserId;";
-
-            try
-            {
-                using (SqlCommand cmd = new SqlCommand(sql, _conn))
-                {
-                    cmd.Parameters.AddWithValue("@UserId", UserId);
-
-                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                    {
-                        while (reader.Read())
-                        {
-                            results.Add(DbHelper.ConvertToObject<TrainingStatus>(reader));
-                        };
-
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex);
-                throw new DbErrorException("Database Error");
-                throw;
-            }
-
-            return results;
-        }
-        public async Task<IEnumerable<TrainingStatus>> GetTrainingEnrolledByUserAsync(int UserId, EnrollStatusEnum status)
-        {
-            List<TrainingStatus> results = new List<TrainingStatus>();
-
-            string sql = $@"SELECT 
-                            T.*,
-                            UTE.Status AS EnrollmentStatus
-                            FROM 
-                              Training T
-                            LEFT JOIN 
-                              UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId
-                            WHERE UTE.UserId = @UserId AND UTE.Status = @Status;";
-            try
-            {
-                using (SqlCommand cmd = new SqlCommand(sql, _conn))
-                {
-                    cmd.Parameters.AddWithValue("@UserId", UserId);
-                    cmd.Parameters.AddWithValue("@Status", (int)status);
-
-                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                    {
-                        while (reader.Read())
-                        {
-                            results.Add(DbHelper.ConvertToObject<TrainingStatus>(reader));
-                        };
-
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex);
-                throw new DbErrorException("Database Error");
-                throw;
-            }
-
-            return results;
-
-        }
-        public async Task<IEnumerable<TrainingStatus>> GetTrainingEnrolledByUserAsync(int UserId)
-        {
-            List<TrainingStatus> results = new List<TrainingStatus>();
-
-            string sql = $@"SELECT 
-                            T.*,
-                            UTE.Status AS EnrollmentStatus
-                            FROM 
-                              Training T
-                            LEFT JOIN 
-                              UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId
-                            WHERE UTE.UserId = @UserId;";
-            try
-            {
-                using (SqlCommand cmd = new SqlCommand(sql, _conn))
-                {
-                    cmd.Parameters.AddWithValue("@UserId", UserId);
-
-                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                    {
-                        while (reader.Read())
-                        {
-                            results.Add(DbHelper.ConvertToObject<TrainingStatus>(reader));
-                        };
-
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex);
-                throw new DbErrorException("Database Error");
-                throw;
-            }
-
-            return results;
-
-        }
         public async Task<IEnumerable<TrainingEnrollCount>> GetAllTrainingWithEnrollCountAsync()
         {
             List<TrainingEnrollCount> results = new List<TrainingEnrollCount>();
 
             // AllTrainingWithDepartmentName is a view
 
-            string sql = @"SELECT Training.*, A.DepartmentName, A.NumberOfEmployeesEnrolled FROM Training 
-                           LEFT JOIN AllTrainingWithDepartmentName A ON Training.TrainingId = A.TrainingId";
+            string sql = @"SELECT Training.*, A.* FROM Training 
+                           LEFT JOIN AllTrainingWithDepartmentName A ON Training.TrainingId = A.TrainingId
+                           ORDER BY Training.CreatedOn";
 
             try
             {
@@ -200,6 +84,132 @@ namespace DataLayer.Repository
 
             return results;
         }
+        public async Task<IEnumerable<TrainingWithUserStatus>> GetAllTrainingAsync(int UserId)
+        {
+            List<TrainingWithUserStatus> results = new List<TrainingWithUserStatus>();
+
+            string sql = @"SELECT 
+                            T.*,
+                            CASE 
+                                WHEN UTE.UserId IS NULL THEN 0
+                                ELSE UTE.ManagerApprovalStatus
+                            END AS ManagerApprovalStatus,
+                            CASE 
+                                WHEN UTE.UserId IS NULL THEN 0
+                                ELSE UTE.EnrollStatus
+                            END AS EnrollStatus
+                            FROM 
+                              Training T
+                            LEFT JOIN 
+                              UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId AND UTE.UserId = @UserId;";
+
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", UserId);
+
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(DbHelper.ConvertToObject<TrainingWithUserStatus>(reader));
+                        };
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
+
+            return results;
+        }
+        public async Task<IEnumerable<TrainingWithUserStatus>> GetTrainingEnrolledByUserAsync(int UserId, EnrollStatusEnum status)
+        {
+            List<TrainingWithUserStatus> results = new List<TrainingWithUserStatus>();
+
+            string sql = $@"SELECT 
+                            T.*,
+                            UTE.ManagerApprovalStatus AS ManagerApprovalStatus,
+                            UTE.EnrollStatus AS EnrollStatus
+                            FROM 
+                              Training T
+                            INNER JOIN 
+                              UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId
+                            WHERE UTE.UserId = @UserId AND UTE.ManagerApprovalStatus = @ManagerApprovalStatus AND UTE.EnrollStatus = @EnrollStatus;";
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", UserId);
+                    cmd.Parameters.AddWithValue("@ManagerApprovalStatus", (int)status);
+                    cmd.Parameters.AddWithValue("@EnrollStatus", (int)status);
+
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(DbHelper.ConvertToObject<TrainingWithUserStatus>(reader));
+                        };
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
+
+            return results;
+
+        }
+        public async Task<IEnumerable<TrainingWithUserStatus>> GetTrainingEnrolledByUserAsync(int UserId)
+        {
+            List<TrainingWithUserStatus> results = new List<TrainingWithUserStatus>();
+
+            string sql = $@"SELECT 
+                            T.*,
+                            UTE.ManagerApprovalStatus AS ManagerApprovalStatus,
+                            UTE.EnrollStatus AS EnrollStatus
+                            FROM 
+                              Training T
+                            INNER JOIN 
+                              UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId
+                            WHERE UTE.UserId = @UserId;";
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", UserId);
+
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(DbHelper.ConvertToObject<TrainingWithUserStatus>(reader));
+                        };
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
+
+            return results;
+
+        }
+
+
         public async Task<IEnumerable<UserTraining>> GetUserTrainingByStatusAndManagerIdAsync(EnrollStatusEnum enrollStatusEnum, int UserId)
         {
             var pendingUserTraining = new List<UserTraining>();
@@ -218,7 +228,7 @@ namespace DataLayer.Repository
                             JOIN AppUser AU ON UTE.UserId = AU.UserId
                             JOIN UserManager UM ON AU.UserId = UM.UserId
                             WHERE UM.ManagerId = @ManagerId
-                            AND UTE.Status = @EnrollStatusEnum
+                            AND UTE.ManagerApprovalStatus = @EnrollStatusEnum
                             ";
 
             try
@@ -239,7 +249,7 @@ namespace DataLayer.Repository
                 return pendingUserTraining;
 
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 _logger.LogError(ex);
                 throw new DbErrorException("Database Error");
@@ -293,6 +303,23 @@ namespace DataLayer.Repository
 
             return results;
 
+        }
+
+        public async Task AutoProcess()
+        {
+            try
+            {
+                string sql = $"EXEC AutomaticProcess";
+                SqlCommand cmd = new SqlCommand(sql, _conn);
+
+                await cmd.ExecuteNonQueryAsync();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
         }
     }
 }

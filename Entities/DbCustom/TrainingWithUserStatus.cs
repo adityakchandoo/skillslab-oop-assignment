@@ -8,9 +8,10 @@ using System.Threading.Tasks;
 
 namespace Entities.DbCustom
 {
-    public class TrainingStatus : Training
+    public class TrainingWithUserStatus : Training
     { 
-        public int EnrollmentStatus { get; set; }
+        public int ManagerApprovalStatus { get; set; }
+        public int EnrollStatus { get; set; }
     }
 
 }

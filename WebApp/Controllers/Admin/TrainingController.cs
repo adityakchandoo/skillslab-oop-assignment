@@ -21,6 +21,7 @@ namespace WebApp.Controllers
         private readonly IUserService _userService;
         private readonly IPrerequisiteService _prerequisiteService;
         private readonly IDepartmentService _departmentService;
+        private readonly IStorageService _storageService;
 
         public TrainingController(
             ITrainingService trainingService,
@@ -82,19 +83,28 @@ namespace WebApp.Controllers
 
         [AuthorizePermission("training.addcontent")]
         [HttpPost]
-        public ActionResult AddContentPost(AddTrainingContentDTO addTrainingContentDTO)
+        public async Task<ActionResult> AddContentPost(AddTrainingContentDTO addTrainingContentDTO)
         {
-            _trainingService.SaveTrainingWithContentsAsync(addTrainingContentDTO);
+            await _trainingService.SaveTrainingWithContentsAsync(addTrainingContentDTO);
 
             return Json(new { status = "ok" });
         }
 
         [AuthorizePermission("training.exportemp")]
-        public async Task<ActionResult> ExportEmployees(int trainingId)
+        public async Task<ActionResult> ExportEmployees(int id)
         {
-            Stream csv = await _trainingService.ExportSelectedEmployeesAsync(trainingId);
+            Stream csv = await _trainingService.ExportSelectedEmployeesAsync(id);
 
-            return File(csv, "text/csv", $"Exported_Employees{DateTime.Now.ToString("yyyyMMdd")}_{trainingId}.csv");
+            return File(csv, "text/csv", $"Exported_Employees{DateTime.Now.ToString("yyyyMMdd")}_{id}.csv");
         }
+
+        [AuthorizePermission("training.autoprocess")]
+        public ActionResult AutoProcess()
+        {
+            _ = _trainingService.AutoProcess();
+
+            return Json(new { status = "ok" }, JsonRequestBehavior.AllowGet);
+        }
+
     }
 }

@@ -21,9 +21,9 @@ namespace BusinessLayer.Services.Interfaces
 
 
         Task<IEnumerable<TrainingEnrollCount>> GetAllTrainingWithEnrollCountAsync();
-        Task<IEnumerable<TrainingStatus>> GetAllTrainingAsync(int UserId);
-        Task<IEnumerable<TrainingStatus>> GetTrainingEnrolledByUserAsync(int UserId, EnrollStatusEnum status);
-        Task<IEnumerable<TrainingStatus>> GetTrainingEnrolledByUserAsync(int UserId);
+        Task<IEnumerable<TrainingWithUserStatus>> GetAllTrainingAsync(int UserId);
+        Task<IEnumerable<TrainingWithUserStatus>> GetTrainingEnrolledByUserAsync(int UserId, EnrollStatusEnum status);
+        Task<IEnumerable<TrainingWithUserStatus>> GetTrainingEnrolledByUserAsync(int UserId);
         Task<IEnumerable<UserTraining>> GetTrainingPendingForManagerAsync(int UserId);
 
 
@@ -33,6 +33,8 @@ namespace BusinessLayer.Services.Interfaces
         Task SaveTrainingWithContentsAsync(AddTrainingContentDTO addTrainingContentDTO);
 
         Task<Stream> ExportSelectedEmployeesAsync(int trainingId);
+        Task AutoProcess();
+
 
     }
 }

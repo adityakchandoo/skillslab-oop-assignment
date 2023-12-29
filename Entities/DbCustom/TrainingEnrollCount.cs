@@ -10,6 +10,7 @@ namespace Entities.DbCustom
     public class TrainingEnrollCount : Training
     {
         public string DepartmentName { get; set; }
+        public int NumberOfEmployeesApplied { get; set; }
         public int NumberOfEmployeesEnrolled { get; set; }
     }
 

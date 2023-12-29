@@ -40,14 +40,14 @@
 
                             <!-- timeline time label -->
                             <div class="time-label">
-                                <span class="bg-gray">@Content.TrainingContent.PostDate.ToString("dd MMM. yyyy")</span>
+                                <span class="bg-gray">@Content.TrainingContent.CreatedOn.ToString("dd MMM. yyyy")</span>
                             </div>
                             <!-- /.timeline-label -->
                             <!-- timeline item -->
                             <div>
                                 <i class="fas fa-envelope bg-blue"></i>
                                 <div class="timeline-item">
-                                    <span class="time"><i class="fas fa-clock"></i> @Content.TrainingContent.PostDate.ToString("HH:mm:ss")</span>
+                                    <span class="time"><i class="fas fa-clock"></i> @Content.TrainingContent.CreatedOn.ToString("HH:mm:ss")</span>
                                     <h3 class="timeline-header"><a href="#">@Content.TrainingContent.Name</a></h3>
 
                                     <div class="timeline-body">
@@ -56,7 +56,7 @@
                                     <div class="timeline-footer">
                                         @foreach (var Attachments in Content.TrainingContentAttachments)
                                         {
-                                            <a href="/File/@Attachments.SystemFilename/@Attachments.OriginalFilename/" class="btn btn-primary btn-sm">@Attachments.OriginalFilename</a>
+                                            <a href="/File/@Attachments.FileKey/@Attachments.OriginalFilename/" class="btn btn-primary btn-sm">@Attachments.OriginalFilename</a>
                                         }
                                         <a class="btn btn-danger btn-sm">Delete</a>
                                     </div>

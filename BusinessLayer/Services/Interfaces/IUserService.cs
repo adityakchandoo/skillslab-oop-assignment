@@ -27,6 +27,7 @@ namespace BusinessLayer.Services.Interfaces
         Task UpdateProfileAsync(int UserId, UpdateProfileDTO updateProfileDTO);
         Task UpdatePasswordAsync(int UserId, UpdatePasswordDTO updatePasswordDTO);
         Task ProcessNewUserAsync(int userId, bool approve);
+        Task<AppUser> GetUserManagerAsync(int UserId);
         Task<bool> CheckPermissionAsync(int UserId, string permission);
     }
 }

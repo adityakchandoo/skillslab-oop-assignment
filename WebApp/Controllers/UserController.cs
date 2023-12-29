@@ -61,7 +61,12 @@ namespace WebApp.Controllers
 
             IEnumerable<AppUserRole> userRoles = await _userService.GetRolesByUserIdAsync((int)this.Session["UserId"]);
 
-            if (userRoles.Count() == 1)
+            if (userRoles.Count() == 0)
+            {
+                throw new ArgumentException("User has no role");
+
+            }
+            else if (userRoles.Count() == 1)
             {
                 this.Session["Role"] = userRoles.First().RoleId;
                 return new RedirectResult($"~/Dash/{userRoles.First().RoleName}Dash");
@@ -125,7 +130,9 @@ namespace WebApp.Controllers
         [AuthorizePermission("user.profile")]
         public async Task<ActionResult> MyProfile()
         {
-            ViewBag.User = await _userService.GetUserAsync((int)this.Session["UserId"]);
+            int UserId = (int)this.Session["UserId"];
+            ViewBag.User = await _userService.GetUserAsync(UserId);
+            ViewBag.Manager = await _userService.GetUserManagerAsync(UserId);
             return View();
         }
 

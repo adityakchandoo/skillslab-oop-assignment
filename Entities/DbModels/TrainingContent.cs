@@ -15,7 +15,7 @@ namespace Entities.DbModels
         public int TrainingId { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public DateTime PostDate { get; set; } = DateTime.Now;
+        public DateTime CreatedOn { get; set; } = DateTime.Now;
         public IsActive IsActive { get; set; } = IsActive.Yes;
 
     }

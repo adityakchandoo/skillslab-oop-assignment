@@ -32,12 +32,12 @@
             <div class="row">
 
                 @foreach (var Training in ViewBag.Trainings)
-                {                    
+                {
                     var color = "card-success";
 
-                    if (Training.EnrollmentStatus == 0) { color = "card-primary"; }
-                    if (Training.EnrollmentStatus == (int)Entities.Enums.EnrollStatusEnum.Pending) { color = "card-warning"; }
-                    if (Training.EnrollmentStatus == (int)Entities.Enums.EnrollStatusEnum.Rejected) { color = "card-danger"; }
+                    if (Training.ManagerApprovalStatus == 0) { color = "card-primary"; }
+                    if (Training.ManagerApprovalStatus == (int)Entities.Enums.EnrollStatusEnum.Pending || Training.EnrollStatus == (int)Entities.Enums.EnrollStatusEnum.Pending) { color = "card-warning"; }
+                    if (Training.ManagerApprovalStatus == (int)Entities.Enums.EnrollStatusEnum.Rejected || Training.EnrollStatus == (int)Entities.Enums.EnrollStatusEnum.Rejected) { color = "card-danger"; }
 
                     <div class="col-md-3">
                         <div class="card card-outline @color">

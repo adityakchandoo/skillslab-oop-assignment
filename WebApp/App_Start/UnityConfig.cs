@@ -79,7 +79,9 @@ namespace WebApp
             container.RegisterType<IUserRoleService, UserRoleService>(new PerRequestLifetimeManager());
             
             
-            container.RegisterType<IStorageService, AmazonS3Service>(new PerRequestLifetimeManager());
+            container.RegisterType<IStorageService, AmazonS3Service>(
+                new PerRequestLifetimeManager(),
+                new InjectionConstructor(ConfigurationManager.AppSettings));
             container.RegisterType<INotificationService, NtfyService>(new PerRequestLifetimeManager());
             container.RegisterSingleton<ILogger, Logger>();
 

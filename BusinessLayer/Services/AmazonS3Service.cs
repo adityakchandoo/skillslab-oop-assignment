@@ -4,6 +4,7 @@ using Amazon.S3.Model;
 using BusinessLayer.Services.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -13,14 +14,17 @@ namespace BusinessLayer.Services
 {
     public class AmazonS3Service : IStorageService
     {
-        const string bucketName = "skillslab-project";
-        const string awsAccessKey = "AKIAYEKFVLAJIBZDJX7G";
-        const string awsSecretKey = "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";
+        private const string bucketName = "skillslab-project";
+        private readonly string awsAccessKey;
+        private readonly string awsSecretKey;
 
         IAmazonS3 client;
 
-        public AmazonS3Service()
+        public AmazonS3Service(NameValueCollection appSettings)
         {
+            awsAccessKey = appSettings["awsAccessKey"];
+            awsSecretKey = appSettings["awsSecretKey"];
+
             client = new AmazonS3Client(awsAccessKey, awsSecretKey, RegionEndpoint.USWest2);
         }
 

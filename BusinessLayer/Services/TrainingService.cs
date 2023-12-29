@@ -66,16 +66,16 @@ namespace BusinessLayer.Services
         {
             return await _trainingRepo.GetAllTrainingWithEnrollCountAsync();
         }
-        public async Task<IEnumerable<TrainingStatus>> GetAllTrainingAsync(int UserId)
+        public async Task<IEnumerable<TrainingWithUserStatus>> GetAllTrainingAsync(int UserId)
         {
             return await _trainingRepo.GetAllTrainingAsync(UserId);
         }
-        public async Task<IEnumerable<TrainingStatus>> GetTrainingEnrolledByUserAsync(int UserId, EnrollStatusEnum status)
+        public async Task<IEnumerable<TrainingWithUserStatus>> GetTrainingEnrolledByUserAsync(int UserId, EnrollStatusEnum status)
         {
             return await _trainingRepo.GetTrainingEnrolledByUserAsync(UserId,status);
         }
 
-        public async Task<IEnumerable<TrainingStatus>> GetTrainingEnrolledByUserAsync(int UserId)
+        public async Task<IEnumerable<TrainingWithUserStatus>> GetTrainingEnrolledByUserAsync(int UserId)
         {
             return await _trainingRepo.GetTrainingEnrolledByUserAsync(UserId);
         }
@@ -105,11 +105,15 @@ namespace BusinessLayer.Services
                 TrainingId = insertedId
             };
 
-            foreach (int id in training.Prerequisites)
+            if (training.Prerequisites != null)
             {
-                dbTrainingPrerequisite.PrerequisiteId = id;
-                await _trainingPrerequisiteRepo.Insert(dbTrainingPrerequisite);
+                foreach (int id in training.Prerequisites)
+                {
+                    dbTrainingPrerequisite.PrerequisiteId = id;
+                    await _trainingPrerequisiteRepo.Insert(dbTrainingPrerequisite);
+                }                
             }
+
         }
         public async Task ApplyTrainingAsync(int UserId, int trainingId, List<UploadFileStore> uploadFileStore)
         {
@@ -117,6 +121,11 @@ namespace BusinessLayer.Services
 
             AppUser currentUser = await _appUserRepo.GetByPKAsync(UserId);
             AppUser currentUserManager = await _appUserRepo.GetUserManagerAsync(UserId);
+
+            if (currentUserManager == null)
+            {
+                throw new ArgumentException("This User has no manager");
+            }
 
             UserTrainingEnrollment enrollment = new UserTrainingEnrollment()
             {
@@ -210,6 +219,11 @@ namespace BusinessLayer.Services
             var stream = new MemoryStream(byteArray);
 
             return stream;
+        }
+
+        public async Task AutoProcess()
+        {
+            await _trainingRepo.AutoProcess();
         }
 
     }

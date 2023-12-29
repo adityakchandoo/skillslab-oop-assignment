@@ -27,9 +27,9 @@ namespace DataLayer.Repository
         {
             try
             {
-                string sql = @"INSERT INTO [dbo].[TrainingContent] (TrainingId, Name, Description, PostDate) 
+                string sql = @"INSERT INTO [dbo].[TrainingContent] (TrainingId, Name, Description) 
                                OUTPUT Inserted.TrainingContentId 
-                               VALUES (@TrainingId, @Name, @Description, @PostDate)";
+                               VALUES (@TrainingId, @Name, @Description)";
 
 
                 using (SqlCommand cmd = new SqlCommand(sql, _conn))
@@ -37,7 +37,6 @@ namespace DataLayer.Repository
                     cmd.Parameters.AddWithValue("@TrainingId", trainingContent.TrainingId);
                     cmd.Parameters.AddWithValue("@Name", trainingContent.Name);
                     cmd.Parameters.AddWithValue("@Description", trainingContent.Description);
-                    cmd.Parameters.AddWithValue("@PostDate", trainingContent.PostDate);
 
                     return (int)(await cmd.ExecuteScalarAsync());
                 }

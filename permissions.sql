@@ -2,6 +2,8 @@ INSERT INTO Role (RoleId, Name) VALUES (1, 'Admin');
 INSERT INTO Role (RoleId, Name) VALUES (2, 'Manager');
 INSERT INTO Role (RoleId, Name) VALUES (3, 'Employee');
 
+GO
+
 CREATE PROCEDURE CheckUserPermission
     @UserId INT,
     @Permission VARCHAR(100)
@@ -27,12 +29,14 @@ BEGIN
         u.UserId = @UserId
 END
 
+GO
 
 INSERT INTO RolePermission (RoleId, Permission) VALUES
 (1, 'admin.dash'),
 (1, 'user.profile'),
 (1, 'file.download'),
 (1, 'training.exportemp'),
+(1, 'training.autoprocess'),
 (1, 'department.view'),
 (1, 'department.add'),
 (1, 'prerequisite.view'),

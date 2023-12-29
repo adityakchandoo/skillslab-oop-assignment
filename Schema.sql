@@ -21,7 +21,7 @@ create table AppUser (
 	DOB						date             	 not null,
 	NIC						varchar(14)          not null unique,
 	MobileNumber			varchar(20)          not null,
-	CreatedOn				date            	 not null,
+	CreatedOn				datetime          	 not null DEFAULT GETDATE(),
 	Status					tinyint         	 not null,
 	IsActive				tinyint         	 not null DEFAULT 1,
 	DepartmentId			int					 not null,
@@ -87,7 +87,8 @@ create table Training (
 	Description				text         		 not null,
 	MaxSeat					int         		 not null,
 	IsActive				tinyint         	 not null DEFAULT 1,
-	Deadline				datetime             not null,
+	CreatedOn				datetime          	 not null DEFAULT GETDATE(),
+	Deadline				date             	 not null,
 	PreferedDepartmentId	int					 null,
     constraint PK_Training_TrainingId primary key (TrainingId),
 	constraint FK_Training_PreferedDepartmentId_Department_DepartmentId foreign key (PreferedDepartmentId)
@@ -163,7 +164,7 @@ create table TrainingContent (
 	TrainingId				int         		 not null,
 	Name					nvarchar(255)        not null,
 	Description				text    		     not null,
-	PostDate				datetime     	     not null,
+	CreatedOn				datetime          	 not null DEFAULT GETDATE(),
 	IsActive				tinyint         	 not null DEFAULT 1,
     constraint PK_TrainingContent_TrainingContentId primary key (TrainingContentId),
 	constraint FK_TrainingContent_TrainingId_Training_TrainingId foreign key (TrainingId)

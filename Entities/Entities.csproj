@@ -50,7 +50,7 @@
     <Compile Include="DbCustom\AppUserRole.cs" />
     <Compile Include="DbCustom\AppUsersInlineRoles.cs" />
     <Compile Include="DbCustom\PrerequisiteDetails.cs" />
-    <Compile Include="DbCustom\TrainingStatus.cs" />
+    <Compile Include="DbCustom\TrainingWithUserStatus.cs" />
     <Compile Include="DbCustom\TrainingEnrollCount.cs" />
     <Compile Include="DbCustom\UserTraining.cs" />
     <Compile Include="DbErrorException.cs" />

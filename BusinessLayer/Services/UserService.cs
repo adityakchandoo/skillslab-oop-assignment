@@ -429,6 +429,12 @@ namespace BusinessLayer.Services
 
                 AppUser user = await _appUserRepo.GetByPKAsync(UserId);
                 AppUser userManger = await _appUserRepo.GetUserManagerAsync(UserId);
+
+                if (userManger == null)
+                {
+                    throw new ArgumentException("This User has no manager");
+                }
+
                 user.Status = isApprove ? UserStatusEnum.Registered : UserStatusEnum.Banned;
 
                 await _appUserRepo.Update(user);
@@ -449,6 +455,11 @@ namespace BusinessLayer.Services
         public async Task<bool> CheckPermissionAsync(int UserId, string permission)
         {
             return await _appUserRepo.CheckPermissionAsync(UserId, permission);
+        }
+
+        public async Task<AppUser> GetUserManagerAsync(int UserId)
+        {
+            return await _appUserRepo.GetUserManagerAsync(UserId);
         }
     }
 }

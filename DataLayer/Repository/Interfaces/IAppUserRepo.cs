@@ -22,6 +22,7 @@ namespace DataLayer.Repository.Interfaces
         Task<IEnumerable<AppUser>> GetAllUsersByRoleAsync(UserRoleEnum userRoleEnum);
         Task<IEnumerable<AppUser>> GetAllUsersByManagerAsync(int ManagerId);
         Task<IEnumerable<AppUser>> GetAllUsersByManagerAndStatusAsync(int ManagerId, UserStatusEnum userStatusEnum);
+        Task SoftDeleteAppUser(int userId);
 
     }
 }

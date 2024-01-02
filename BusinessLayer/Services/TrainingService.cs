@@ -15,11 +15,13 @@ using System.Threading.Tasks;
 using System.Xml.Linq;
 using BusinessLayer.Other;
 using System.IO;
+using Entities.AppLogger;
 
 namespace BusinessLayer.Services
 {
     public class TrainingService : ITrainingService
     {
+        private ILogger _logger;
         private readonly ITrainingRepo _trainingRepo;
         private readonly ITrainingPrerequisiteRepo _trainingPrerequisiteRepo;
         private readonly ITrainingContentRepo _trainingContentRepo;
@@ -30,8 +32,9 @@ namespace BusinessLayer.Services
         private readonly IStorageService _storageService;
         private readonly IEnrollmentPrerequisiteAttachmentRepo _enrollmentPrerequisiteAttachmentRepo;
 
-        public TrainingService(ITrainingRepo trainingRepo, ITrainingPrerequisiteRepo trainingPrerequisiteRepo, ITrainingContentRepo trainingContentRepo, ITrainingContentAttachmentRepo trainingContentAttachmentRepo, IAppUserRepo appUserRepo, IUserTrainingEnrollmentRepo userTrainingEnrollmentRepo, IEnrollmentPrerequisiteAttachmentRepo enrollmentPrerequisiteAttachmentRepo, INotificationService notificationService, IStorageService storageService)
+        public TrainingService(ILogger logger, ITrainingRepo trainingRepo, ITrainingPrerequisiteRepo trainingPrerequisiteRepo, ITrainingContentRepo trainingContentRepo, ITrainingContentAttachmentRepo trainingContentAttachmentRepo, IAppUserRepo appUserRepo, IUserTrainingEnrollmentRepo userTrainingEnrollmentRepo, IEnrollmentPrerequisiteAttachmentRepo enrollmentPrerequisiteAttachmentRepo, INotificationService notificationService, IStorageService storageService)
         {
+            _logger = logger;
             _trainingRepo = trainingRepo;
             _trainingPrerequisiteRepo = trainingPrerequisiteRepo;
             _trainingContentRepo = trainingContentRepo;
@@ -162,13 +165,11 @@ namespace BusinessLayer.Services
         {
             var result = new List<TrainingWithContentDTO>();
             
-            var trainingContents = await _trainingContentRepo.GetMany("SELECT * FROM TrainingContent WHERE TrainingId = @TrainingId;",
-                                         new Dictionary<string, object> { { "TrainingId", trainingId } });
+            var trainingContents = await _trainingContentRepo.GetAllTrainingContentAsync(trainingId);
 
             foreach (var item in trainingContents)
             {
-                var attachments = await _trainingContentAttachmentRepo.GetMany("SELECT * FROM TrainingContentAttachment WHERE TrainingContentId = @TrainingContentId;",
-                                         new Dictionary<string, object> { { "TrainingContentId", item.TrainingContentId } });
+                var attachments = await _trainingContentAttachmentRepo.GetAllTrainingContentAttachmentAsync(item.TrainingContentId);
 
                 result.Add(
                     new TrainingWithContentDTO()
@@ -219,6 +220,45 @@ namespace BusinessLayer.Services
             var stream = new MemoryStream(byteArray);
 
             return stream;
+        }
+
+        public async Task SoftDeleteTrainingAsync(int trainingId)
+        {
+            try
+            {
+                if (trainingId <= 0)
+                {
+                    throw new ArgumentException("trainingId must be a positive integer.");
+                }
+
+                await _trainingRepo.SoftDeleteTrainingAsync(trainingId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw ex;
+                throw;
+            }
+        }
+
+
+        public async Task SoftDeleteTrainingContentAsync(int trainingContentId)
+        {
+            try
+            {
+                if (trainingContentId <= 0)
+                {
+                    throw new ArgumentException("trainingContentId must be a positive integer.");
+                }
+
+                await _trainingContentRepo.SoftDeleteTrainingContentAsync(trainingContentId);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw ex;
+                throw;
+            }
         }
 
         public async Task AutoProcess()

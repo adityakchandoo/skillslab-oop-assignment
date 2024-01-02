@@ -60,7 +60,18 @@ namespace BusinessLayer.Services
 
         public async Task<UserTrainingEnrollment> GetUserTrainingEnrollmentAsync(int userId, int trainingId)
         {
-            return await _userTrainingEnrollmentRepo.GetUserTrainingEnrollmentAsync(userId, trainingId);
+            var enrollement = await _userTrainingEnrollmentRepo.GetUserTrainingEnrollmentAsync(userId, trainingId);
+
+            if (enrollement == null)
+                return null;
+
+            if (enrollement.EnrollStatus == EnrollStatusEnum.Pending || enrollement.ManagerApprovalStatus == EnrollStatusEnum.Pending)
+                throw new ArgumentException("Already Applied! - Pending");
+
+            if (enrollement.EnrollStatus == EnrollStatusEnum.Rejected || enrollement.ManagerApprovalStatus == EnrollStatusEnum.Rejected)
+                throw new ArgumentException("Already Applied! - Rejected");
+
+            return enrollement;
         }
 
         public async Task<IEnumerable<TrainingEnrollmentDetails>> GetUserTrainingEnrollmentInfoAsync(int userId, int trainingId)

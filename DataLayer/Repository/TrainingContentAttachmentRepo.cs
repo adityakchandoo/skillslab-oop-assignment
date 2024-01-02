@@ -21,5 +21,11 @@ namespace DataLayer.Repository
             _logger = logger;
             _conn = dbContext.GetConn();
         }
+
+        public async Task<IEnumerable<TrainingContentAttachment>> GetAllTrainingContentAttachmentAsync(int trainingContentId)
+        {
+            return await base.GetMany("SELECT * FROM TrainingContentAttachment WHERE TrainingContentId = @TrainingContentId;",
+                                         new Dictionary<string, object> { { "TrainingContentId", trainingContentId } });
+        }
     }
 }

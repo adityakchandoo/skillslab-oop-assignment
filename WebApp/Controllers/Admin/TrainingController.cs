@@ -50,6 +50,16 @@ namespace WebApp.Controllers
         [AuthorizePermission("training.viewone")]
         public async Task<ActionResult> View(int id)
         {
+            int UserId = (int)this.Session["UserId"];
+
+            // To Check if user has already applied
+            var enrollement = await _userTrainingEnrollmentService.GetUserTrainingEnrollmentAsync(UserId, id);
+
+            if ((int)this.Session["Role"] != (int)UserRoleEnum.Admin && enrollement == null)
+            {
+                throw new ArgumentException("Not Applied!");
+            }
+
             ViewBag.Training = await _trainingService.GetTrainingAsync(id);
             ViewBag.Contents = await _trainingService.GetTrainingWithContentsAsync(id);
 
@@ -98,6 +108,20 @@ namespace WebApp.Controllers
             return File(csv, "text/csv", $"Exported_Employees{DateTime.Now.ToString("yyyyMMdd")}_{id}.csv");
         }
 
+        public async Task<ActionResult> DelTraining(int id)
+        {
+            await _trainingService.SoftDeleteTrainingAsync(id);
+
+            return Redirect(Request.UrlReferrer.ToString());
+        }
+
+        public async Task<ActionResult> DelTrainingContent(int id)
+        {
+            await _trainingService.SoftDeleteTrainingContentAsync(id);
+
+            return Redirect(Request.UrlReferrer.ToString());
+        }
+
         [AuthorizePermission("training.autoprocess")]
         public ActionResult AutoProcess()
         {
@@ -105,6 +129,8 @@ namespace WebApp.Controllers
 
             return Json(new { status = "ok" }, JsonRequestBehavior.AllowGet);
         }
+
+
 
     }
 }

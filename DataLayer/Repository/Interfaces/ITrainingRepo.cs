@@ -21,6 +21,7 @@ namespace DataLayer.Repository.Interfaces
         Task<IEnumerable<TrainingWithUserStatus>> GetTrainingEnrolledByUserAsync(int UserId);
         Task<IEnumerable<UserTraining>> GetUserTrainingByStatusAndManagerIdAsync(EnrollStatusEnum enrollStatusEnum, int UserId);
         Task<IEnumerable<TrainingEmployeeDetails>> GetAllTrainingEmployeeDetailsByTrainingId(int trainingId);
+        Task SoftDeleteTrainingAsync(int trainingId);
         Task AutoProcess();
     }
 }

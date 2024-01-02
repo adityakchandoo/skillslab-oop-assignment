@@ -23,7 +23,6 @@ namespace WebApp.Controllers
 
         public async Task<ActionResult> GetUserRoles(int id)
         {
-            // TODO: Check if used anyware
             return Json((await _userRoleService.GetUserRolesAssignedAsync(id)), JsonRequestBehavior.AllowGet);
         }
 

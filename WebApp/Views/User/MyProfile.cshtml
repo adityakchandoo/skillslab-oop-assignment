@@ -45,13 +45,13 @@
                             <div class="card-body">
 
                                 <div class="form-group">
-                                    <label for="UserName">Username</label>
-                                    <input type="text" class="form-control" id="UserName" name="UserName" value="@ViewBag.User.UserName">
+                                    <label for="Username">Username</label>
+                                    <input type="text" class="form-control ignore" id="Username" name="Username" value="@ViewBag.User.UserName">
                                 </div>
 
                                 <div class="form-group">
                                     <label for="Email">Email</label>
-                                    <input type="text" class="form-control" id="Email" name="Email" value="@ViewBag.User.Email">
+                                    <input type="text" class="form-control ignore" id="Email" name="Email" value="@ViewBag.User.Email">
                                 </div>
 
                                 <div class="form-group">
@@ -110,6 +110,27 @@
 </div>
 @section Scripts {
     <script type="text/javascript">
+
+        $(document).ready(function () {
+            $("#Username").on("keyup", function () {
+                if ($(this).val() === "@ViewBag.User.UserName") {
+                    $(this).addClass("ignore");
+                } else {
+                    $(this).removeClass("ignore");
+                }
+
+            });
+
+            $("#Email").on("keyup", function () {
+
+                if ($(this).val() === "@ViewBag.User.Email") {
+                    $(this).addClass("ignore");
+                } else {
+                    $(this).removeClass("ignore");
+                }
+            });
+        });
+
         $("#profileForm").validate({
             errorClass: "is-invalid",
             validClass: "is-valid",
@@ -144,6 +165,7 @@
                     remote: "Email already in use!"
                 }
             },
+            ignore: ".ignore",
             submitHandler: handleProfile
         });
 
@@ -157,7 +179,7 @@
             errorElement: 'div',
 
             rules: {
-                
+
                 OldPassword: { required: true },
                 NewPassword: { required: true },
                 ConfirmPassword: { required: true }

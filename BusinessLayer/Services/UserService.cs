@@ -185,7 +185,7 @@ namespace BusinessLayer.Services
 
                 if (CommonValidations.IsPhoneNumberValid(registerFormDTO.MobileNumber) == false)
                 {
-                    throw new ArgumentException("Input must be 7 digits if it starts with 5, otherwise 6 digits.");
+                    throw new ArgumentException("Input must be 8 digits if it starts with 5, otherwise 7 digits.");
                 }
 
                 AppUser db_user = new AppUser
@@ -361,7 +361,7 @@ namespace BusinessLayer.Services
 
                 if (CommonValidations.IsPhoneNumberValid(updateProfileDTO.MobileNumber) == false)
                 {
-                    throw new ArgumentException("Input must be 7 digits if it starts with 5, otherwise 6 digits.");
+                    throw new ArgumentException("Input must be 8 digits if it starts with 5, otherwise 7 digits.");
                 }
 
                 // Validate Email
@@ -443,6 +443,25 @@ namespace BusinessLayer.Services
 
                 _ = _notificationService.NotifyUserRegistrationProcessAsync(user.Email, managerName, isApprove);
 
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw ex;
+                throw;
+            }
+        }
+
+        public async Task SoftDeleteAppUser(int UserId)
+        {
+            try
+            {
+                if (UserId <= 0)
+                {
+                    throw new ArgumentException("UserId must be a positive integer.");
+                }
+
+                await _appUserRepo.SoftDeleteAppUser(UserId);
             }
             catch (Exception ex)
             {

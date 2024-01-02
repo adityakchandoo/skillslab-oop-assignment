@@ -77,6 +77,19 @@
 
 @section Scripts {
     <script type="text/javascript">
+
+        $.validator.addMethod("ageRequirement", function (value, element) {
+            var inputDate = new Date(value);
+            var today = new Date();
+            var age = today.getFullYear() - inputDate.getFullYear();
+            var m = today.getMonth() - inputDate.getMonth();
+            if (m < 0 || (m === 0 && today.getDate() < inputDate.getDate())) {
+                age--;
+            }
+            return age >= 16;
+        }, "You must be at least 16 years old.");
+
+
         $("#myForm").validate({
             errorClass: "is-invalid",
             validClass: "is-valid",
@@ -111,8 +124,14 @@
                         type: "post"
                     }
                 },
-                DOB: { required: true },
-                MobileNumber: { required: true },
+                DOB: {
+                    required: true,
+                    ageRequirement: true
+                },
+                MobileNumber: {
+                    required: true,
+                    pattern: "^(5\\d{7}|[^5]\\d{6})$"
+                },
                 ManagerId: { required: true },
                 DepartmentId: { required: true },
                 Pass1: {
@@ -133,7 +152,14 @@
                     remote: "Email already in use!"
                 },
                 NIC: {
-                    remote: "NIC already in use!"
+                    remote: "NIC already in use!",
+                    pattern: "Invalid NIC"
+                },
+                dob: {
+                    required: "Please enter your date of birth."
+                },
+                MobileNumber: {
+                    pattern: "Input must be 8 digits if it starts with 5, otherwise 7 digits."
                 }
             },
             submitHandler: handlePost

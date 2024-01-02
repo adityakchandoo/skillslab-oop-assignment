@@ -25,10 +25,7 @@ namespace WebApp.Controllers
         [AuthorizePermission("user.viewsubordinates")]
         public async Task<ActionResult> ViewSubordinates()
         {
-            // TODO: User Session
-            //int UserId = 4;
             int UserId = (int)this.Session["UserId"];
-
 
             ViewBag.Title = "My Employees";
             ViewBag.Users = await _userService.GetUsersByManagerAsync(UserId);
@@ -38,10 +35,7 @@ namespace WebApp.Controllers
         [AuthorizePermission("user.viewpendingsubordinates")]
         public async Task<ActionResult> ViewPendingSubordinates()
         {
-            // TODO: User Session
-            //int UserId = 4;
             int UserId = (int)this.Session["UserId"];
-
 
             ViewBag.Title = "Pending Employees";
             ViewBag.Employees = await _userService.GetUsersByManagerAndStatusAsync(UserId, Entities.Enums.UserStatusEnum.Pending);

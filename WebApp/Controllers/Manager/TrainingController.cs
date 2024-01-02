@@ -17,11 +17,7 @@ namespace WebApp.Controllers
         [AuthorizePermission("training.viewrequests")]
         public async Task<ActionResult> ViewRequests()
         {
-            // TODO: User Session
-            //int UserId = 4;
             int UserId = (int)this.Session["UserId"];
-
-
 
             ViewBag.TrainingRequests = await _trainingService.GetTrainingPendingForManagerAsync(UserId);
             return View("~/Views/Manager/TrainingRequests.cshtml");

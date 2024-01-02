@@ -11,5 +11,6 @@ namespace DataLayer.Repository.Interfaces
 {
     public interface ITrainingContentAttachmentRepo : IDataAccessLayer<TrainingContentAttachment>
     {
+        Task<IEnumerable<TrainingContentAttachment>> GetAllTrainingContentAttachmentAsync(int trainingContentId);
     }
 }

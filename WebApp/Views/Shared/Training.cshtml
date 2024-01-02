@@ -58,7 +58,10 @@
                                         {
                                             <a href="/File/@Attachments.FileKey/@Attachments.OriginalFilename/" class="btn btn-primary btn-sm">@Attachments.OriginalFilename</a>
                                         }
-                                        <a class="btn btn-danger btn-sm">Delete</a>
+                                        @if ((int)this.Session["Role"] == (int)Entities.Enums.UserRoleEnum.Admin)
+                                        {
+                                            <a onclick="return confirm('Are you sure?')" href="/Training/DelTrainingContent/@Content.TrainingContent.TrainingContentId" class="btn btn-danger btn-sm">Delete</a>
+                                        }
                                     </div>
                                 </div>
                             </div>

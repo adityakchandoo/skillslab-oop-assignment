@@ -23,7 +23,6 @@ create table AppUser (
 	MobileNumber			varchar(20)          not null,
 	CreatedOn				datetime          	 not null DEFAULT GETDATE(),
 	Status					tinyint         	 not null,
-	IsActive				tinyint         	 not null DEFAULT 1,
 	DepartmentId			int					 not null,
 	constraint PK_AppUser_UserId primary key (UserId),
 	constraint FK_AppUser_DepartmentId_Department_DepartmentId foreign key (DepartmentId)

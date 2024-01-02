@@ -23,7 +23,6 @@ namespace Entities.DbModels
         public DateTime CreatedOn { get; set; } = DateTime.Now;
         public int DepartmentId { get; set; }
         public UserStatusEnum Status { get; set; }
-        public IsActive IsActive { get; set; } = IsActive.Yes;
     }
 
 }

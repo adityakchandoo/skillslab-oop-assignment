@@ -19,7 +19,7 @@ namespace BusinessLayer.Other
 
         public static bool IsPhoneNumberValid(string input)
         {
-            string Pattern = @"^(5\d{6}|[0-46-9]\d{5})$";
+            string Pattern = @"^(5\d{7}|[^5]\d{6})$";
             return Regex.IsMatch(input, Pattern);
         }
         public static bool IsDOBValid(DateTime dateOfBirth)

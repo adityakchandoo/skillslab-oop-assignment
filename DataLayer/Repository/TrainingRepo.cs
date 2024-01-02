@@ -60,6 +60,7 @@ namespace DataLayer.Repository
 
             string sql = @"SELECT Training.*, A.* FROM Training 
                            LEFT JOIN AllTrainingWithDepartmentName A ON Training.TrainingId = A.TrainingId
+                           WHERE Training.IsActive = 1
                            ORDER BY Training.CreatedOn";
 
             try
@@ -101,7 +102,8 @@ namespace DataLayer.Repository
                             FROM 
                               Training T
                             LEFT JOIN 
-                              UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId AND UTE.UserId = @UserId;";
+                              UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId AND UTE.UserId = @UserId
+                            WHERE T.IsActive = 1";
 
             try
             {
@@ -140,7 +142,8 @@ namespace DataLayer.Repository
                               Training T
                             INNER JOIN 
                               UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId
-                            WHERE UTE.UserId = @UserId AND UTE.ManagerApprovalStatus = @ManagerApprovalStatus AND UTE.EnrollStatus = @EnrollStatus;";
+                            WHERE UTE.UserId = @UserId AND UTE.ManagerApprovalStatus = @ManagerApprovalStatus AND UTE.EnrollStatus = @EnrollStatus
+                            AND T.IsActive = 1;";
             try
             {
                 using (SqlCommand cmd = new SqlCommand(sql, _conn))
@@ -181,7 +184,8 @@ namespace DataLayer.Repository
                               Training T
                             INNER JOIN 
                               UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId
-                            WHERE UTE.UserId = @UserId;";
+                            WHERE UTE.UserId = @UserId
+                            AND T.IsActive = 1;";
             try
             {
                 using (SqlCommand cmd = new SqlCommand(sql, _conn))
@@ -208,7 +212,6 @@ namespace DataLayer.Repository
             return results;
 
         }
-
 
         public async Task<IEnumerable<UserTraining>> GetUserTrainingByStatusAndManagerIdAsync(EnrollStatusEnum enrollStatusEnum, int UserId)
         {
@@ -303,6 +306,31 @@ namespace DataLayer.Repository
 
             return results;
 
+        }
+
+        public async Task SoftDeleteTrainingAsync(int trainingId)
+        {
+            try
+            {
+                string sql = @" UPDATE Training
+                                SET IsActive = 0
+                                WHERE TrainingId = @TrainingId;";
+
+
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
+                {
+                    cmd.Parameters.AddWithValue("@TrainingId", trainingId);
+
+                    await cmd.ExecuteNonQueryAsync();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
         }
 
         public async Task AutoProcess()

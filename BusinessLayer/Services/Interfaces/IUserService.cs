@@ -29,5 +29,6 @@ namespace BusinessLayer.Services.Interfaces
         Task ProcessNewUserAsync(int userId, bool approve);
         Task<AppUser> GetUserManagerAsync(int UserId);
         Task<bool> CheckPermissionAsync(int UserId, string permission);
+        Task SoftDeleteAppUser(int UserId);
     }
 }

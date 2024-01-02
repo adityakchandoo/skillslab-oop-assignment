@@ -10,6 +10,8 @@ namespace DataLayer.Repository.Interfaces
 {
     public interface ITrainingContentRepo : IDataAccessLayer<TrainingContent>
     {
+        Task<IEnumerable<TrainingContent>> GetAllTrainingContentAsync(int trainingId);
         Task<int> CreateTrainingContentReturningIDAsync(TrainingContent trainingContent);
+        Task SoftDeleteTrainingContentAsync(int trainingContentId);
     }
 }

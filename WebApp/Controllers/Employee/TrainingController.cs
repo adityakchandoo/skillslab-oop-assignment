@@ -18,8 +18,6 @@ namespace WebApp.Controllers
         [AuthorizePermission("training.dash")]
         public async Task<ActionResult> ViewDash()
         {
-            // TODO: User Session
-            //int UserId = 10;
             int UserId = (int)this.Session["UserId"];
 
             if (Request.QueryString["q"] == "my")
@@ -51,17 +49,10 @@ namespace WebApp.Controllers
         [AuthorizePermission("training.apply")]
         public async Task<ActionResult> Apply(int id)
         {
-            // TODO: User Session
-            //string UserId = 1;
             int UserId = (int)this.Session["UserId"];
 
-            var enrollement = await _userTrainingEnrollmentService.GetUserTrainingEnrollmentAsync(UserId, id);
-
-            if (enrollement != null && (enrollement.EnrollStatus == EnrollStatusEnum.Pending || enrollement.ManagerApprovalStatus == EnrollStatusEnum.Pending))
-            {
-                Response.StatusCode = 400;
-                return Content("Already Applied!");
-            }
+            // To Check if user has already applied
+            await _userTrainingEnrollmentService.GetUserTrainingEnrollmentAsync(UserId, id);
 
             ViewBag.trainingId = id;
             ViewBag.Training = await _trainingService.GetTrainingAsync(id);
@@ -74,8 +65,6 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> ApplyPost(int trainingId)
         {
-            // TODO: User Session
-            //string UserId = 1;
             int UserId = (int)this.Session["UserId"];
 
             List<UploadFileStore> uploadFiles = new List<UploadFileStore>();

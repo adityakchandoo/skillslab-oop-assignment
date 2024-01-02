@@ -217,6 +217,31 @@ namespace DataLayer.Repository
             }
         }
 
+        public async Task SoftDeleteAppUser(int userId)
+        {
+            try
+            {
+                string sql = @" UPDATE AppUser
+                                SET IsActive = 0
+                                WHERE UserId = @UserId;";
+
+
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", userId);
+
+                    await cmd.ExecuteNonQueryAsync();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
+        }
+
 
         public async Task<bool> CheckPermissionAsync(int UserId, string permission)
         {

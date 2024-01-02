@@ -23,6 +23,12 @@ namespace DataLayer.Repository
             _conn = dbContext.GetConn();
         }
 
+        public async Task<IEnumerable<TrainingContent>> GetAllTrainingContentAsync(int trainingId)
+        {
+            return await base.GetMany("SELECT * FROM TrainingContent WHERE TrainingId = @TrainingId AND IsActive = 1;",
+                                         new Dictionary<string, object> { { "TrainingId", trainingId } });
+        }
+
         public async Task<int> CreateTrainingContentReturningIDAsync(TrainingContent trainingContent)
         {
             try
@@ -43,6 +49,31 @@ namespace DataLayer.Repository
 
             }
             catch (Exception ex) 
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
+        }        
+
+        public async Task SoftDeleteTrainingContentAsync(int trainingContentId)
+        {
+            try
+            {
+                string sql = @" UPDATE TrainingContent
+                                SET IsActive = 0
+                                WHERE TrainingContentId = @TrainingContentId;";
+
+
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
+                {
+                    cmd.Parameters.AddWithValue("@TrainingContentId", trainingContentId);
+
+                    await cmd.ExecuteNonQueryAsync();
+                }
+
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex);
                 throw new DbErrorException("Database Error");

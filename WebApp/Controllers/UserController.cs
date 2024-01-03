@@ -166,5 +166,11 @@ namespace WebApp.Controllers
             return Content("ok");
         }
 
+        public async Task<ActionResult> Test()
+        {
+            await _userService.TestAsync();
+            return Content("ok");
+        }
+
     }
 }

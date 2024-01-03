@@ -25,32 +25,34 @@ namespace DataLayer.Repository
             _conn = dbContext.GetConn();
         }
 
-        public async Task<int> CreateTrainingReturningIDAsync(Training training)
+        public async Task CreateTrainingWithPrerequisite(Training training, DataTable prerequisites)
         {
             try
             {
-                string sql = @"INSERT INTO [dbo].[Training] (Name, Description, MaxSeat, Deadline, PreferedDepartmentId) 
-                               OUTPUT Inserted.TrainingId 
-                               VALUES (@Name, @Description, @MaxSeat, @Deadline, @PreferedDepartmentId)";
-
-
-                using (SqlCommand cmd = new SqlCommand(sql, _conn))
+                using (SqlCommand cmd = new SqlCommand("CreateTrainingWithPrerequisite", _conn))
                 {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
                     cmd.Parameters.AddWithValue("@Name", training.Name);
                     cmd.Parameters.AddWithValue("@Description", training.Description);
                     cmd.Parameters.AddWithValue("@MaxSeat", training.MaxSeat);
                     cmd.Parameters.AddWithValue("@Deadline", training.Deadline);
                     cmd.Parameters.AddWithValue("@PreferedDepartmentId", training.PreferedDepartmentId == -1 ? DBNull.Value : (object)training.PreferedDepartmentId);
 
-                    return (int)(await cmd.ExecuteScalarAsync());
+                    var dt = cmd.Parameters.AddWithValue("@Prerequisites", prerequisites);
+                    dt.SqlDbType = SqlDbType.Structured;
+
+                    await cmd.ExecuteNonQueryAsync();
                 }
 
-            } catch (Exception ex) 
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex);
                 throw new DbErrorException("Database Error");
                 throw;
             }
+
         }
         public async Task<IEnumerable<TrainingEnrollCount>> GetAllTrainingWithEnrollCountAsync()
         {

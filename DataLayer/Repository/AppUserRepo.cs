@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using Entities.AppLogger;
 using Entities;
+using Entities.FormDTO;
 
 namespace DataLayer.Repository
 {
@@ -182,41 +183,6 @@ namespace DataLayer.Repository
             return null;
         }
 
-        public async Task<int> CreateUserReturningIDAsync(AppUser appUser)
-        {
-            try
-            {
-                string sql = @"INSERT INTO [dbo].[AppUser] (UserName, Password, FirstName, LastName, Email, DOB, NIC, MobileNumber, CreatedOn, Status, DepartmentId) 
-                               OUTPUT Inserted.UserId 
-                               VALUES (@UserName, @Password, @FirstName, @LastName, @Email, @DOB, @NIC, @MobileNumber, @CreatedOn, @Status, @DepartmentId)";
-
-
-                using (SqlCommand cmd = new SqlCommand(sql, _conn))
-                {
-                    cmd.Parameters.AddWithValue("@UserName", appUser.UserName);
-                    cmd.Parameters.AddWithValue("@Password", appUser.Password);
-                    cmd.Parameters.AddWithValue("@FirstName", appUser.FirstName);
-                    cmd.Parameters.AddWithValue("@LastName", appUser.LastName);
-                    cmd.Parameters.AddWithValue("@Email", appUser.Email);
-                    cmd.Parameters.AddWithValue("@DOB", appUser.DOB);
-                    cmd.Parameters.AddWithValue("@NIC", appUser.NIC);
-                    cmd.Parameters.AddWithValue("@MobileNumber", appUser.MobileNumber);
-                    cmd.Parameters.AddWithValue("@CreatedOn", appUser.CreatedOn);
-                    cmd.Parameters.AddWithValue("@Status", appUser.Status);
-                    cmd.Parameters.AddWithValue("@DepartmentId", appUser.DepartmentId);
-
-                    return (int)(await cmd.ExecuteScalarAsync());
-                }
-
-            }
-            catch (Exception ex) 
-            {
-                _logger.LogError(ex);
-                throw new DbErrorException("Database Error");
-                throw;
-            }
-        }
-
         public async Task SoftDeleteAppUser(int userId)
         {
             try
@@ -260,6 +226,86 @@ namespace DataLayer.Repository
                 }
             }
             catch (Exception ex) 
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
+        }
+
+        public async Task RegisterWithRoleAndManager(AppUser appUser, int ManagerId)
+        {
+            try
+            {
+                // Transaction is inplicit, done by sql driver
+                string sql = @" -- Create User Repord
+                                INSERT INTO AppUser (UserName, Password, FirstName, LastName, Email, DOB, MobileNumber, Status) 
+                                VALUES (@UserName, @Password, @FirstName, @LastName, @Email, @DOB, @MobileNumber, @Status);
+
+                                -- Get the last inserted ID
+                                DECLARE @LastID int;
+                                SET @LastID = SCOPE_IDENTITY();
+
+                                -- Assign Role
+                                INSERT INTO AppUser (UserId, RoleId) 
+                                VALUES (@LastID, @RoleId);
+
+                                -- Assign Manager
+                                INSERT INTO UserManager (UserId, ManagerId) 
+                                VALUES (@LastID, @ManagerId);
+                            ";
+
+
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserName", appUser.UserName);
+                    cmd.Parameters.AddWithValue("@Password", appUser.Password);
+                    cmd.Parameters.AddWithValue("@FirstName", appUser.FirstName);
+                    cmd.Parameters.AddWithValue("@LastName", appUser.LastName);
+                    cmd.Parameters.AddWithValue("@DOB", appUser.DOB);
+                    cmd.Parameters.AddWithValue("@MobileNumber", appUser.MobileNumber);
+                    cmd.Parameters.AddWithValue("@Status", (int)EnrollStatusEnum.Pending);
+
+
+                    cmd.Parameters.AddWithValue("@RoleId", (int)UserRoleEnum.Employee);
+                    cmd.Parameters.AddWithValue("@ManagerId", ManagerId);
+
+                    await cmd.ExecuteNonQueryAsync();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
+        }
+
+        public async Task TestAsync()
+        {
+            try
+            {
+                string sql = @" 
+                                INSERT INTO MyTable (Data) VALUES ('bobo');
+
+                                -- Getting the last inserted ID
+                                DECLARE @LastID int;
+                                SET @LastID = SCOPE_IDENTITY();
+
+                                -- Updating the record with the last inserted ID
+                                UPDATE MyTable
+                                SET Data = 'bibom'
+                                WHERE IDd = @LastID;";
+
+
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
+                {
+                    await cmd.ExecuteNonQueryAsync();
+                }
+
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex);
                 throw new DbErrorException("Database Error");

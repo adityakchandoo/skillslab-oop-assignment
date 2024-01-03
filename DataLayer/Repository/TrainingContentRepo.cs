@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
+using System.Net.Mail;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -29,32 +30,33 @@ namespace DataLayer.Repository
                                          new Dictionary<string, object> { { "TrainingId", trainingId } });
         }
 
-        public async Task<int> CreateTrainingContentReturningIDAsync(TrainingContent trainingContent)
+        public async Task CreateTrainingContentWithAttachment(TrainingContent trainingContent, DataTable attachment)
         {
             try
             {
-                string sql = @"INSERT INTO [dbo].[TrainingContent] (TrainingId, Name, Description) 
-                               OUTPUT Inserted.TrainingContentId 
-                               VALUES (@TrainingId, @Name, @Description)";
-
-
-                using (SqlCommand cmd = new SqlCommand(sql, _conn))
+                using (SqlCommand cmd = new SqlCommand("CreateTrainingContentWithAttachment", _conn))
                 {
-                    cmd.Parameters.AddWithValue("@TrainingId", trainingContent.TrainingId);
-                    cmd.Parameters.AddWithValue("@Name", trainingContent.Name);
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    cmd.Parameters.AddWithValue("@TrainingId", trainingContent.Name);
+                    cmd.Parameters.AddWithValue("@Name", trainingContent.Description);
                     cmd.Parameters.AddWithValue("@Description", trainingContent.Description);
 
-                    return (int)(await cmd.ExecuteScalarAsync());
+                    var dt = cmd.Parameters.AddWithValue("@ContentAttachment", attachment);
+                    dt.SqlDbType = SqlDbType.Structured;
+
+                    await cmd.ExecuteNonQueryAsync();
                 }
 
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 _logger.LogError(ex);
                 throw new DbErrorException("Database Error");
                 throw;
             }
-        }        
+
+        }
 
         public async Task SoftDeleteTrainingContentAsync(int trainingContentId)
         {

@@ -26,5 +26,20 @@ namespace WebApp.Controllers
 
             return View();
         }
+
+        // TODO: FeedBack
+        public ActionResult Feedback()
+        {
+            ViewBag.Message = "Your contact page.";
+
+            return View();
+        }
+
+        public ActionResult FeedbackPost()
+        {
+            ViewBag.Message = "Your contact page.";
+
+            return View();
+        }
     }
 }

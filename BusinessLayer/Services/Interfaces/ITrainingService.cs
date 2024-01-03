@@ -36,7 +36,5 @@ namespace BusinessLayer.Services.Interfaces
 
         Task<Stream> ExportSelectedEmployeesAsync(int trainingId);
         Task AutoProcess();
-
-
     }
 }

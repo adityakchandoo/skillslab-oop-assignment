@@ -25,28 +25,27 @@ namespace DataLayer.Repository
             _conn = dbContext.GetConn();
         }
 
-        public async Task<int> CreateUserTrainingEnrollmentReturningIDAsync(UserTrainingEnrollment userTrainingEnrollment)
+        public async Task CreateEnrollmentWithAttachments(UserTrainingEnrollment enrollment, DataTable attachment)
         {
             try
             {
-                string sql = @"INSERT INTO [dbo].[UserTrainingEnrollment] 
-                               (UserId, TrainingId, ApplyDate, ManagerApprovalStatus, EnrollStatus) 
-                               OUTPUT Inserted.UserTrainingEnrollmentId 
-                               VALUES (@UserId, @TrainingId, @ApplyDate, @ManagerApprovalStatus, @EnrollStatus)";
-
-
-                using (SqlCommand cmd = new SqlCommand(sql, _conn))
+                using (SqlCommand cmd = new SqlCommand("CreateEnrollmentWithAttachment", _conn))
                 {
-                    cmd.Parameters.AddWithValue("@UserId", userTrainingEnrollment.UserId);
-                    cmd.Parameters.AddWithValue("@TrainingId", userTrainingEnrollment.TrainingId);
-                    cmd.Parameters.AddWithValue("@ApplyDate", userTrainingEnrollment.ApplyDate);
-                    cmd.Parameters.AddWithValue("@ManagerApprovalStatus", userTrainingEnrollment.ManagerApprovalStatus);
-                    cmd.Parameters.AddWithValue("@EnrollStatus", userTrainingEnrollment.EnrollStatus);
+                    cmd.CommandType = CommandType.StoredProcedure;
 
-                    return (int)(await cmd.ExecuteScalarAsync());
+                    cmd.Parameters.AddWithValue("@UserId", enrollment.UserId);
+                    cmd.Parameters.AddWithValue("@TrainingId", enrollment.TrainingId);
+                    cmd.Parameters.AddWithValue("@ApplyDate", enrollment.ApplyDate);
+                    cmd.Parameters.AddWithValue("@ManagerApprovalStatus", enrollment.ManagerApprovalStatus);
+                    cmd.Parameters.AddWithValue("@EnrollStatus", enrollment.EnrollStatus);
+                    var dt = cmd.Parameters.AddWithValue("@EnrollmentAttachment", attachment);
+                    dt.SqlDbType = SqlDbType.Structured;
+
+                    await cmd.ExecuteNonQueryAsync();
                 }
 
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex);
                 throw new DbErrorException("Database Error");

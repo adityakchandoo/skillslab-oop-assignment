@@ -108,6 +108,7 @@ namespace WebApp.Controllers
             return File(csv, "text/csv", $"Exported_Employees{DateTime.Now.ToString("yyyyMMdd")}_{id}.csv");
         }
 
+        [AuthorizePermission("training.deltraining")]
         public async Task<ActionResult> DelTraining(int id)
         {
             await _trainingService.SoftDeleteTrainingAsync(id);
@@ -115,6 +116,7 @@ namespace WebApp.Controllers
             return Redirect(Request.UrlReferrer.ToString());
         }
 
+        [AuthorizePermission("training.deltrainingcontent")]
         public async Task<ActionResult> DelTrainingContent(int id)
         {
             await _trainingService.SoftDeleteTrainingContentAsync(id);

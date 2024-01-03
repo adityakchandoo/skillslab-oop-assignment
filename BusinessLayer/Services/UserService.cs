@@ -202,16 +202,14 @@ namespace BusinessLayer.Services
                     Status = UserStatusEnum.Pending
                 };
 
-                var InsertedId = await _appUserRepo.CreateUserReturningIDAsync(db_user);
+                await _appUserRepo.RegisterWithRoleAndManager(db_user, registerFormDTO.ManagerId);
 
+                //var InsertedId = await _appUserRepo.CreateUserReturningIDAsync(db_user);
+                //await _userManagerRepo.Insert(new UserManager() { UserId = InsertedId, ManagerId = registerFormDTO.ManagerId });
+                //await _userRoleRepo.Insert(new UserRole() { UserId = InsertedId, RoleId = (int)UserRoleEnum.Employee });
 
-                await _userManagerRepo.Insert(new UserManager() { UserId = InsertedId, ManagerId = registerFormDTO.ManagerId });
-
-                await _userRoleRepo.Insert(new UserRole() { UserId = InsertedId, RoleId = (int)UserRoleEnum.Employee });
-
-
+                // Send Notification
                 var managerEmail = (await _appUserRepo.GetByPKAsync(registerFormDTO.ManagerId)).Email;
-
                 var employeeName = registerFormDTO.FirstName + " " + registerFormDTO.LastName;
 
                 await _notificationService.NotifyUserRegistrationAsync(managerEmail, employeeName);
@@ -479,6 +477,11 @@ namespace BusinessLayer.Services
         public async Task<AppUser> GetUserManagerAsync(int UserId)
         {
             return await _appUserRepo.GetUserManagerAsync(UserId);
+        }
+
+        public async Task TestAsync()
+        {
+            await _appUserRepo.TestAsync();
         }
     }
 }

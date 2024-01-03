@@ -16,6 +16,7 @@ using System.Xml.Linq;
 using BusinessLayer.Other;
 using System.IO;
 using Entities.AppLogger;
+using System.Data;
 
 namespace BusinessLayer.Services
 {
@@ -90,9 +91,7 @@ namespace BusinessLayer.Services
 
         public async Task AddTrainingWithTrainingPrerequisiteAsync(AddTrainingFormDTO training)
         {
-            // TODO: To Combine sql statements
-
-            Training dbTraining = new Training()
+            Training Training = new Training()
             {
                 Name = training.Name,
                 Description = training.Description,
@@ -101,27 +100,22 @@ namespace BusinessLayer.Services
                 PreferedDepartmentId = training.PriorityDepartmentId
             };
 
-            int insertedId = await _trainingRepo.CreateTrainingReturningIDAsync(dbTraining);
-
-            TrainingPrerequisite dbTrainingPrerequisite = new TrainingPrerequisite()
-            {
-                TrainingId = insertedId
-            };
+            DataTable Prerequisites = new DataTable();
+            Prerequisites.Columns.Add("id", typeof(int));
 
             if (training.Prerequisites != null)
             {
                 foreach (int id in training.Prerequisites)
                 {
-                    dbTrainingPrerequisite.PrerequisiteId = id;
-                    await _trainingPrerequisiteRepo.Insert(dbTrainingPrerequisite);
-                }                
+                    Prerequisites.Rows.Add(id);
+                }
             }
+
+            await _trainingRepo.CreateTrainingWithPrerequisite(Training, Prerequisites);           
 
         }
         public async Task ApplyTrainingAsync(int UserId, int trainingId, List<UploadFileStore> uploadFileStore)
         {
-            // TODO: To Combine sql statements
-
             AppUser currentUser = await _appUserRepo.GetByPKAsync(UserId);
             AppUser currentUserManager = await _appUserRepo.GetUserManagerAsync(UserId);
 
@@ -138,7 +132,10 @@ namespace BusinessLayer.Services
                 EnrollStatus = EnrollStatusEnum.Pending
             };
 
-            int InsertedId = await _userTrainingEnrollmentRepo.CreateUserTrainingEnrollmentReturningIDAsync(enrollment);
+            DataTable dataTable = new DataTable();
+            dataTable.Columns.Add("TrainingPrerequisiteId", typeof(int));
+            dataTable.Columns.Add("OriginalFilename", typeof(string));
+            dataTable.Columns.Add("FileKey", typeof(Guid));
 
             foreach (var File in uploadFileStore)
             {
@@ -146,14 +143,10 @@ namespace BusinessLayer.Services
 
                 _ = _storageService.Put(File.FileContent, genFileSystemName.ToString());
 
-                await _enrollmentPrerequisiteAttachmentRepo.Insert(
-                    new EnrollmentPrerequisiteAttachment() { 
-                        EnrollmentId = InsertedId,
-                        TrainingPrerequisiteId = File.FileId,
-                        OriginalFilename = File.FileName,
-                        FileKey = genFileSystemName
-                    });
+                dataTable.Rows.Add(File.FileId, File.FileName, genFileSystemName);
             }
+
+            await _userTrainingEnrollmentRepo.CreateEnrollmentWithAttachments(enrollment, dataTable);
 
             var training = await _trainingRepo.GetByPKAsync(trainingId);
 
@@ -190,24 +183,23 @@ namespace BusinessLayer.Services
                 Description = addTrainingContentDTO.Description
             };
 
-            var InsertedId = await _trainingContentRepo.CreateTrainingContentReturningIDAsync(trainingContent);
+            DataTable dataTable = new DataTable();
+            dataTable.Columns.Add("OriginalFilename", typeof(string));
+            dataTable.Columns.Add("FileKey", typeof(Guid));
 
-            if (addTrainingContentDTO.Files == null)
-                return;
-
-            foreach (HttpPostedFileBase File in addTrainingContentDTO.Files)
+            if (addTrainingContentDTO.Files != null)
             {
-                var genFileSystemName = Guid.NewGuid();
-
-                _ = _storageService.Put(File.InputStream, genFileSystemName.ToString());
-
-                await _trainingContentAttachmentRepo.Insert(new TrainingContentAttachment()
+                foreach (HttpPostedFileBase File in addTrainingContentDTO.Files)
                 {
-                    TrainingContentId = InsertedId,
-                    OriginalFilename = File.FileName,
-                    FileKey = genFileSystemName,
-                });
+                    var genFileSystemName = Guid.NewGuid();
+
+                    _ = _storageService.Put(File.InputStream, genFileSystemName.ToString());
+
+                    dataTable.Rows.Add(File.FileName, genFileSystemName);
+                }
             }
+
+            await _trainingContentRepo.CreateTrainingContentWithAttachment(trainingContent, dataTable);
         }
 
         public async Task<Stream> ExportSelectedEmployeesAsync(int trainingId)

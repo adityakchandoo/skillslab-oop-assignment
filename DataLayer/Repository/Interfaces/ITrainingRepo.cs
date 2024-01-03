@@ -5,6 +5,7 @@ using Entities.DTO;
 using Entities.Enums;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,7 +14,7 @@ namespace DataLayer.Repository.Interfaces
 {
     public interface ITrainingRepo : IDataAccessLayer<Training>
     {
-        Task<int> CreateTrainingReturningIDAsync(Training training);
+        Task CreateTrainingWithPrerequisite(Training training, DataTable prerequisites);
         Task<IEnumerable<TrainingEnrollCount>> GetAllTrainingWithEnrollCountAsync();
 
         Task<IEnumerable<TrainingWithUserStatus>> GetAllTrainingAsync(int UserId);

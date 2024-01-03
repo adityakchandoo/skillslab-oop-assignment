@@ -17,12 +17,13 @@ namespace DataLayer.Repository.Interfaces
         Task<IEnumerable<AppUsersInlineRoles>> GetAllUsersWithInlineRolesAsync();
         Task<bool> IsRecordExistsAsync(string column, string value);
         Task<AppUser> GetUserManagerAsync(int UserId);
-        Task<int> CreateUserReturningIDAsync(AppUser appUser);
         Task<bool> CheckPermissionAsync(int UserId, string permission);
         Task<IEnumerable<AppUser>> GetAllUsersByRoleAsync(UserRoleEnum userRoleEnum);
         Task<IEnumerable<AppUser>> GetAllUsersByManagerAsync(int ManagerId);
         Task<IEnumerable<AppUser>> GetAllUsersByManagerAndStatusAsync(int ManagerId, UserStatusEnum userStatusEnum);
         Task SoftDeleteAppUser(int userId);
+        Task RegisterWithRoleAndManager(AppUser appUser, int ManagerId);
+        Task TestAsync();
 
     }
 }

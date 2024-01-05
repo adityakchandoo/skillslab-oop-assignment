@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace BusinessLayer.Other
@@ -37,6 +38,15 @@ namespace BusinessLayer.Other
             if (dateOfBirth.Date > today.AddYears(-age)) age--;
 
             return age;
+        }
+
+        public static bool AreAllFilesValid(string[] fileNames)
+        {
+            string[] allowedExtensions =
+            { ".jpg", ".jpeg", ".png", ".pdf", ".doc", ".docx"};
+
+            return fileNames.All(fileName =>
+                allowedExtensions.Contains(System.IO.Path.GetExtension(fileName).ToLower()));
         }
     }
 }

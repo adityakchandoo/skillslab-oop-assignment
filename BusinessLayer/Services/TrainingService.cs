@@ -124,6 +124,11 @@ namespace BusinessLayer.Services
                 throw new ArgumentException("This User has no manager");
             }
 
+            var fileName = uploadFileStore.Select(file => file.FileName).ToArray();
+
+            if (CommonValidations.AreAllFilesValid(fileName) == false)
+                throw new ArgumentException("File Type not allowed");
+
             UserTrainingEnrollment enrollment = new UserTrainingEnrollment()
             {
                 UserId = UserId,
@@ -174,7 +179,7 @@ namespace BusinessLayer.Services
             }
             return result;
         }
-        public async Task SaveTrainingWithContentsAsync(AddTrainingContentDTO addTrainingContentDTO)
+        public async Task SaveTrainingContentWithAttachmentAsync(AddTrainingContentDTO addTrainingContentDTO)
         {
             var trainingContent = new TrainingContent()
             {
@@ -189,6 +194,11 @@ namespace BusinessLayer.Services
 
             if (addTrainingContentDTO.Files != null)
             {
+                var fileName = addTrainingContentDTO.Files.Select(file => file.FileName).ToArray();
+
+                if (CommonValidations.AreAllFilesValid(fileName) == false)
+                    throw new ArgumentException("File Type not allowed");
+
                 foreach (HttpPostedFileBase File in addTrainingContentDTO.Files)
                 {
                     var genFileSystemName = Guid.NewGuid();

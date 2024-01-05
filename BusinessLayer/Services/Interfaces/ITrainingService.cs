@@ -30,7 +30,7 @@ namespace BusinessLayer.Services.Interfaces
         Task AddTrainingWithTrainingPrerequisiteAsync(AddTrainingFormDTO training);
         Task ApplyTrainingAsync(int UserId, int trainingId, List<UploadFileStore> uploadFileStore);
         Task<IEnumerable<TrainingWithContentDTO>> GetTrainingWithContentsAsync(int trainingId);
-        Task SaveTrainingWithContentsAsync(AddTrainingContentDTO addTrainingContentDTO);
+        Task SaveTrainingContentWithAttachmentAsync(AddTrainingContentDTO addTrainingContentDTO);
         Task SoftDeleteTrainingAsync(int trainingId);
         Task SoftDeleteTrainingContentAsync(int trainingContentId);
 

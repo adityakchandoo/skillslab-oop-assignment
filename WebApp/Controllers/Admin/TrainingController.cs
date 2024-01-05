@@ -95,7 +95,7 @@ namespace WebApp.Controllers
         [HttpPost]
         public async Task<ActionResult> AddContentPost(AddTrainingContentDTO addTrainingContentDTO)
         {
-            await _trainingService.SaveTrainingWithContentsAsync(addTrainingContentDTO);
+            await _trainingService.SaveTrainingContentWithAttachmentAsync(addTrainingContentDTO);
 
             return Json(new { status = "ok" });
         }

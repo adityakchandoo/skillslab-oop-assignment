@@ -38,8 +38,8 @@ namespace DataLayer.Repository
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
 
-                    cmd.Parameters.AddWithValue("@TrainingId", trainingContent.Name);
-                    cmd.Parameters.AddWithValue("@Name", trainingContent.Description);
+                    cmd.Parameters.AddWithValue("@TrainingId", trainingContent.TrainingId);
+                    cmd.Parameters.AddWithValue("@Name", trainingContent.Name);
                     cmd.Parameters.AddWithValue("@Description", trainingContent.Description);
 
                     var dt = cmd.Parameters.AddWithValue("@ContentAttachment", attachment);

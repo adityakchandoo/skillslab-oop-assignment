@@ -64,14 +64,8 @@
                             <h3 class="card-title">Upload Files</h3>
                         </div>
                         <div class="card-body">
-                            <div class="form-group">
-                                <div class="input-group">
-                                    <div class="custom-file">
-                                        <input type="file" class="custom-file-input" id="exampleInputFile" multiple>
-                                        <label class="custom-file-label" for="exampleInputFile">Choose files</label>
-                                    </div>
-
-                                </div>
+                            <div class="form-group claro">
+                                <div id="fileUploader"></div>
                                 <ul id="fileList"></ul>
                             </div>
                         </div>
@@ -83,21 +77,37 @@
     </section>
 </div>
 
-@section Scripts {   
+@section Scripts {
 
-    <script>
-        document.getElementById('exampleInputFile').addEventListener('change', function () {
-            var fileList = document.getElementById('fileList');
-            fileList.innerHTML = ''; // Clear existing list
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/dijit@1.14.2/themes/claro/claro.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/dojo@1.14.2/dojo.js"></script>
 
-            // Loop through each file and add it to the list
-            for (var i = 0; i < this.files.length; i++) {
-                var li = document.createElement('li');
-                li.textContent = this.files[i].name;
-                fileList.appendChild(li);
-            }
-        });
+    <script type="text/javascript">
+        require(["dojox/form/Uploader", "dojo/dom", "dojo/on", "dojo/domReady!"],
+            function (Uploader, dom, on) {
+                var uploader = new Uploader({
+                    label: "Select Files",
+                    multiple: true,
+                    accept: ".jpg, .jpeg, .png, .pdf, .doc, .docx",
+                    id: "fileUploaderWidget"
+                }, "fileUploader");
+
+                // Event listener for when files are selected
+                on(uploader, "change", function (files) {
+                    // Clear existing list
+                    dom.byId("fileList").innerHTML = "";
+
+                    // Display files as a list
+                    files.forEach(function (file) {
+                        var li = document.createElement("li");
+                        li.textContent = file.name;
+                        dom.byId("fileList").appendChild(li);
+                    });
+                });
+                uploader.startup();
+            });
     </script>
+
 
     <script type="text/javascript">
         var trainingId = @ViewBag.trainingId;
@@ -126,7 +136,8 @@
             formData.append("Name", $('#Name').val());
             formData.append("Description", $('#Description').val());
 
-            var inputFiles = $("#exampleInputFile")[0].files;
+
+            var inputFiles = dijit.byId("fileUploaderWidget")._files;
 
             Array.from(inputFiles).forEach(function (file) {
                 formData.append("Files", file);

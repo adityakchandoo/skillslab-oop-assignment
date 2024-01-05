@@ -6,6 +6,7 @@ using System.Runtime.InteropServices.ComTypes;
 using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
+using BusinessLayer.Services;
 using BusinessLayer.Services.Interfaces;
 using Entities.DbModels;
 using Entities.Enums;
@@ -80,6 +81,25 @@ namespace WebApp.Controllers
         public async Task<ActionResult> AddPost(AddTrainingFormDTO training)
         {
             await _trainingService.AddTrainingWithTrainingPrerequisiteAsync(training);
+
+            return Json(new { status = "ok" });
+        }
+
+        //[AuthorizePermission("training.edit")]
+        public async Task<ActionResult> Edit(int id)
+        {            
+            ViewBag.TrainingId = id;
+            ViewBag.Training = await _trainingService.GetTrainingAsync(id);
+
+            ViewBag.Departments = await _departmentService.GetAllDepartmentsAsync();
+            ViewBag.Prerequisites = await _prerequisiteService.GetAllPrerequisitesByTrainingAsync(id);
+
+            return View("~/Views/Admin/EditTraining.cshtml");
+        }
+
+        public async Task<ActionResult> EditPost(AddTrainingFormDTO training)
+        {
+            await _trainingService.EditTrainingAsync(training);
 
             return Json(new { status = "ok" });
         }

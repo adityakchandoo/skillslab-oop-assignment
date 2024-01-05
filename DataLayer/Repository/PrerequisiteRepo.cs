@@ -57,5 +57,46 @@ namespace DataLayer.Repository
             }
         }
 
+        public async Task<IEnumerable<PrerequisiteAvailable>> GetAllPrerequisitesByTrainingAsync(int training)
+        {
+            var result = new List<PrerequisiteAvailable>();
+
+            string sql = @" SELECT 
+                                P.*,
+                                CASE 
+                                    WHEN TP.TrainingId IS NOT NULL THEN 1
+                                    ELSE 0
+                                END AS IsAvailable
+                            FROM 
+                                Prerequisite P
+                            LEFT JOIN 
+                                TrainingPrerequisite TP ON P.PrerequisiteId = TP.PrerequisiteId AND TP.TrainingId = @TrainingId;
+                            ";
+
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
+                {
+                    cmd.Parameters.AddWithValue("@TrainingId", training);
+
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            result.Add(DbHelper.ConvertToObject<PrerequisiteAvailable>(reader));
+                        }
+                    }
+                }
+                return result;
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
+        }
+
     }
 }

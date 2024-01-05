@@ -52,12 +52,21 @@ namespace BusinessLayer.Services
         {
             return await _trainingRepo.GetByPKAsync(id);
         }
+
         public async Task AddTrainingAsync(Training training)
         {
             await _trainingRepo.Insert(training);
         }
-        public async Task EditTrainingAsync(Training training)
+
+        public async Task EditTrainingAsync(AddTrainingFormDTO trainingDto)
         {
+            Training training = await _trainingRepo.GetByPKAsync(trainingDto.TrainingId);
+            training.Name = trainingDto.Name;
+            training.Description = trainingDto.Description;
+            training.MaxSeat = trainingDto.MaxSeat;
+            training.Deadline = trainingDto.Deadline;
+            training.PreferedDepartmentId = trainingDto.PriorityDepartmentId;
+
             await _trainingRepo.Update(training);
         }
         public async Task DeleteTrainingAsync(int id)

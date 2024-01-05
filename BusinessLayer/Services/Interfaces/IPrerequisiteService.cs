@@ -16,5 +16,6 @@ namespace BusinessLayer.Services.Interfaces
         Task DeletePrerequisiteAsync(int prerequisiteId);
         Task UpdatePrerequisiteAsync(Prerequisite prerequisite);
         Task<IEnumerable<PrerequisiteDetails>> GetPrerequisitesByTrainingAsync(int training);
+        Task<IEnumerable<PrerequisiteAvailable>> GetAllPrerequisitesByTrainingAsync(int training);
     }
 }

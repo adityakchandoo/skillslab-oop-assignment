@@ -45,6 +45,7 @@
   <ItemGroup>
     <Compile Include="AppLogger\ILogger.cs" />
     <Compile Include="AppLogger\Logger.cs" />
+    <Compile Include="DbCustom\PrerequisiteAvailable.cs" />
     <Compile Include="DbCustom\TrainingEmployeeDetails.cs" />
     <Compile Include="DbCustom\UserRoleAssigned.cs" />
     <Compile Include="DbCustom\AppUserRole.cs" />

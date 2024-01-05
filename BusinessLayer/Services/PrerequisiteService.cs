@@ -44,6 +44,11 @@ namespace BusinessLayer.Services
             return await _prerequisiteRepo.GetPrerequisitesByTrainingAsync(training);
         }
 
+        public async Task<IEnumerable<PrerequisiteAvailable>> GetAllPrerequisitesByTrainingAsync(int training)
+        {
+            return await _prerequisiteRepo.GetAllPrerequisitesByTrainingAsync(training);
+        }
+
         public async Task UpdatePrerequisiteAsync(Prerequisite prerequisite)
         {
             await _prerequisiteRepo.Update(prerequisite);

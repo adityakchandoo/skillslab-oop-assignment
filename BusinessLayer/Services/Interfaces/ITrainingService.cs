@@ -16,7 +16,7 @@ namespace BusinessLayer.Services.Interfaces
     {
         Task<Training> GetTrainingAsync(int id);
         Task AddTrainingAsync(Training training);
-        Task EditTrainingAsync(Training training);
+        Task EditTrainingAsync(AddTrainingFormDTO training);
         Task DeleteTrainingAsync(int id);
 
 

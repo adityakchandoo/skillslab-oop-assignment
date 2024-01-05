@@ -1,0 +1,169 @@
+﻿@{
+    ViewBag.Title = "Add Training";
+    ViewBag.PageTag = "train-add";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+<div class="content-wrapper">
+    <!-- Content Header (Page header) -->
+    <section class="content-header">
+        <div class="container-fluid">
+            <div class="row mb-2">
+                <div class="col-sm-6">
+                    <h1>@ViewBag.Title</h1>
+                </div>
+                <div class="col-sm-6">
+                    <ol class="breadcrumb float-sm-right">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active">General Form</li>
+                    </ol>
+                </div>
+            </div>
+        </div><!-- /.container-fluid -->
+    </section>
+
+    <!-- Main content -->
+    <section class="content">
+        <div class="container-fluid">
+            <div class="row">
+                    <!-- left column -->
+                    <div class="col-md-6">
+                        <!-- general form elements -->
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Training Details</h3>
+                            </div>
+                            <!-- /.card-header -->
+                            <!-- form start -->
+                            <form id="myForm" method="post">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <label for="name">Name</label>
+                                        <input type="text" class="form-control" id="Name" name="Name" placeholder="Enter Name" value="@ViewBag.Training.Name">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="description">Description</label>
+                                        <textarea class="form-control" id="Description" name="Description" placeholder="Enter Description">@ViewBag.Training.Description</textarea>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="MaxSeat">Max Seat Available</label>
+                                        <input type="number" class="form-control" id="MaxSeat" name="MaxSeat" placeholder="Enter MaxSeat" value="@ViewBag.Training.MaxSeat">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="deadline">Deadline</label>
+                                        <input type="date" class="form-control" id="Deadline" name="Deadline" value="@ViewBag.Training.Deadline.ToString("yyyy-MM-dd")">
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="preferedDepartmentId">Priority Department</label>
+                                        <select class="form-control select2" id="PriorityDepartmentId" name="PriorityDepartmentId" style="width: 100%;">
+                                            <option value="-1">None</option>
+                                            @foreach (var Department in ViewBag.Departments)
+                                            {
+                                                <option value="@Department.DepartmentId" @(Department.DepartmentId == @ViewBag.Training.PreferedDepartmentId ? "selected":"")>@Department.Name</option>
+                                            }
+                                        </select>
+                                    </div>
+                                </div>
+                                <!-- /.card-body -->
+
+                                <div class="card-footer">
+                                    <button type="submit" class="btn btn-primary">Submit</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <div class="col-md-6">
+                        <!-- Form Element sizes -->
+                        <div class="card card-primary">
+                            <div class="card-header">
+                                <h3 class="card-title">Training Prerequisites</h3>
+                            </div>
+                            <div class="card-body">
+                                <h6><em>Once a training is created, Prequisites cannot be modified</em></h6>
+                                <div class="form-group">
+                                    @foreach (var Prerequisite in ViewBag.Prerequisites)
+                                    {
+                                        <div class="custom-control custom-checkbox">
+                                            <input class="custom-control-input prereq" type="checkbox" id="Prerequisite@(Prerequisite.PrerequisiteId)" name="@Prerequisite.PrerequisiteId" disabled  @(Prerequisite.IsAvailable == 1 ? "checked":"")>
+                                            <label for="Prerequisite@(Prerequisite.PrerequisiteId)" class="custom-control-label">@Prerequisite.Name</label>
+                                        </div>
+                                    }
+
+                                </div>
+                            </div>
+                            <!-- /.card-body -->
+                        </div>
+                    </div>
+            </div>
+        </div>
+    </section>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $("#myForm").validate({
+            errorClass: "is-invalid",
+            validClass: "is-valid",
+            errorPlacement: function (error, element) {
+                error.insertAfter(element);
+                element.next().addClass("invalid-feedback")
+            },
+            errorElement: 'div',
+
+            rules: {
+                Name: { required: true },
+                Description: { required: true },
+                MaxSeat: { required: true },
+                Deadline: { required: true },
+                PriorityDepartmentId: { required: true },
+                
+            },
+            submitHandler: handlePost
+        });
+
+        function handlePost() {
+            const data = {
+                TrainingId: @ViewBag.TrainingId,
+                Name: $('#Name').val(),
+                Description: $('#Description').val(),
+                MaxSeat: $('#MaxSeat').val(),
+                Deadline: new Date($('#Deadline').val()).toISOString(),
+                PriorityDepartmentId: $('#PriorityDepartmentId').val(),
+            };
+
+            $.ajax({
+                url: "/Training/EditPost",
+                type: "POST",
+                data: JSON.stringify(data),
+                contentType: "application/json; charset=utf-8",
+            }).done(function (response) {
+
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Training Modified!',
+                    showConfirmButton: false,
+                    timer: 2000 // 2000 milliseconds = 2 seconds
+                }).then(() => {
+                    window.location.href = "/Training/ViewAll";
+                });
+
+            }).fail(function () {
+
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops...',
+                    text: 'Contact Admin!',
+                });
+
+                //$("#myForm").trigger("reset");
+
+            });
+
+        }
+
+    </script>
+    }

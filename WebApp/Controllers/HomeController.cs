@@ -1,6 +1,8 @@
-﻿using System;
+﻿using BusinessLayer.Services.Interfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 
@@ -8,6 +10,12 @@ namespace WebApp.Controllers
 {
     public class HomeController : Controller
     {
+        IFeedbackService _feedbackService;
+        public HomeController(IFeedbackService feedbackService)
+        {
+            _feedbackService = feedbackService;
+        }
+
         public ActionResult Index()
         {
             return View();
@@ -30,16 +38,15 @@ namespace WebApp.Controllers
         // TODO: FeedBack
         public ActionResult Feedback()
         {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            return Content("Your Feedback page.");
         }
 
-        public ActionResult FeedbackPost()
+        [HttpPost]
+        public async Task<ActionResult> FeedbackPost(string text)
         {
-            ViewBag.Message = "Your contact page.";
+            await _feedbackService.AddFeedbackAsync(text);
 
-            return View();
+            return Json(new { status = "ok" });
         }
     }
 }

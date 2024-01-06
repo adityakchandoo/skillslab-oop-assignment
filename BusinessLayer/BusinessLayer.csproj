@@ -53,8 +53,10 @@
     <Compile Include="PasswordHasher.cs" />
     <Compile Include="Services\AmazonS3Service.cs" />
     <Compile Include="Services\DepartmentService.cs" />
+    <Compile Include="Services\FeedbackService.cs" />
     <Compile Include="Services\Interfaces\IDepartmentService.cs" />
     <Compile Include="Services\Interfaces\IEnrollmentAttachmentService.cs" />
+    <Compile Include="Services\Interfaces\IFeedbackService.cs" />
     <Compile Include="Services\Interfaces\INotificationService.cs" />
     <Compile Include="Services\Interfaces\IPrerequisiteService.cs" />
     <Compile Include="Services\Interfaces\IStorageService.cs" />

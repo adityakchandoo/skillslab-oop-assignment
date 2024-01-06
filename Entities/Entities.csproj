@@ -58,6 +58,7 @@
     <Compile Include="DbModels\AppUsers.cs" />
     <Compile Include="DbModels\Department.cs" />
     <Compile Include="DbModels\EnrollmentPrerequisiteAttachment.cs" />
+    <Compile Include="DbModels\Feedback.cs" />
     <Compile Include="DbModels\Prerequisite.cs" />
     <Compile Include="DbModels\Training.cs" />
     <Compile Include="DbModels\TrainingContent.cs" />

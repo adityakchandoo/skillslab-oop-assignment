@@ -47,7 +47,9 @@
     <Compile Include="Generic\IDataAccessLayer.cs" />
     <Compile Include="IDbContext.cs" />
     <Compile Include="Repository\EnrollmentPrerequisiteAttachmentRepo.cs" />
+    <Compile Include="Repository\FeedbackRepo.cs" />
     <Compile Include="Repository\Interfaces\IEnrollmentPrerequisiteAttachmentRepo.cs" />
+    <Compile Include="Repository\Interfaces\IFeedbackRepo.cs" />
     <Compile Include="Repository\Interfaces\ITrainingContentAttachmentRepo.cs" />
     <Compile Include="Repository\Interfaces\ITrainingContentRepo.cs" />
     <Compile Include="Repository\Interfaces\IUserManagerRepo.cs" />

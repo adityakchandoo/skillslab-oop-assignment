@@ -182,3 +182,13 @@ create table TrainingContentAttachment (
 	constraint FK_TrainingContentAttachment_TrainingContentAttachmentId_TrainingContent_TrainingContentId foreign key (TrainingContentId)
       references TrainingContent(TrainingContentId)
 )
+
+/*==============================================================*/
+/* Table: Feedback                                          */
+/*==============================================================*/
+create table Feedback (
+	FeedbackId			int                  identity,
+	Description			text    		     not null,
+	CreatedOn			datetime          	 not null DEFAULT GETDATE(),
+    constraint PK_Feedback_FeedbackId primary key (FeedbackId)
+)

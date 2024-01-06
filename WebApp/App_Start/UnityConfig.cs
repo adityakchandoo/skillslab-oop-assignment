@@ -68,6 +68,7 @@ namespace WebApp
             container.RegisterType<IUserTrainingEnrollmentRepo, UserTrainingEnrollmentRepo>(new PerRequestLifetimeManager());
             container.RegisterType<IUserManagerRepo, UserManagerRepo>(new PerRequestLifetimeManager());
             container.RegisterType<IUserRoleRepo, UserRoleRepo>(new PerRequestLifetimeManager());
+            container.RegisterType<IFeedbackRepo, FeedbackRepo>(new PerRequestLifetimeManager());
 
 
             // Register Service Layer
@@ -77,6 +78,7 @@ namespace WebApp
             container.RegisterType<IPrerequisiteService, PrerequisiteService>(new PerRequestLifetimeManager());
             container.RegisterType<IUserTrainingEnrollmentService, UserTrainingEnrollmentService>(new PerRequestLifetimeManager());
             container.RegisterType<IUserRoleService, UserRoleService>(new PerRequestLifetimeManager());
+            container.RegisterType<IFeedbackService, FeedbackService>(new PerRequestLifetimeManager());
             
             
             container.RegisterType<IStorageService, AmazonS3Service>(

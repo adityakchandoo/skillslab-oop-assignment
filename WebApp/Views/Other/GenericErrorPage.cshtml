@@ -19,11 +19,82 @@
             <a href="javascript:history.back()" class="btn btn-secondary">Go Back</a>
         </div>
         <p>@TempData["Message"]</p>
+        <div class="mt-4">
+            <button type="button" class="btn btn-light" data-toggle="modal" data-target="#feedbackModal">
+                Send Feedback
+            </button>
+        </div>
     </div>
-    
+
+
+    <!-- The Modal -->
+    <div class="modal" id="feedbackModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <!-- Modal Header -->
+                <div class="modal-header">
+                    <h4 class="modal-title">Feedback</h4>
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                </div>
+
+                <!-- Modal Body -->
+                <div class="modal-body">
+                    <textarea class="form-control" rows="5" id="feedback" placeholder="Enter your feedback here..."></textarea>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="submitFeedback">Submit</button>
+                    <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
 
     <!-- Bootstrap JS, Popper.js, and jQuery -->
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    @Scripts.Render("~/bundles/jquery")
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    @Scripts.Render("~/Scripts/sweetalert2.all.js")
+
+    <script>
+        $(document).ready(function () {
+            $('#submitFeedback').click(function () {
+                var feedback = $('#feedback').val();
+
+                if (feedback.trim().length === 0) {
+                    alert("The feedback is empty");
+                    return;
+                }
+
+                // AJAX request
+                $.ajax({
+                    url: '/home/feedbackpost',
+                    type: 'POST',
+                    data: { text: feedback },
+                    success: function (response) {
+                        // On success
+                        Swal.fire(
+                            'Success!',
+                            'Your feedback has been sent.',
+                            'success'
+                        );
+                        $('#feedbackModal').modal('hide');
+                        $('#feedback').val('');
+                    },
+                    error: function (xhr, status, error) {
+                        // Handle error
+                        Swal.fire(
+                            'Error!',
+                            'An error occurred while sending feedback.',
+                            'error'
+                        );
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

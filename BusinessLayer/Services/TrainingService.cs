@@ -79,18 +79,18 @@ namespace BusinessLayer.Services
         {
             return await _trainingRepo.GetAllTrainingWithEnrollCountAsync();
         }
-        public async Task<IEnumerable<TrainingWithUserStatus>> GetAllTrainingAsync(int UserId)
+        public async Task<TrainingWithUserStatusPG> GetAllTrainingAsync(int UserId, int pageNumber)
         {
-            return await _trainingRepo.GetAllTrainingAsync(UserId);
+            return await _trainingRepo.GetAllTrainingAsync(UserId, pageNumber);
         }
-        public async Task<IEnumerable<TrainingWithUserStatus>> GetTrainingEnrolledByUserAsync(int UserId, EnrollStatusEnum status)
+        public async Task<TrainingWithUserStatusPG> GetTrainingEnrolledByUserAsync(int UserId, EnrollStatusEnum status, int pageNumber)
         {
-            return await _trainingRepo.GetTrainingEnrolledByUserAsync(UserId,status);
+            return await _trainingRepo.GetTrainingEnrolledByUserAsync(UserId, status, pageNumber);
         }
 
-        public async Task<IEnumerable<TrainingWithUserStatus>> GetTrainingEnrolledByUserAsync(int UserId)
+        public async Task<TrainingWithUserStatusPG> GetTrainingEnrolledByUserAsync(int UserId, int pageNumber)
         {
-            return await _trainingRepo.GetTrainingEnrolledByUserAsync(UserId);
+            return await _trainingRepo.GetTrainingEnrolledByUserAsync(UserId, pageNumber);
         }
         public async Task<IEnumerable<UserTraining>> GetTrainingPendingForManagerAsync(int UserId)
         {

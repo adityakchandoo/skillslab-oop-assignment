@@ -17,9 +17,9 @@ namespace DataLayer.Repository.Interfaces
         Task CreateTrainingWithPrerequisite(Training training, DataTable prerequisites);
         Task<IEnumerable<TrainingEnrollCount>> GetAllTrainingWithEnrollCountAsync();
 
-        Task<IEnumerable<TrainingWithUserStatus>> GetAllTrainingAsync(int UserId);
-        Task<IEnumerable<TrainingWithUserStatus>> GetTrainingEnrolledByUserAsync(int UserId, EnrollStatusEnum status);
-        Task<IEnumerable<TrainingWithUserStatus>> GetTrainingEnrolledByUserAsync(int UserId);
+        Task<TrainingWithUserStatusPG> GetAllTrainingAsync(int UserId, int pageNumber);
+        Task<TrainingWithUserStatusPG> GetTrainingEnrolledByUserAsync(int UserId, EnrollStatusEnum status, int pageNumber);
+        Task<TrainingWithUserStatusPG> GetTrainingEnrolledByUserAsync(int UserId, int pageNumber);
         Task<IEnumerable<UserTraining>> GetUserTrainingByStatusAndManagerIdAsync(EnrollStatusEnum enrollStatusEnum, int UserId);
         Task<IEnumerable<TrainingEmployeeDetails>> GetAllTrainingEmployeeDetailsByTrainingId(int trainingId);
         Task SoftDeleteTrainingAsync(int trainingId);

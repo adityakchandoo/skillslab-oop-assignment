@@ -73,7 +73,32 @@
 
 
             </div>
+            <div class="card-footer">
+                <nav aria-label="Contacts Page Navigation">
+                    <ul class="pagination justify-content-center m-0">
+                        @for (int i = 1; i <= ViewBag.Pages; i++)
+                        {
+                            var routeValues = new RouteValueDictionary();
+                            foreach (string key in Request.QueryString)
+                            {
+                                if (key != "pg") // Exclude the 'pg' parameter
+                                {
+                                    routeValues[key] = Request.QueryString[key];
+                                }
+                            }
+                            routeValues["pg"] = i; // Add or update the 'pg' parameter
 
+                            <li class="page-item @(i == ViewBag.Pg ? "active" : "")">
+                                <a class="page-link" href="@Url.Action("ViewDash", "Training", routeValues)">
+                                    @i
+                                </a>
+                            </li>
+                        }
+
+
+                    </ul>
+                </nav>
+            </div>
         </div>
     </section>
 </div>

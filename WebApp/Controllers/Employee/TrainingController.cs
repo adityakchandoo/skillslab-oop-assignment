@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Web.Mvc;
 using BusinessLayer.Services;
 using BusinessLayer.Services.Interfaces;
+using Entities.DbCustom;
 using Entities.DbModels;
 using Entities.DTO;
 using Entities.Enums;
@@ -19,28 +20,44 @@ namespace WebApp.Controllers
         public async Task<ActionResult> ViewDash()
         {
             int UserId = (int)this.Session["UserId"];
+            int pg = int.Parse(Request.QueryString["pg"] ?? "1");
+
+            if (pg < 1)
+                pg = 1;
+
+            ViewBag.Pg = pg;
 
             if (Request.QueryString["q"] == "my")
             {
-                ViewBag.Trainings = await _trainingService.GetTrainingEnrolledByUserAsync(UserId);
+                TrainingWithUserStatusPG training = await _trainingService.GetTrainingEnrolledByUserAsync(UserId, pg);
+                ViewBag.Trainings = training.trainingWithUserStatus;
+                ViewBag.Pages = training.totalPages;
             }
             else if (Request.QueryString["q"] == "all")
             {
-                ViewBag.Trainings = await _trainingService.GetAllTrainingAsync(UserId);
+                TrainingWithUserStatusPG training = await _trainingService.GetAllTrainingAsync(UserId, pg);
+                ViewBag.Trainings = training.trainingWithUserStatus;
+                ViewBag.Pages = training.totalPages;
             }
             else if (Request.QueryString["q"] == "approved")
             {
-                ViewBag.Trainings = await _trainingService.GetTrainingEnrolledByUserAsync(UserId, EnrollStatusEnum.Approved);
+                TrainingWithUserStatusPG training = await _trainingService.GetTrainingEnrolledByUserAsync(UserId, EnrollStatusEnum.Approved, pg);
+                ViewBag.Trainings = training.trainingWithUserStatus;
+                ViewBag.Pages = training.totalPages;
             }
             else if (Request.QueryString["q"] == "pending")
             {
-                ViewBag.Trainings = await _trainingService.GetTrainingEnrolledByUserAsync(UserId, EnrollStatusEnum.Pending);
+                TrainingWithUserStatusPG training = await _trainingService.GetTrainingEnrolledByUserAsync(UserId, EnrollStatusEnum.Pending, pg);
+                ViewBag.Trainings = training.trainingWithUserStatus;
+                ViewBag.Pages = training.totalPages;
             }
             else
             {
                 // Same as my
-                ViewBag.Trainings = await _trainingService.GetTrainingEnrolledByUserAsync(UserId);
-            }
+                TrainingWithUserStatusPG training = await _trainingService.GetTrainingEnrolledByUserAsync(UserId, pg);
+                ViewBag.Trainings = training.trainingWithUserStatus;
+                ViewBag.Pages = training.totalPages;
+            }            
 
             return View("~/Views/Employee/TrainingCardView.cshtml");
 

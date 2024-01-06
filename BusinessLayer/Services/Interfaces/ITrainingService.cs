@@ -21,9 +21,9 @@ namespace BusinessLayer.Services.Interfaces
 
 
         Task<IEnumerable<TrainingEnrollCount>> GetAllTrainingWithEnrollCountAsync();
-        Task<IEnumerable<TrainingWithUserStatus>> GetAllTrainingAsync(int UserId);
-        Task<IEnumerable<TrainingWithUserStatus>> GetTrainingEnrolledByUserAsync(int UserId, EnrollStatusEnum status);
-        Task<IEnumerable<TrainingWithUserStatus>> GetTrainingEnrolledByUserAsync(int UserId);
+        Task<TrainingWithUserStatusPG> GetAllTrainingAsync(int UserId, int pageNumber);
+        Task<TrainingWithUserStatusPG> GetTrainingEnrolledByUserAsync(int UserId, EnrollStatusEnum status, int pageNumber);
+        Task<TrainingWithUserStatusPG> GetTrainingEnrolledByUserAsync(int UserId, int pageNumber);
         Task<IEnumerable<UserTraining>> GetTrainingPendingForManagerAsync(int UserId);
 
 

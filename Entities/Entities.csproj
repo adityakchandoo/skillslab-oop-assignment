@@ -47,6 +47,7 @@
     <Compile Include="AppLogger\Logger.cs" />
     <Compile Include="DbCustom\PrerequisiteAvailable.cs" />
     <Compile Include="DbCustom\TrainingEmployeeDetails.cs" />
+    <Compile Include="DbCustom\TrainingWithUserStatusPG.cs" />
     <Compile Include="DbCustom\UserRoleAssigned.cs" />
     <Compile Include="DbCustom\AppUserRole.cs" />
     <Compile Include="DbCustom\AppUsersInlineRoles.cs" />

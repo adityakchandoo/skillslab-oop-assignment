@@ -87,11 +87,18 @@ namespace DataLayer.Repository
 
             return results;
         }
-        public async Task<IEnumerable<TrainingWithUserStatus>> GetAllTrainingAsync(int UserId)
+        public async Task<TrainingWithUserStatusPG> GetAllTrainingAsync(int UserId, int pageNumber)
         {
             List<TrainingWithUserStatus> results = new List<TrainingWithUserStatus>();
 
-            string sql = @"SELECT 
+            int pageSize = 10;
+            int totalRecords = 0;
+
+            string countSql = @"SELECT COUNT(*)
+                        FROM Training T
+                        WHERE T.IsActive = 1;";
+
+            string querySql = @"SELECT 
                             T.*,
                             CASE 
                                 WHEN UTE.UserId IS NULL THEN 0
@@ -105,13 +112,23 @@ namespace DataLayer.Repository
                               Training T
                             LEFT JOIN 
                               UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId AND UTE.UserId = @UserId
-                            WHERE T.IsActive = 1";
+                            WHERE T.IsActive = 1
+                            ORDER BY T.CreatedOn DESC
+                            OFFSET @StartRow ROWS
+                            FETCH NEXT @PageSize ROWS ONLY";
 
             try
             {
-                using (SqlCommand cmd = new SqlCommand(sql, _conn))
+                using (SqlCommand cmd = new SqlCommand(countSql, _conn))
+                {
+                    totalRecords = (int)await cmd.ExecuteScalarAsync();
+                }
+
+                using (SqlCommand cmd = new SqlCommand(querySql, _conn))
                 {
                     cmd.Parameters.AddWithValue("@UserId", UserId);
+                    cmd.Parameters.AddWithValue("@StartRow", (pageNumber - 1) * pageSize);
+                    cmd.Parameters.AddWithValue("@PageSize", pageSize);
 
                     using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
@@ -130,69 +147,60 @@ namespace DataLayer.Repository
                 throw;
             }
 
-            return results;
+            return new TrainingWithUserStatusPG()
+            {
+                totalPages = (int)Math.Ceiling((double)totalRecords / pageSize),
+                trainingWithUserStatus = results
+            };
         }
-        public async Task<IEnumerable<TrainingWithUserStatus>> GetTrainingEnrolledByUserAsync(int UserId, EnrollStatusEnum status)
+        public async Task<TrainingWithUserStatusPG> GetTrainingEnrolledByUserAsync(int UserId, EnrollStatusEnum status, int pageNumber)
         {
             List<TrainingWithUserStatus> results = new List<TrainingWithUserStatus>();
 
-            string sql = $@"SELECT 
-                            T.*,
-                            UTE.ManagerApprovalStatus AS ManagerApprovalStatus,
-                            UTE.EnrollStatus AS EnrollStatus
-                            FROM 
-                              Training T
-                            INNER JOIN 
-                              UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId
-                            WHERE UTE.UserId = @UserId AND UTE.ManagerApprovalStatus = @ManagerApprovalStatus AND UTE.EnrollStatus = @EnrollStatus
-                            AND T.IsActive = 1;";
+            int pageSize = 10;
+            int totalRecords = 0;
+
+            string countSql = @"
+                                SELECT COUNT(*)
+                                FROM Training T
+                                INNER JOIN UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId
+                                WHERE UTE.UserId = @UserId 
+                                AND UTE.ManagerApprovalStatus = @ManagerApprovalStatus 
+                                AND UTE.EnrollStatus = @EnrollStatus
+                                AND T.IsActive = 1;";
+
+            string querySql = @"SELECT 
+                                T.*,
+                                UTE.ManagerApprovalStatus AS ManagerApprovalStatus,
+                                UTE.EnrollStatus AS EnrollStatus
+                                FROM 
+                                  Training T
+                                INNER JOIN 
+                                  UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId
+                                WHERE UTE.UserId = @UserId 
+                                AND UTE.ManagerApprovalStatus = @ManagerApprovalStatus 
+                                AND UTE.EnrollStatus = @EnrollStatus
+                                AND T.IsActive = 1
+                                ORDER BY T.CreatedOn DESC
+                                OFFSET @StartRow ROWS
+                                FETCH NEXT @PageSize ROWS ONLY;";
             try
             {
-                using (SqlCommand cmd = new SqlCommand(sql, _conn))
+                using (SqlCommand cmd = new SqlCommand(countSql, _conn))
                 {
                     cmd.Parameters.AddWithValue("@UserId", UserId);
                     cmd.Parameters.AddWithValue("@ManagerApprovalStatus", (int)status);
                     cmd.Parameters.AddWithValue("@EnrollStatus", (int)status);
-
-                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
-                    {
-                        while (reader.Read())
-                        {
-                            results.Add(DbHelper.ConvertToObject<TrainingWithUserStatus>(reader));
-                        };
-
-                    }
+                    totalRecords = (int)await cmd.ExecuteScalarAsync();
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex);
-                throw new DbErrorException("Database Error");
-                throw;
-            }
 
-            return results;
-
-        }
-        public async Task<IEnumerable<TrainingWithUserStatus>> GetTrainingEnrolledByUserAsync(int UserId)
-        {
-            List<TrainingWithUserStatus> results = new List<TrainingWithUserStatus>();
-
-            string sql = $@"SELECT 
-                            T.*,
-                            UTE.ManagerApprovalStatus AS ManagerApprovalStatus,
-                            UTE.EnrollStatus AS EnrollStatus
-                            FROM 
-                              Training T
-                            INNER JOIN 
-                              UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId
-                            WHERE UTE.UserId = @UserId
-                            AND T.IsActive = 1;";
-            try
-            {
-                using (SqlCommand cmd = new SqlCommand(sql, _conn))
+                using (SqlCommand cmd = new SqlCommand(querySql, _conn))
                 {
                     cmd.Parameters.AddWithValue("@UserId", UserId);
+                    cmd.Parameters.AddWithValue("@ManagerApprovalStatus", (int)status);
+                    cmd.Parameters.AddWithValue("@EnrollStatus", (int)status);
+                    cmd.Parameters.AddWithValue("@StartRow", (pageNumber - 1) * pageSize);
+                    cmd.Parameters.AddWithValue("@PageSize", pageSize);
 
                     using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
                     {
@@ -211,7 +219,75 @@ namespace DataLayer.Repository
                 throw;
             }
 
-            return results;
+            return new TrainingWithUserStatusPG()
+            {
+                totalPages = (int)Math.Ceiling((double)totalRecords / pageSize),
+                trainingWithUserStatus = results
+            };
+
+        }
+        public async Task<TrainingWithUserStatusPG> GetTrainingEnrolledByUserAsync(int UserId, int pageNumber)
+        {
+            int pageSize = 10;
+            int totalRecords = 0;
+
+            List<TrainingWithUserStatus> results = new List<TrainingWithUserStatus>();
+
+            string countSql = @"SELECT COUNT(*)
+                                FROM Training T
+                                INNER JOIN UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId
+                                WHERE UTE.UserId = @UserId AND T.IsActive = 1;";
+
+
+            string querySql = $@"SELECT 
+                                    T.*,
+                                    UTE.ManagerApprovalStatus AS ManagerApprovalStatus,
+                                    UTE.EnrollStatus AS EnrollStatus
+                                 FROM 
+                                    Training T
+                                 INNER JOIN 
+                                    UserTrainingEnrollment UTE ON T.TrainingId = UTE.TrainingId
+                                 WHERE UTE.UserId = @UserId
+                                 AND T.IsActive = 1
+                                 ORDER BY T.CreatedOn DESC
+                                 OFFSET @StartRow ROWS
+                                 FETCH NEXT @PageSize ROWS ONLY;";
+            try
+            {
+                using (SqlCommand cmd = new SqlCommand(countSql, _conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", UserId);
+                    totalRecords = (int)await cmd.ExecuteScalarAsync();
+                }
+
+                using (SqlCommand cmd = new SqlCommand(querySql, _conn))
+                {
+                    cmd.Parameters.AddWithValue("@UserId", UserId);
+                    cmd.Parameters.AddWithValue("@StartRow", (pageNumber - 1) * pageSize);
+                    cmd.Parameters.AddWithValue("@PageSize", pageSize);
+
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(DbHelper.ConvertToObject<TrainingWithUserStatus>(reader));
+                        };
+
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex);
+                throw new DbErrorException("Database Error");
+                throw;
+            }
+
+            return new TrainingWithUserStatusPG()
+            {
+                totalPages = (int)Math.Ceiling((double)totalRecords / pageSize),
+                trainingWithUserStatus = results
+            };
 
         }
 

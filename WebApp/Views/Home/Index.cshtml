@@ -2,32 +2,153 @@
     ViewBag.Title = "Home Page";
 }
 
-<main>
-    <section class="row" aria-labelledby="aspnetTitle">
-        <h1 id="title">ASP.NET</h1>
-        <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-        <p><a href="https://asp.net" class="btn btn-primary btn-md">Learn more &raquo;</a></p>
-    </section>
+<style>
+    .bg-image {
+        background-size: cover;
+        background-position: center;
+    }
 
+    .card:hover {
+        transform: scale(1.03);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    v
+</style>
+
+<div class="p-5 bg-image text-center" style="background-image: url('/Content/frontpage/bg-main.jpg'); height: 300px;">
+    <h1 class="mb-3">Welcome to Our Online Training</h1>
+    <p class="mb-4">Learn at your own pace with our comprehensive courses</p>
+    <a class="btn btn-primary btn-lg" href="/User/Register" role="button">Get Started</a>
+</div>
+<div class="container my-5">
+    <!-- First Row of Cards -->
     <div class="row">
-        <section class="col-md-4" aria-labelledby="gettingStartedTitle">
-            <h2 id="gettingStartedTitle">Getting started</h2>
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="librariesTitle">
-            <h2 id="librariesTitle">Get more libraries</h2>
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-        </section>
-        <section class="col-md-4" aria-labelledby="hostingTitle">
-            <h2 id="hostingTitle">Web Hosting</h2>
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-outline-dark" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
-        </section>
+        <!-- Card 1 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="~/Content/frontpage/1.jpg" class="card-img-top" alt="Flexibility">
+                <div class="card-body">
+                    <h5 class="card-title">Flexibility</h5>
+                    <p class="card-text">Learn anytime, anywhere. Online training offers unparalleled flexibility in terms of time and location.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="~/Content/frontpage/2.jpg" class="card-img-top" alt="Wide Range of Courses">
+                <div class="card-body">
+                    <h5 class="card-title">Wide Range of Courses</h5>
+                    <p class="card-text">Access to diverse and specialized courses that cater to various interests and career paths.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="~/Content/frontpage/3.jpg" class="card-img-top" alt="Self-Paced Learning">
+                <div class="card-body">
+                    <h5 class="card-title">Self-Paced Learning</h5>
+                    <p class="card-text">Learn at your own pace and convenience, which is ideal for balancing work, life, and education.</p>
+                </div>
+            </div>
+        </div>
     </div>
-</main>
+
+    <!-- Second Row of Cards -->
+    <div class="row">
+        <!-- Card 4 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="~/Content/frontpage/4.jpg" class="card-img-top" alt="Cost-Effective">
+                <div class="card-body">
+                    <h5 class="card-title">Cost-Effective</h5>
+                    <p class="card-text">Online courses often come at a lower cost than traditional education, making learning more accessible.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="~/Content/frontpage/5.jpg" class="card-img-top" alt="Skill Development">
+                <div class="card-body">
+                    <h5 class="card-title">Skill Development</h5>
+                    <p class="card-text">Enhance and update your skills with the latest industry-relevant content.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <img src="~/Content/frontpage/6.jpg" class="card-img-top" alt="Interactive Learning">
+                <div class="card-body">
+                    <h5 class="card-title">Interactive Learning</h5>
+                    <p class="card-text">Engage with multimedia content and interactive course materials for a more dynamic learning experience.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container my-5" id="feedbacksection">
+    <div class="row">
+        <div class="col-md-7 offset-md-3">
+            <!-- Centered column with a width of 6 out of 12 grid columns -->
+            <h2 class="mb-3 text-center">Feedback Form</h2>
+                <div class="mb-3">
+                    <label for="feedbackTextarea" class="form-label">Your Feedback</label>
+                    <textarea class="form-control" id="feedbackTextarea" rows="6" placeholder="Please enter your feedback here" required></textarea>
+                </div>
+                <div class="text-center">
+                    <button id="submitFeedback" class="btn btn-primary">Submit Feedback</button>
+                </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+
+    <script>
+    $(document).ready(function () {
+        $('#submitFeedback').click(function () {
+            var feedback = $('#feedbackTextarea').val();
+
+            if (feedback.trim().length === 0) {
+                alert("The feedback is empty");
+                return;
+            }
+
+            // AJAX request
+            $.ajax({
+                url: '/home/feedbackpost',
+                type: 'POST',
+                data: { text: feedback },
+                success: function (response) {
+                    // On success
+                    Swal.fire(
+                        'Success!',
+                        'Your feedback has been sent.',
+                        'success'
+                    );
+                    $('#feedbackTextarea').val('');
+                },
+                error: function (xhr, status, error) {
+                    // Handle error
+                    Swal.fire(
+                        'Error!',
+                        'An error occurred while sending feedback.',
+                        'error'
+                    );
+                }
+            });
+        });
+    });
+    </script>
+
+}

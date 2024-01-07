@@ -20,16 +20,16 @@
                 <div class="card">
                     <div class="card-body">
                         <h4 class="card-title mb-4">Select Role</h4>
-                            @foreach (var Role in ViewBag.Roles)
-                            {
-                                <div class="form-group">
-                                    <div class="custom-control custom-radio">
-                                        <input type="radio" id="@Role.RoleId" name="role" rname="@Role.RoleName" rid="@Role.RoleId" class="custom-control-input">
-                                        <label class="custom-control-label" for="@Role.RoleId">@Role.RoleName</label>
-                                    </div>
+                        @foreach (var Role in ViewBag.Roles)
+                        {
+                            <div class="form-group">
+                                <div class="custom-control custom-radio">
+                                    <input type="radio" id="@Role.RoleId" name="role" rname="@Role.RoleName" rid="@Role.RoleId" class="custom-control-input">
+                                    <label class="custom-control-label" for="@Role.RoleId">@Role.RoleName</label>
                                 </div>
-                            }
-                            <button onclick="sendRole()" class="btn btn-primary btn-block">Next</button>
+                            </div>
+                        }
+                        <button onclick="sendRole()" class="btn btn-primary btn-block">Next</button>
                     </div>
                 </div>
             </div>
@@ -41,6 +41,7 @@
     <script src="https://cdn.jsdelivr.net/npm/jquery@3.7.1/dist/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.9.2/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script src="~/Scripts/sweetalert2.all.js"></script>
 
     <script type="text/javascript">
 
@@ -55,7 +56,17 @@
             }).done(function (response) {
                 console.log(response);
 
-                window.location.href = `/Dash/${roleName}Dash`; response.redirectPath;
+                Swal.mixin({
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                }).fire({
+                    icon: 'success',
+                    title: 'Success'
+                })
+
+                window.location.href =  response.redirectPath;
 
             })
 

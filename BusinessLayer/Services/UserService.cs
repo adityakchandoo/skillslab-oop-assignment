@@ -90,7 +90,8 @@ namespace BusinessLayer.Services
                 {
                     authenticateResponse.IsLoginSuccessful = false;
                     authenticateResponse.Error = "Invalid User/Pass";
-                
+                    return authenticateResponse;
+
                 }            
 
                 // Beyound the point login is successful

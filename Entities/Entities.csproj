@@ -80,7 +80,6 @@
     <Compile Include="DTO\UploadFileStore.cs" />
     <Compile Include="Enums\IsActive.cs" />
     <Compile Include="FormDTO\AddTrainingContentDTO.cs" />
-    <Compile Include="FormDTO\RegEnrollFormDTO.cs" />
     <Compile Include="Enums\EnrollStatusEnum.cs" />
     <Compile Include="Enums\UserRoleEum.cs" />
     <Compile Include="Enums\UserStatusEum.cs" />

@@ -2,12 +2,8 @@
 using Amazon.S3;
 using Amazon.S3.Model;
 using BusinessLayer.Services.Interfaces;
-using System;
-using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.IO;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BusinessLayer.Services

@@ -13,7 +13,7 @@ namespace WebApp.Controllers
         [AuthorizePermission("manager.dash")]
         public ActionResult ManagerDash()
         {
-            return View("~/Views/Manager/Dashboard.cshtml");
+            return RedirectToAction("ViewRequests", "Training");
         }
     }
 }

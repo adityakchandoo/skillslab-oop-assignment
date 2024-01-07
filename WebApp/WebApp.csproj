@@ -334,6 +334,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Content\adminlte\js\" />
+    <Folder Include="Content\frontpage\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

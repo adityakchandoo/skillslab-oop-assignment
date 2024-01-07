@@ -33,6 +33,7 @@ namespace WebApp.Controllers
 
         public ActionResult Login()
         {
+            this.Session.Abandon();
             return View();
         }
 
@@ -82,7 +83,7 @@ namespace WebApp.Controllers
         public ActionResult SelectRolePost(AppUserRole appUserRole)
         {
             this.Session["Role"] = appUserRole.RoleId;
-            return new RedirectResult($"~/Dash/{appUserRole.RoleName}Dash");
+            return Json(new { status = "ok", redirectPath = $"/Dash/{appUserRole.RoleName}Dash" });
         }
 
         public ActionResult Logout()

@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace Entities.Enums
 {
-    public enum UserStatusEnum { Pending, Registered, Banned }
+    public enum UserStatusEnum { Pending = 1, Registered = 2, Banned = 3 }
 }

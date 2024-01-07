@@ -56,12 +56,11 @@
                     window.location.href = response.redirectPath;
                 });
 
-            }).fail(function () {
-
+            }).fail(function (response) {
                 Swal.fire({
                     icon: 'error',
                     title: 'Oops...',
-                    text: 'Invalid login or password!',
+                    text: response.responseJSON.Error,
                 });
 
                 $("#my_form").trigger("reset");

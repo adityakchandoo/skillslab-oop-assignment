@@ -150,12 +150,16 @@
                 },
                 Email: {
                     required: true,
+                    pattern: "^[a-zA-Z0-9._%+-]+@@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
                     remote: {
                         url: "/User/EmailCheck",
                         type: "post"
                     }
                 },
-                MobileNumber: { required: true }
+                MobileNumber: {
+                    required: true,
+                    pattern: "^(5\\d{7}|[^5]\\d{6})$"
+                }
             },
             messages: {
                 Username: {
@@ -205,8 +209,8 @@
                     //$("#profileForm").trigger("reset");
                 });
 
-            }).fail(function () {
-                alert("Please Contact Admin");
+            }).fail(function (res) {
+                alert(res.responseJSON.Error);
             });
         }
 
@@ -228,8 +232,8 @@
                      //$("#passForm").trigger("reset");
                 });
 
-            }).fail(function () {
-                alert("Please Contact Admin");
+            }).fail(function (res) {
+                alert(res.responseJSON.Error);
             });
         }
     </script>

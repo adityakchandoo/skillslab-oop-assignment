@@ -239,15 +239,15 @@ namespace DataLayer.Repository
             {
                 // Transaction is inplicit, done by sql driver
                 string sql = @" -- Create User Repord
-                                INSERT INTO AppUser (UserName, Password, FirstName, LastName, Email, DOB, MobileNumber, Status) 
-                                VALUES (@UserName, @Password, @FirstName, @LastName, @Email, @DOB, @MobileNumber, @Status);
+                                INSERT INTO AppUser (UserName, Password, FirstName, LastName, Email, DOB, NIC, MobileNumber, Status, DepartmentId) 
+                                VALUES (@UserName, @Password, @FirstName, @LastName, @Email, @DOB, @NIC, @MobileNumber, @Status, @DepartmentId);
 
                                 -- Get the last inserted ID
                                 DECLARE @LastID int;
                                 SET @LastID = SCOPE_IDENTITY();
 
                                 -- Assign Role
-                                INSERT INTO AppUser (UserId, RoleId) 
+                                INSERT INTO UserRole (UserId, RoleId) 
                                 VALUES (@LastID, @RoleId);
 
                                 -- Assign Manager
@@ -262,9 +262,12 @@ namespace DataLayer.Repository
                     cmd.Parameters.AddWithValue("@Password", appUser.Password);
                     cmd.Parameters.AddWithValue("@FirstName", appUser.FirstName);
                     cmd.Parameters.AddWithValue("@LastName", appUser.LastName);
+                    cmd.Parameters.AddWithValue("@Email", appUser.Email);
                     cmd.Parameters.AddWithValue("@DOB", appUser.DOB);
+                    cmd.Parameters.AddWithValue("@NIC", appUser.NIC);
                     cmd.Parameters.AddWithValue("@MobileNumber", appUser.MobileNumber);
                     cmd.Parameters.AddWithValue("@Status", (int)EnrollStatusEnum.Pending);
+                    cmd.Parameters.AddWithValue("@DepartmentId", appUser.DepartmentId);
 
 
                     cmd.Parameters.AddWithValue("@RoleId", (int)UserRoleEnum.Employee);

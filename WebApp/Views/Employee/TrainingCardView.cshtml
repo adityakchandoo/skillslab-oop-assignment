@@ -71,6 +71,11 @@
                     <!-- /.col -->
                 }
 
+                @if (ViewBag.Trainings.Count == 0)
+                {
+                    <h4 style="text-align: center; width: 100%; margin-top: 20px; margin-bottom: 20px;">No training here<br>Select Another setting, top right menu</h4>
+                }
+
 
             </div>
             <div class="card-footer">

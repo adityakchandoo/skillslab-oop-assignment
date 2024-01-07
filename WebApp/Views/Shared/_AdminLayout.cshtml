@@ -23,7 +23,18 @@
             <ul class="navbar-nav">
 
                 <li class="nav-item d-none d-sm-inline-block">
-                    <div class="nav-link">Admin Panel</div>
+                    @if (WebApp.Helpers.SessionHelpers.IsUser(Entities.Enums.UserRoleEnum.Admin))
+                    {
+                        <div class="nav-link">Admin Panel</div>
+                    }
+                    else if (WebApp.Helpers.SessionHelpers.IsUser(Entities.Enums.UserRoleEnum.Manager))
+                    {
+                        <div class="nav-link">Manager Panel</div>
+                    }
+                    else if (WebApp.Helpers.SessionHelpers.IsUser(Entities.Enums.UserRoleEnum.Employee))
+                    {
+                        <div class="nav-link">Employee Panel</div>
+                    }
                 </li>
             </ul>
 

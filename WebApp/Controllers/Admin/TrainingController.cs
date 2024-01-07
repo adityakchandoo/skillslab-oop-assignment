@@ -145,9 +145,9 @@ namespace WebApp.Controllers
         }
 
         [AuthorizePermission("training.autoprocess")]
-        public ActionResult AutoProcess()
+        public async Task<ActionResult> AutoProcess()
         {
-            _ = _trainingService.AutoProcess();
+            await _trainingService.AutoProcess();
 
             return Json(new { status = "ok" }, JsonRequestBehavior.AllowGet);
         }

@@ -274,7 +274,12 @@ namespace BusinessLayer.Services
 
         public async Task AutoProcess()
         {
-            await _trainingRepo.AutoProcess();
+            IEnumerable<AutoProcessOutput> selectedEmployees = await _trainingRepo.AutoProcess();
+
+            foreach (var Employee in selectedEmployees)
+            {
+                _ = _notificationService.NotifyTrainingRequestProcessAsync(Employee.Email, Employee.TrainingName, true, null);
+            }
         }
 
     }

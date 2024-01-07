@@ -411,14 +411,27 @@ namespace DataLayer.Repository
             }
         }
 
-        public async Task AutoProcess()
+        public async Task<IEnumerable<AutoProcessOutput>> AutoProcess()
         {
+            List<AutoProcessOutput> results = new List<AutoProcessOutput>();
+
             try
             {
                 string sql = $"EXEC AutomaticProcess";
-                SqlCommand cmd = new SqlCommand(sql, _conn);
 
-                await cmd.ExecuteNonQueryAsync();
+                using (SqlCommand cmd = new SqlCommand(sql, _conn))
+                {
+
+                    using (SqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (reader.Read())
+                        {
+                            results.Add(DbHelper.ConvertToObject<AutoProcessOutput>(reader));
+                        };
+
+                    }
+                }
+
             }
             catch (Exception ex)
             {
@@ -426,6 +439,7 @@ namespace DataLayer.Repository
                 throw new DbErrorException("Database Error");
                 throw;
             }
+            return results;
         }
     }
 }

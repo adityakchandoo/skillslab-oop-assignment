@@ -97,7 +97,10 @@ namespace BusinessLayer.Services
             var user = await _appUserRepo.GetByPKAsync(targetUserId);
             var training = await _trainingRepo.GetByPKAsync(targetTrainingId);
 
-            _ = _notificationService.NotifyTrainingRequestProcessAsync(user.Email, training.Name, isApproved, declineReason);
+            if (!isApproved)
+            {
+                _ = _notificationService.NotifyTrainingRequestProcessAsync(user.Email, training.Name, isApproved, declineReason);
+            }
 
         }
     }

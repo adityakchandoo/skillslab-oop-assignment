@@ -6,8 +6,6 @@ using Entities.DTO;
 using Entities.Enums;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BusinessLayer.Services
@@ -27,7 +25,7 @@ namespace BusinessLayer.Services
             _trainingRepo = trainingRepo;
         }
 
-        public UserTrainingEnrollmentService(UserTrainingEnrollmentRepo userTrainingEnrollmentRepo) 
+        public UserTrainingEnrollmentService(UserTrainingEnrollmentRepo userTrainingEnrollmentRepo)
         {
             _userTrainingEnrollmentRepo = userTrainingEnrollmentRepo;
         }

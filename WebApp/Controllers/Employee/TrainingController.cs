@@ -1,15 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Threading.Tasks;
-using System.Web.Mvc;
-using BusinessLayer.Services;
-using BusinessLayer.Services.Interfaces;
-using Entities.DbCustom;
-using Entities.DbModels;
+﻿using Entities.DbCustom;
 using Entities.DTO;
 using Entities.Enums;
-using Entities.FormDTO;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 using WebApp.Helpers;
 
 namespace WebApp.Controllers
@@ -57,7 +51,7 @@ namespace WebApp.Controllers
                 TrainingWithUserStatusPG training = await _trainingService.GetTrainingEnrolledByUserAsync(UserId, pg);
                 ViewBag.Trainings = training.trainingWithUserStatus;
                 ViewBag.Pages = training.totalPages;
-            }            
+            }
 
             return View("~/Views/Employee/TrainingCardView.cshtml");
 
@@ -96,6 +90,6 @@ namespace WebApp.Controllers
             return Json(new { status = "ok" });
         }
 
-        
+
     }
 }

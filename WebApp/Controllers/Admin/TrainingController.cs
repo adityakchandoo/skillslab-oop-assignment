@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.ComTypes;
-using System.Threading.Tasks;
-using System.Web;
-using System.Web.Mvc;
-using BusinessLayer.Services;
-using BusinessLayer.Services.Interfaces;
-using Entities.DbModels;
+﻿using BusinessLayer.Services.Interfaces;
 using Entities.Enums;
 using Entities.FormDTO;
+using System;
+using System.IO;
+using System.Threading.Tasks;
+using System.Web.Mvc;
 using WebApp.Helpers;
 
 namespace WebApp.Controllers
@@ -87,7 +81,7 @@ namespace WebApp.Controllers
 
         //[AuthorizePermission("training.edit")]
         public async Task<ActionResult> Edit(int id)
-        {            
+        {
             ViewBag.TrainingId = id;
             ViewBag.Training = await _trainingService.GetTrainingAsync(id);
 

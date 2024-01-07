@@ -1,19 +1,14 @@
-﻿using System;
-using System.Web.Mvc;
-using Entities.FormDTO;
-using Entities.DTO;
-using BusinessLayer.Services.Interfaces;
-using Entities.Enums;
-using DataLayer.Repository.Interfaces;
-using WebApp.Helpers;
-using BusinessLayer.Services;
-using System.Web;
-using System.Net;
-using System.Collections.Generic;
+﻿using BusinessLayer.Services.Interfaces;
 using Entities.DbCustom;
+using Entities.DTO;
+using Entities.Enums;
+using Entities.FormDTO;
+using System;
+using System.Collections.Generic;
 using System.Linq;
-using Entities.DbModels;
 using System.Threading.Tasks;
+using System.Web.Mvc;
+using WebApp.Helpers;
 
 namespace WebApp.Controllers
 {

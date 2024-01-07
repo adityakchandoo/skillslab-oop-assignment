@@ -1,11 +1,7 @@
 ﻿using BusinessLayer.Services.Interfaces;
 using DataLayer.Repository.Interfaces;
 using Entities.DbModels;
-using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BusinessLayer.Services
@@ -15,7 +11,7 @@ namespace BusinessLayer.Services
         private readonly IDepartmentRepo _departmentRepo;
         public DepartmentService(IDepartmentRepo departmentRepo)
         {
-            _departmentRepo = departmentRepo;            
+            _departmentRepo = departmentRepo;
         }
 
         public async Task AddDepartmentAsync(Department department)
@@ -25,7 +21,7 @@ namespace BusinessLayer.Services
 
         public async Task DeleteDepartmentAsync(int departmentId)
         {
-            await _departmentRepo.Delete(new Department() { DepartmentId = departmentId } );
+            await _departmentRepo.Delete(new Department() { DepartmentId = departmentId });
         }
 
         public async Task<IEnumerable<Department>> GetAllDepartmentsAsync()

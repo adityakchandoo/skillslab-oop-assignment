@@ -1,22 +1,20 @@
-﻿using BusinessLayer.Services.Interfaces;
-using DataLayer.Repository;
+﻿using BusinessLayer.Other;
+using BusinessLayer.Services.Interfaces;
 using DataLayer.Repository.Interfaces;
+using Entities.AppLogger;
 using Entities.DbCustom;
 using Entities.DbModels;
 using Entities.DTO;
 using Entities.Enums;
 using Entities.FormDTO;
 using System;
-using System.Web;
 using System.Collections.Generic;
+using System.Data;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Xml.Linq;
-using BusinessLayer.Other;
-using System.IO;
-using Entities.AppLogger;
-using System.Data;
+using System.Web;
 
 namespace BusinessLayer.Services
 {
@@ -120,7 +118,7 @@ namespace BusinessLayer.Services
                 }
             }
 
-            await _trainingRepo.CreateTrainingWithPrerequisite(Training, Prerequisites);           
+            await _trainingRepo.CreateTrainingWithPrerequisite(Training, Prerequisites);
 
         }
         public async Task ApplyTrainingAsync(int UserId, int trainingId, List<UploadFileStore> uploadFileStore)
@@ -171,7 +169,7 @@ namespace BusinessLayer.Services
         public async Task<IEnumerable<TrainingWithContentDTO>> GetTrainingWithContentsAsync(int trainingId)
         {
             var result = new List<TrainingWithContentDTO>();
-            
+
             var trainingContents = await _trainingContentRepo.GetAllTrainingContentAsync(trainingId);
 
             foreach (var item in trainingContents)

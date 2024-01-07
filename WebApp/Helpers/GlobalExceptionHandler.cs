@@ -1,9 +1,6 @@
 ﻿using Entities;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Web;
 using System.Web.Mvc;
 
 namespace WebApp.Helpers
@@ -26,9 +23,9 @@ namespace WebApp.Helpers
             else
             {
                 filterContext.HttpContext.Response.StatusCode = GetStatuscode(filterContext.Exception);
-                filterContext.Result = new ViewResult { ViewName = "~/Views/Other/GenericErrorPage.cshtml", TempData = new TempDataDictionary() { { "Message", filterContext.Exception.Message } }  };
+                filterContext.Result = new ViewResult { ViewName = "~/Views/Other/GenericErrorPage.cshtml", TempData = new TempDataDictionary() { { "Message", filterContext.Exception.Message } } };
                 return;
-            }            
+            }
         }
 
         private int GetStatuscode(Exception ex)

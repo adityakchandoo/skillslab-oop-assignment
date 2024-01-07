@@ -1,20 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using DataLayer.Generic;
+﻿using DataLayer.Generic;
 using DataLayer.Repository.Interfaces;
+using Entities;
+using Entities.AppLogger;
+using Entities.DbCustom;
 using Entities.DbModels;
 using Entities.Enums;
-using DataLayer;
-using Entities.DbCustom;
-using System.Runtime.Remoting.Messaging;
+using System;
+using System.Collections.Generic;
 using System.Data.SqlClient;
-using System.Collections;
-using System.Threading.Tasks;
 using System.Linq;
-using Entities.AppLogger;
-using Entities;
-using Entities.FormDTO;
+using System.Threading.Tasks;
 
 namespace DataLayer.Repository
 {
@@ -71,7 +66,7 @@ namespace DataLayer.Repository
                     return null;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 _logger.LogError(ex);
                 throw new DbErrorException("Database Error");
@@ -100,7 +95,7 @@ namespace DataLayer.Repository
                     return results;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 _logger.LogError(ex);
                 throw new DbErrorException("Database Error");
@@ -220,12 +215,12 @@ namespace DataLayer.Repository
                     cmd.Parameters.AddWithValue("@UserID", UserId);
                     cmd.Parameters.AddWithValue("@Permission", permission);
 
-                    var result =(int)await cmd.ExecuteScalarAsync() == 1 ? true : false;
+                    var result = (int)await cmd.ExecuteScalarAsync() == 1 ? true : false;
 
                     return result;
                 }
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 _logger.LogError(ex);
                 throw new DbErrorException("Database Error");

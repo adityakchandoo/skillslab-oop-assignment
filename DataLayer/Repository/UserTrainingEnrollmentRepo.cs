@@ -1,5 +1,4 @@
-﻿using DataLayer;
-using DataLayer.Generic;
+﻿using DataLayer.Generic;
 using DataLayer.Repository.Interfaces;
 using Entities;
 using Entities.AppLogger;
@@ -10,7 +9,6 @@ using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DataLayer.Repository
@@ -65,7 +63,7 @@ namespace DataLayer.Repository
                 return userEnrollment.First();
             else
                 return null;
-            
+
         }
 
         public async Task<IEnumerable<TrainingEnrollmentDetails>> GetUserTrainingEnrollmentInfoAsync(int userId, int trainingId)
@@ -109,7 +107,7 @@ namespace DataLayer.Repository
                 return trainingEnrollmentDetails;
 
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 _logger.LogError(ex);
                 throw new DbErrorException("Database Error");

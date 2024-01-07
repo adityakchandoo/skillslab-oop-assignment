@@ -1,17 +1,12 @@
-﻿using DataLayer;
-using DataLayer.Generic;
+﻿using DataLayer.Generic;
 using DataLayer.Repository.Interfaces;
 using Entities;
 using Entities.AppLogger;
 using Entities.DbCustom;
 using Entities.DbModels;
-using Entities.DTO;
 using System;
 using System.Collections.Generic;
-using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace DataLayer.Repository
@@ -49,7 +44,7 @@ namespace DataLayer.Repository
                 return prerequisiteDetails;
 
             }
-            catch (Exception ex) 
+            catch (Exception ex)
             {
                 _logger.LogError(ex);
                 throw new DbErrorException("Database Error");

@@ -1,12 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Mail;
+﻿using BusinessLayer.Services.Interfaces;
+using System;
 using System.Net;
-using System.Text;
+using System.Net.Mail;
 using System.Threading.Tasks;
-using BusinessLayer.Services.Interfaces;
-using Entities.DTO;
 
 namespace BusinessLayer.Services
 {
@@ -96,7 +92,7 @@ namespace BusinessLayer.Services
 
             await Task.Run(() => Send(managerMail, subject, htmlBody));
         }
-        
+
         public async Task NotifyTrainingRequestProcessAsync(string employeeMail, string trainingName, bool isApproved, string declineReason)
         {
             string result = isApproved ? "Approved" : "Rejected";

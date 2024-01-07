@@ -1,11 +1,9 @@
 ﻿using Entities;
 using Entities.AppLogger;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Data;
-using System.Data.Common;
 using System.Data.SqlClient;
 using System.Linq;
 using System.Reflection;
@@ -26,7 +24,7 @@ namespace DataLayer.Generic
         }
 
         // CRUDS Ops
-        public async Task<IEnumerable<T>> GetMany(string sql = "", Dictionary<string,object> parameters = null)
+        public async Task<IEnumerable<T>> GetMany(string sql = "", Dictionary<string, object> parameters = null)
         {
             var result = new List<T>();
 
@@ -121,7 +119,7 @@ namespace DataLayer.Generic
             }
             return rowAdded;
         }
-        
+
         public async Task<int> Update(T item)
         {
             int rowUpdated = -1;

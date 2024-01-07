@@ -1,11 +1,4 @@
-﻿using BusinessLayer.Services.Interfaces;
-using DataLayer.Repository.Interfaces;
-using Entities.DbModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using System.Web;
+﻿using System.Threading.Tasks;
 using System.Web.Mvc;
 using WebApp.Helpers;
 

@@ -1,11 +1,7 @@
 ﻿using BusinessLayer.Services.Interfaces;
-using DataLayer.Repository;
 using DataLayer.Repository.Interfaces;
 using Entities.DbModels;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace BusinessLayer.Services
@@ -20,7 +16,7 @@ namespace BusinessLayer.Services
 
         public async Task AddFeedbackAsync(string text)
         {
-            await _feedbackRepo.Insert(new Feedback() { Description = text});
+            await _feedbackRepo.Insert(new Feedback() { Description = text });
         }
 
         public async Task DeleteFeedbackAsync(int feedbackId)

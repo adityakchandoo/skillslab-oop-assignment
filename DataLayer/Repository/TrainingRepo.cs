@@ -1,17 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Data.SqlClient;
-using System.Threading.Tasks;
-using DataLayer;
-using DataLayer.Generic;
+﻿using DataLayer.Generic;
 using DataLayer.Repository.Interfaces;
 using Entities;
 using Entities.AppLogger;
 using Entities.DbCustom;
 using Entities.DbModels;
-using Entities.DTO;
 using Entities.Enums;
+using System;
+using System.Collections.Generic;
+using System.Data;
+using System.Data.SqlClient;
+using System.Threading.Tasks;
 
 namespace DataLayer.Repository
 {
@@ -74,7 +72,7 @@ namespace DataLayer.Repository
                         while (reader.Read())
                         {
                             results.Add(DbHelper.ConvertToObject<TrainingEnrollCount>(reader));
-                        };                  
+                        };
                     }
                 }
             }

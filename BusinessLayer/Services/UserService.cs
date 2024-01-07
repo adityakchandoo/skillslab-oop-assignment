@@ -1,8 +1,6 @@
 ﻿using BusinessLayer.Other;
 using BusinessLayer.Services.Interfaces;
-using DataLayer.Repository;
 using DataLayer.Repository.Interfaces;
-using Entities;
 using Entities.AppLogger;
 using Entities.DbCustom;
 using Entities.DbModels;
@@ -11,7 +9,6 @@ using Entities.Enums;
 using Entities.FormDTO;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
@@ -92,7 +89,7 @@ namespace BusinessLayer.Services
                     authenticateResponse.Error = "Invalid User/Pass";
                     return authenticateResponse;
 
-                }            
+                }
 
                 // Beyound the point login is successful
                 authenticateResponse.IsLoginSuccessful = true;
@@ -130,7 +127,7 @@ namespace BusinessLayer.Services
         }
 
         public async Task RegisterAsync(RegisterFormDTO registerFormDTO)
-        { 
+        {
             try
             {
                 // Validate UserName
@@ -215,7 +212,8 @@ namespace BusinessLayer.Services
 
                 await _notificationService.NotifyUserRegistrationAsync(managerEmail, employeeName);
 
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 _logger.LogError(ex);
                 throw ex;
@@ -386,7 +384,7 @@ namespace BusinessLayer.Services
                 throw;
             }
 
-            
+
         }
 
         public async Task UpdatePasswordAsync(int UserId, UpdatePasswordDTO updatePasswordDTO)
